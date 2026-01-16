@@ -2,7 +2,7 @@ name: Pace Project CI/CD # 워크플로우 이름 설정
 
 on:
   push:
-    branches: [ "infra/#5-cicd-setup" ] # 해당 브랜치에 코드가 push될 때만 실행
+    branches: [ "develop" ] # 해당 브랜치에 코드가 push될 때만 실행
 
 jobs:
   deploy:
