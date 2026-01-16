@@ -2,7 +2,7 @@ package com.example.pace.domain.schedule.entity;
 
 
 import com.example.pace.domain.schedule.enums.TransitType;
-import com.example.pace.global.entity.BaseEntity;
+import com.example.pace.global.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
