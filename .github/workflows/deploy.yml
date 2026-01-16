@@ -2,7 +2,7 @@ name: Pace Project CI/CD # 워크플로우 이름 설정
 
 on:
   push:
-    branches: [ "feat/#5-cicd-setup" ] # 해당 브랜치에 코드가 push될 때만 실행
+    branches: [ "infra/#5-cicd-setup" ] # 해당 브랜치에 코드가 push될 때만 실행
 
 jobs:
   deploy:
@@ -24,7 +24,7 @@ jobs:
           context: . # 현재 위치의 파일을 바탕으로 빌드
           push: true # 빌드 성공 시 도커 허브로 즉시 보냄
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/pace-project:latest # 이미지 이름과 태그 붙임
-          
+
       - name: Prepare directory on EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
