@@ -1,4 +1,4 @@
-package com.example.pace.domain.auth;
+package com.example.pace.domain.auth.controller;
 
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
