@@ -1,5 +1,6 @@
 package com.example.pace.domain.schedule.entity;
 
+
 import com.example.pace.global.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

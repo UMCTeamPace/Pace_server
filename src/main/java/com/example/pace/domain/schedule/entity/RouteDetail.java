@@ -80,5 +80,4 @@ public class RouteDetail extends BaseEntity {
     @Column(name = "arrival_stop")
     private String arrivalStop; //하차역 정류장 이름
 
-
 }
