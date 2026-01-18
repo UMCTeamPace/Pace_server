@@ -1,7 +1,10 @@
 package com.example.pace.domain.auth.exception;
 
-public class AuthException extends RuntimeException {
-    public AuthException(String message) {
-        super(message);
+import com.example.pace.global.apiPayload.code.BaseErrorCode;
+import com.example.pace.global.apiPayload.exception.GeneralException;
+
+public class AuthException extends GeneralException {
+    public AuthException(BaseErrorCode errorCode) {
+        super(errorCode);
     }
 }
