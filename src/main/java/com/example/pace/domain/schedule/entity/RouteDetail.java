@@ -28,7 +28,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "route_detail")
 public class RouteDetail extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long routeDetailId;
@@ -80,4 +79,8 @@ public class RouteDetail extends BaseEntity {
     @Column(name = "arrival_stop")
     private String arrivalStop; //하차역 정류장 이름
 
+
+    public void setRoute(Route route) {
+        this.route = route;
+    }
 }

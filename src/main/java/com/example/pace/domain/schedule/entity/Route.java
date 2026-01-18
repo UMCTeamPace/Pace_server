@@ -1,6 +1,5 @@
 package com.example.pace.domain.schedule.entity;
 
-
 import com.example.pace.global.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,10 +30,7 @@ public class Route extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long routeId;
-
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RouteDetail> routeDetails = new ArrayList<>();
+    private Long id;
 
     @Column(name = "origin_name")
     private String originName; //출발지 이름
@@ -64,4 +60,12 @@ public class Route extends BaseEntity {
     private boolean isSaved; //저장 여부
 
     //Fk,연관관계 추후 진행
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RouteDetail> routeDetails = new ArrayList<>();
+
+    public void addRouteDetail(RouteDetail detail) {
+        this.routeDetails.add(detail);
+        detail.setRoute(this); // 자식 객체에 부모 객체를 추가
+    }
 }
