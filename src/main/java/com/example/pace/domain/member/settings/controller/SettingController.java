@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member/settings")
@@ -15,10 +16,13 @@ public class SettingController {
 
     private final SettingService settingService;
 
+                                 
+
     @GetMapping
     public SettingResponse getMySetting(@AuthenticationPrincipal Member member) {
         return settingService.getMySetting(member);
     }
+
 
     @PatchMapping
     public SettingResponse updateMySetting(
