@@ -38,4 +38,3 @@ out/
 
 .DS_Store
 .env
-src/main/resources/application.yaml
