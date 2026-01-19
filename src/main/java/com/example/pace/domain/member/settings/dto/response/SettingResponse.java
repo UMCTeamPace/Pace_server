@@ -33,7 +33,7 @@ public class SettingResponse {
 
     public static SettingResponse from(Setting setting) {
         return SettingResponse.builder()
-                .settingId(setting.getId())
+                .settingId(setting.getSettingId())
                 .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isNotiEnabled(setting.isNotiEnabled())
                 .isLocEnabled(setting.isLocEnabled())
