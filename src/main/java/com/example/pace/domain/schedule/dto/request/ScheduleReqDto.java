@@ -1,14 +1,18 @@
 package com.example.pace.domain.schedule.dto.request;
 
+import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import com.example.pace.domain.schedule.enums.ReminderType;
+import lombok.Setter;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
 @Getter
+@Setter
 @NoArgsConstructor
-public class ScheduleRequestDto {
+public class ScheduleReqDto {
 
     private String title;
     private LocalDate startDate;
@@ -24,35 +28,39 @@ public class ScheduleRequestDto {
 
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class PlaceDto {
         private String targetName;
-        private Double targetLat;
-        private Double targetLng;
+        private BigDecimal targetLat;
+        private BigDecimal targetLng;
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class ReminderDto {
-        private String reminderType;
+        private ReminderType reminderType;
         private Integer minutesBefore;
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class RouteDto {
         private String originName;
-        private Double originLat;
-        private Double originLng;
+        private BigDecimal originLat;
+        private BigDecimal originLng;
         private String destName;
-        private Double destLat;
-        private Double destLng;
+        private BigDecimal destLat;
+        private BigDecimal destLng;
         private Integer totalTime;
         private Integer totalDistance;
         private List<RouteDetailDto> routeDetails;
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     public static class RouteDetailDto {
     }

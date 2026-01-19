@@ -69,16 +69,10 @@ public class Route extends BaseEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-    }
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RouteDetail> routeDetails = new ArrayList<>();
 
-    public void addRouteDetail(RouteDetail detail) {
-        this.routeDetails.add(detail);
-        detail.setRoute(this); // 자식 객체에 부모 객체를 추가
-    }
+
 }

@@ -1,4 +1,4 @@
-package com.example.pace.domain.reminder.enums;
+package com.example.pace.domain.schedule.enums;
 
 public enum ReminderType {
     EVENT,      // 일정 알림

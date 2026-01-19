@@ -2,11 +2,13 @@ package com.example.pace.domain.schedule.service;
 
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.domain.place.entity.Place;
-import com.example.pace.domain.reminder.entity.Reminder;
-import com.example.pace.domain.reminder.enums.ReminderType;
-import com.example.pace.domain.schedule.dto.request.ScheduleRequestDto;
+import com.example.pace.domain.schedule.entity.Place;
+import com.example.pace.domain.schedule.entity.Reminder;
+import com.example.pace.domain.schedule.enums.ReminderType;
+import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.entity.Schedule;
+import com.example.pace.domain.schedule.repository.PlaceRepository;
+import com.example.pace.domain.schedule.repository.ReminderRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +21,11 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
+    private final PlaceRepository placeRepository;
+    private final ReminderRepository reminderRepository;
 
     @Transactional
-    public Long createSchedule(Long memberId, ScheduleRequestDto request) {
+    public Long createSchedule(Long memberId, ScheduleReqDto request) {
         // 회원 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
@@ -37,31 +41,35 @@ public class ScheduleService {
                 .memo(request.getMemo())
                 .isPathIncluded(request.getIsPathIncluded())
                 .build();
+        // 일정 저장
+        Schedule savedSchedule = scheduleRepository.save(schedule);
 
         // 장소 저장
         // 조건 - 경로 포함X(False)+장소 정보가 있을 때
         if (!Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getPlace() != null) {
-            ScheduleRequestDto.PlaceDto placeDto = request.getPlace();
+            ScheduleReqDto.PlaceDto placeDto = request.getPlace();
 
             Place place = Place.builder()
                     .targetName(placeDto.getTargetName())
                     .targetLat(placeDto.getTargetLat())
                     .targetLng(placeDto.getTargetLng())
+                    .schedule(savedSchedule)
                     .build();
 
-            schedule.setPlace(place); // 연관관계 설정
+            placeRepository.save(place);
         }
 
         // 알림 저장
         if (request.getReminders() != null && !request.getReminders().isEmpty()) {
-            for (ScheduleRequestDto.ReminderDto reminderDto : request.getReminders()) {
+            for (ScheduleReqDto.ReminderDto reminderDto : request.getReminders()) {
                 Reminder reminder = Reminder.builder()
-                        .reminderType(ReminderType.valueOf(reminderDto.getReminderType())) // String -> Enum 변환
+                        .schedule(savedSchedule)
+                        .reminderType(reminderDto.getReminderType()) // String -> Enum 변환
                         .minutesBefore(reminderDto.getMinutesBefore())
                         .reminderEnabled(true) // 기본값 켜짐
                         .build();
 
-                schedule.addReminder(reminder); // 연관관계 설정
+                reminderRepository.save(reminder);
             }
         }
 
@@ -70,8 +78,6 @@ public class ScheduleService {
          * }
          */
 
-        // 최종 저장 (일정 + 장소 + 알림)
-        Schedule savedSchedule = scheduleRepository.save(schedule);
 
         return savedSchedule.getId(); // 생성된 일정 ID 반환
     }
