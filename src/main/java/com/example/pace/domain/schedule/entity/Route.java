@@ -35,8 +35,6 @@ public class Route extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RouteDetail> routeDetails = new ArrayList<>();
 
     @Column(name = "origin_name")
     private String originName; //출발지 이름
@@ -75,4 +73,12 @@ public class Route extends BaseEntity {
         this.schedule = schedule;
     }
 
+    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<RouteDetail> routeDetails = new ArrayList<>();
+
+    public void addRouteDetail(RouteDetail detail) {
+        this.routeDetails.add(detail);
+        detail.setRoute(this); // 자식 객체에 부모 객체를 추가
+    }
 }
