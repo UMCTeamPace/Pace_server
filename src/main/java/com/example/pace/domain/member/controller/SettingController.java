@@ -31,7 +31,7 @@ public class SettingController implements SettingControllerDocs{
     @PatchMapping
     public ApiResponse<SettingResponse> updateMySetting(
             @RequestParam Long memberId,
-            @org.springframework.web.bind.annotation.RequestBody SettingUpdateRequest request
+            @RequestBody SettingUpdateRequest request
     ) {
         return ApiResponse.onSuccess(
             SettingSuccessCode.SETTING_UPDATE_OK,
