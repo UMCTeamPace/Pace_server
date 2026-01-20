@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
-public class RouteSaveReqDTO {
+public class RouteSaveReqDto {
 
     //유저->API (프론트 위/경도 반환)
     public record CreateRouteDTO(

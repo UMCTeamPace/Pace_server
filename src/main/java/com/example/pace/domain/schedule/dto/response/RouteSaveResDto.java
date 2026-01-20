@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class RouteSaveResDTO {
+public class RouteSaveResDto {
     private Long routeId;               // 저장된 경로 식별자
     private List<RouteDetailInfoDTO> routes; // 경로 상세
 }
