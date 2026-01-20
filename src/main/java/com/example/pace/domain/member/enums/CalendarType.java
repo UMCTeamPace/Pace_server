@@ -1,4 +1,4 @@
-package com.example.pace.domain.member.settings.entity;
+package com.example.pace.domain.member.enums;
 
 public enum CalendarType {
     GOOGLE,

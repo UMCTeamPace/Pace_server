@@ -1,6 +1,6 @@
-package com.example.pace.domain.member.settings.dto.request;
+package com.example.pace.domain.member.dto.request;
 
-import com.example.pace.domain.member.settings.entity.CalendarType;
+import com.example.pace.domain.member.enums.CalendarType;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,4 +31,10 @@ public class SettingUpdateRequest {
 
     // reminder_time 다중 선택
     private List<Integer> reminderTimes;
+
+    // 일정 알림
+    private List<Integer> scheduleReminderTimes;
+
+    //출발 알림
+    private List<Integer> departureReminderTimes;
 }

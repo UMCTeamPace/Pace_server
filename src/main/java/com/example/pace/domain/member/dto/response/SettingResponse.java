@@ -1,7 +1,9 @@
-package com.example.pace.domain.member.settings.dto.response;
+package com.example.pace.domain.member.dto.response;
 
-import com.example.pace.domain.member.settings.entity.CalendarType;
-import com.example.pace.domain.member.settings.entity.Setting;
+import com.example.pace.domain.member.enums.CalendarType;
+import com.example.pace.domain.member.entity.Setting;
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.stream.Collectors;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,6 +13,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+
+@Schema(description = "사용자 설정 조회 응답 DTO")
 public class SettingResponse {
 
     private Long settingId;
@@ -25,32 +29,23 @@ public class SettingResponse {
 
     private CalendarType calendarType;
 
-    // reminder_time 테이블 -> List<Integer>
-    private List<Integer> reminderTimes;
+    private List<Integer> scheduleReminderTimes;
+    private List<Integer> departureReminderTimes;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public static SettingResponse from(Setting setting) {
         return SettingResponse.builder()
-                .settingId(setting.getSettingId())
-                .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isNotiEnabled(setting.isNotiEnabled())
                 .isLocEnabled(setting.isLocEnabled())
+                .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isReminderActive(setting.isReminderActive())
                 .deptReminderFreq(setting.getDeptReminderFreq())
                 .deptReminderInterval(setting.getDeptReminderInterval())
                 .calendarType(setting.getCalendarType())
-
-                // reminder_time -> minutes만 뽑아서 List<Integer>
-                .reminderTimes(
-                        setting.getReminderTimes().stream()
-                                .map(rt -> rt.getTimeMinutes())
-                                .toList()
-                )
-
-                .createdAt(setting.getCreatedAt())
-                .updatedAt(setting.getUpdatedAt())
+                .scheduleReminderTimes(setting.getScheduleReminderTimes())
+                .departureReminderTimes(setting.getDepartureReminderTimes())
                 .build();
     }
 
