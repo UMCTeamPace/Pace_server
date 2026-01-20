@@ -66,10 +66,12 @@ public class Setting extends BaseEntity {
     private boolean isReminderActive;
 
     // 출발 알림 몇 번 알릴지 (예: 1,2,3)
+    @Deprecated
     @Column(name = "dept_reminder_freq", nullable = false)
     private int deptReminderFreq;
 
     // 출발 알림 몇 분 간격으로 (예: 5,10)
+    @Deprecated
     @Column(name = "dept_reminder_interval", nullable = false)
     private int deptReminderInterval;
 
@@ -132,16 +134,12 @@ public class Setting extends BaseEntity {
             Boolean isNotiEnabled,
             Boolean isLocEnabled,
             Boolean isReminderActive,
-            Integer deptReminderFreq,
-            Integer deptReminderInterval,
             CalendarType calendarType
     ) {
         if (earlyArrivalTime != null) this.earlyArrivalTime = earlyArrivalTime;
         if (isNotiEnabled != null) this.isNotiEnabled = isNotiEnabled;
         if (isLocEnabled != null) this.isLocEnabled = isLocEnabled;
         if (isReminderActive != null) this.isReminderActive = isReminderActive;
-        if (deptReminderFreq != null) this.deptReminderFreq = deptReminderFreq;
-        if (deptReminderInterval != null) this.deptReminderInterval = deptReminderInterval;
         if (calendarType != null) this.calendarType = calendarType;
     }
 }

@@ -46,8 +46,6 @@ public class SettingServiceImpl implements SettingService {
                 request.getIsNotiEnabled(),
                 request.getIsLocEnabled(),
                 request.getIsReminderActive(),
-                request.getDeptReminderFreq(),
-                request.getDeptReminderInterval(),
                 request.getCalendarType()
         );
 

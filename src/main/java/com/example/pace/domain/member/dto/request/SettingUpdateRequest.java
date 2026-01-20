@@ -20,12 +20,6 @@ public class SettingUpdateRequest {
     // 리마인드 알림 사용 여부
     private Boolean isReminderActive;
 
-    // (출발 알림) 몇 번 알릴지
-    private Integer deptReminderFreq;
-
-    // (출발 알림) 몇 분 전에 알림 울릴지(간격)
-    private Integer deptReminderInterval;
-
     // 캘린더 선택
     private CalendarType calendarType;
 

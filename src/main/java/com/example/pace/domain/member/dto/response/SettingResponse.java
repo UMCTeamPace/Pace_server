@@ -24,8 +24,6 @@ public class SettingResponse {
     private boolean isLocEnabled;
 
     private boolean isReminderActive;
-    private int deptReminderFreq;
-    private int deptReminderInterval;
 
     private CalendarType calendarType;
 
@@ -41,8 +39,6 @@ public class SettingResponse {
                 .isLocEnabled(setting.isLocEnabled())
                 .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isReminderActive(setting.isReminderActive())
-                .deptReminderFreq(setting.getDeptReminderFreq())
-                .deptReminderInterval(setting.getDeptReminderInterval())
                 .calendarType(setting.getCalendarType())
                 .scheduleReminderTimes(setting.getScheduleReminderTimes())
                 .departureReminderTimes(setting.getDepartureReminderTimes())
