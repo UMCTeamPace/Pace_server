@@ -80,7 +80,4 @@ public class RouteDetail extends BaseEntity {
     private String arrivalStop; //하차역 정류장 이름
 
 
-    public void setRoute(Route route) {
-        this.route = route;
-    }
 }
