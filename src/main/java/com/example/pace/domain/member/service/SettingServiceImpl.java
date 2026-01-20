@@ -1,10 +1,13 @@
 package com.example.pace.domain.member.service;
 
-import com.example.pace.domain.member.dto.request.SettingUpdateRequest;
-import com.example.pace.domain.member.dto.response.SettingResponse;
+import com.example.pace.domain.member.converter.SettingConverter;
+import com.example.pace.domain.member.dto.request.SettingUpdateRequestDTO;
+import com.example.pace.domain.member.dto.response.SettingResponseDTO;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
+import com.example.pace.domain.member.exception.SettingErrorCode;
+import com.example.pace.domain.member.exception.SettingException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.member.repository.SettingRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,25 +24,25 @@ public class SettingServiceImpl implements SettingService {
 
 
     @Override
-    public SettingResponse getMySetting(Long memberId) {
+    public SettingResponseDTO getMySetting(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("member not found"));
 
         Setting setting = settingRepository.findByMember(member)
                 .orElseGet(() -> settingRepository.save(Setting.defaultOf(member)));
 
-        return SettingResponse.from(setting);
+        return SettingResponseDTO.from(setting);
     }
 
 
     @Override
     @Transactional
-    public SettingResponse updateMySetting(Long memberId, SettingUpdateRequest request) {
+    public SettingResponseDTO updateMySetting(Long memberId, SettingUpdateRequestDTO request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("member not found"));
 
         Setting setting = settingRepository.findByMember(member)
-                .orElseGet(() -> settingRepository.save(Setting.defaultOf(member)));
+                .orElseThrow(() -> new SettingException(SettingErrorCode.SETTING_NOT_FOUND));
 
         setting.update(
                 request.getEarlyArrivalTime(),
@@ -60,6 +63,6 @@ public class SettingServiceImpl implements SettingService {
             setting.replaceReminderTimes(AlarmType.DEPARTURE, request.getDepartureReminderTimes());
         }
 
-        return SettingResponse.from(setting);
+        return SettingConverter.toResponse(setting);
     }
 }

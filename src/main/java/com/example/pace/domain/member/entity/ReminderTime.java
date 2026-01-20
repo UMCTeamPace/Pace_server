@@ -28,10 +28,10 @@ public class ReminderTime {
     @Column(name = "alarm_type", nullable = false, length = 20)
     private AlarmType alarmType;
 
-    public static ReminderTime of(
+    public static ReminderTime toEntity(
             Setting setting,
             AlarmType alarmType,
-            int minutes
+            Integer minutes
     ) {
         return ReminderTime.builder()
                 .setting(setting)

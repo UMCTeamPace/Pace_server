@@ -3,7 +3,7 @@ package com.example.pace.domain.member.entity;
 import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.global.entity.BaseEntity;
 import com.example.pace.domain.member.enums.AlarmType;
-import java.util.stream.Collectors;
+import com.example.pace.domain.member.converter.SettingConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,36 +44,26 @@ public class Setting extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long settingId;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     // 알림 권한 허용 여부
     @Column(name = "is_noti_enabled", nullable = false)
-    private boolean isNotiEnabled;
+    private Boolean isNotiEnabled;
 
     // 위치 권한 허용 여부
     @Column(name = "is_loc_enabled", nullable = false)
-    private boolean isLocEnabled;
+    private Boolean isLocEnabled;
 
     // 미리 도착(분)
     @Column(name = "early_arrival_time", nullable = false)
-    private int earlyArrivalTime;
+    private Integer earlyArrivalTime;
 
     // (추가) UI/온보딩에서 설정
     // 리마인더(일정 알림) 사용 여부
     @Column(name = "is_reminder_active", nullable = false)
-    private boolean isReminderActive;
-
-    // 출발 알림 몇 번 알릴지 (예: 1,2,3)
-    @Deprecated
-    @Column(name = "dept_reminder_freq", nullable = false)
-    private int deptReminderFreq;
-
-    // 출발 알림 몇 분 간격으로 (예: 5,10)
-    @Deprecated
-    @Column(name = "dept_reminder_interval", nullable = false)
-    private int deptReminderInterval;
+    private Boolean isReminderActive;
 
     // 캘린더 선택
     @Enumerated(EnumType.STRING)
@@ -92,8 +82,6 @@ public class Setting extends BaseEntity {
                 .isLocEnabled(false)
                 .earlyArrivalTime(20)
                 .isReminderActive(true)
-                .deptReminderFreq(1)
-                .deptReminderInterval(5)
                 .calendarType(CalendarType.GOOGLE) // 프로젝트 기본값에 따라 달라짐
                 .build();
     }
@@ -105,14 +93,9 @@ public class Setting extends BaseEntity {
 
         for (Integer minutes : minutesList) {
             if (minutes == null) continue;
-            reminderTimes.add(ReminderTime.of(this, alarmType, minutes));
+            reminderTimes.add(SettingConverter.toEntity(this, alarmType, minutes));
         }
     }
-
-    public void addReminderTime(AlarmType alarmType, int minutes) {
-        this.reminderTimes.add(ReminderTime.of(this, alarmType, minutes));
-    }
-
 
     public List<Integer> getScheduleReminderTimes() {
         return reminderTimes.stream()
@@ -142,4 +125,19 @@ public class Setting extends BaseEntity {
         if (isReminderActive != null) this.isReminderActive = isReminderActive;
         if (calendarType != null) this.calendarType = calendarType;
     }
+
+    // 명시적 getter Converter때문에 사용(Lombok 우회)
+
+    public boolean isNotiEnabled() {
+        return this.isNotiEnabled;
+    }
+
+    public boolean isLocEnabled() {
+        return this.isLocEnabled;
+    }
+
+    public boolean isReminderActive() {
+        return this.isReminderActive;
+    }
+
 }

@@ -1,9 +1,9 @@
 package com.example.pace.domain.member.dto.response;
 
+import com.example.pace.domain.member.converter.SettingConverter;
 import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.entity.Setting;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.stream.Collectors;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,15 +15,15 @@ import java.util.List;
 @NoArgsConstructor
 
 @Schema(description = "사용자 설정 조회 응답 DTO")
-public class SettingResponse {
+public class SettingResponseDTO {
 
     private Long settingId;
 
-    private int earlyArrivalTime;
-    private boolean isNotiEnabled;
-    private boolean isLocEnabled;
+    private Integer earlyArrivalTime;
+    private Boolean isNotiEnabled;
+    private Boolean isLocEnabled;
 
-    private boolean isReminderActive;
+    private Boolean isReminderActive;
 
     private CalendarType calendarType;
 
@@ -33,16 +33,8 @@ public class SettingResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static SettingResponse from(Setting setting) {
-        return SettingResponse.builder()
-                .isNotiEnabled(setting.isNotiEnabled())
-                .isLocEnabled(setting.isLocEnabled())
-                .earlyArrivalTime(setting.getEarlyArrivalTime())
-                .isReminderActive(setting.isReminderActive())
-                .calendarType(setting.getCalendarType())
-                .scheduleReminderTimes(setting.getScheduleReminderTimes())
-                .departureReminderTimes(setting.getDepartureReminderTimes())
-                .build();
+    public static SettingResponseDTO from(Setting setting) {
+        return SettingConverter.toResponse(setting);
     }
 
     // PATCH 응답용 최소 DTO
@@ -52,7 +44,7 @@ public class SettingResponse {
         private Long settingId;
         private LocalDateTime updatedAt;
 
-        public static Simple from(SettingResponse response) {
+        public static Simple from(SettingResponseDTO response) {
             return Simple.builder()
                     .settingId(response.getSettingId())
                     .updatedAt(response.getUpdatedAt())

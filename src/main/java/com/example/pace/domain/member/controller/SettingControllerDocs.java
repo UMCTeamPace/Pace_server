@@ -1,7 +1,7 @@
 package com.example.pace.domain.member.controller;
 
-import com.example.pace.domain.member.dto.request.SettingUpdateRequest;
-import com.example.pace.domain.member.dto.response.SettingResponse;
+import com.example.pace.domain.member.dto.request.SettingUpdateRequestDTO;
+import com.example.pace.domain.member.dto.response.SettingResponseDTO;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -21,7 +21,7 @@ public interface SettingControllerDocs {
             description = "조회 성공",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = SettingResponse.class),
+                    schema = @Schema(implementation = SettingResponseDTO.class),
                     examples = @ExampleObject(
                             name = "성공 응답 예시",
                             value = """
@@ -38,7 +38,7 @@ public interface SettingControllerDocs {
                     )
             )
     )
-    ApiResponse<SettingResponse> getMySetting(@RequestParam Long memberId);
+    ApiResponse<SettingResponseDTO> getMySetting(@RequestParam Long memberId);
 
     @Operation(summary = "설정 수정", description = "알림 설정을 수정합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -46,7 +46,7 @@ public interface SettingControllerDocs {
             description = "수정 성공",
             content = @Content(
                     mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = SettingResponse.class),
+                    schema = @Schema(implementation = SettingResponseDTO.class),
                     examples = @ExampleObject(
                             name = "성공 응답 예시",
                             value = """
@@ -63,8 +63,8 @@ public interface SettingControllerDocs {
                     )
             )
     )
-    ApiResponse<SettingResponse> updateMySetting(
+    ApiResponse<SettingResponseDTO> updateMySetting(
             @RequestParam Long memberId,
-            @RequestBody SettingUpdateRequest request
+            @RequestBody SettingUpdateRequestDTO request
     );
 }

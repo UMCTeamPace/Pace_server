@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SettingUpdateRequest {
+public class SettingUpdateRequestDTO {
     // 미리도착추천시간(분)
     private Integer earlyArrivalTime;
 

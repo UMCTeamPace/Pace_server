@@ -1,11 +1,11 @@
 package com.example.pace.domain.member.controller;
-import com.example.pace.domain.member.dto.request.SettingUpdateRequest;
-import com.example.pace.domain.member.dto.response.SettingResponse;
+import com.example.pace.domain.member.dto.request.SettingUpdateRequestDTO;
+import com.example.pace.domain.member.dto.response.SettingResponseDTO;
 import com.example.pace.domain.member.exception.SettingSuccessCode;
 import com.example.pace.domain.member.service.SettingService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
+import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +19,7 @@ public class SettingController implements SettingControllerDocs{
 
     @GetMapping
     @Override
-    public ApiResponse<SettingResponse> getMySetting (@RequestParam Long memberId) {
+    public ApiResponse<SettingResponseDTO> getMySetting (@RequestParam Long memberId) {
         return ApiResponse.onSuccess(
                 SettingSuccessCode.SETTING_GET_OK,
                 settingService.getMySetting(memberId)
@@ -29,9 +29,9 @@ public class SettingController implements SettingControllerDocs{
 
     @Override
     @PatchMapping
-    public ApiResponse<SettingResponse> updateMySetting(
+    public ApiResponse<SettingResponseDTO> updateMySetting(
             @RequestParam Long memberId,
-            @org.springframework.web.bind.annotation.RequestBody SettingUpdateRequest request
+            @RequestBody SettingUpdateRequestDTO request
     ) {
         return ApiResponse.onSuccess(
             SettingSuccessCode.SETTING_UPDATE_OK,
