@@ -1,4 +1,6 @@
 package com.example.pace.domain.schedule.repository;
 
-public interface RouteRepository {
+import org.hibernate.sql.ast.tree.expression.JdbcParameter;
+
+public interface RouteRepository extends JdbcParameter {
 }
