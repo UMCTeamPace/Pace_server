@@ -24,10 +24,22 @@ public class ScheduleController implements ScheduleControllerDocs {
             @RequestParam Long memberId, //임시
             @RequestBody ScheduleReqDto requestDto
     ) {
-        Long scheduleId = scheduleService.createSchedule(memberId, requestDto);
-        ScheduleResDto responseDto = ScheduleResDto.of(scheduleId);
+        ScheduleResDto responseDto= scheduleService.createSchedule(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(GeneralSuccessCode.OK, responseDto));
     }
+
+    //일정 상세조회 API
+    @Override
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<ApiResponse<ScheduleResDto>> getSchedule(
+            @PathVariable Long scheduleId
+    ) {
+        ScheduleResDto responseDto = scheduleService.getSchedule(scheduleId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK,responseDto));
+    }
+
+
 }
