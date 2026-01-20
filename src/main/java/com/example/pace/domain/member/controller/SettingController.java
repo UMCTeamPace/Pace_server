@@ -5,7 +5,7 @@ import com.example.pace.domain.member.exception.SettingSuccessCode;
 import com.example.pace.domain.member.service.SettingService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.RequestBody;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
