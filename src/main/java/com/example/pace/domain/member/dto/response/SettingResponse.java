@@ -19,11 +19,11 @@ public class SettingResponse {
 
     private Long settingId;
 
-    private int earlyArrivalTime;
-    private boolean isNotiEnabled;
-    private boolean isLocEnabled;
+    private Integer earlyArrivalTime;
+    private Boolean isNotiEnabled;
+    private Boolean isLocEnabled;
 
-    private boolean isReminderActive;
+    private Boolean isReminderActive;
 
     private CalendarType calendarType;
 
