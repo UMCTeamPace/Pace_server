@@ -8,16 +8,16 @@ import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleResDtoConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto.ReminderDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
-import com.example.pace.domain.schedule.entity.Place;
 import com.example.pace.domain.schedule.entity.Reminder;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.entity.Schedule;
-import com.example.pace.domain.schedule.repository.PlaceRepository;
-import com.example.pace.domain.schedule.repository.ReminderRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,5 +74,23 @@ public class  ScheduleService {
                 .orElseThrow();
 
         return ScheduleResDtoConverter.toScheduleResDto(schedule);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResDto> getScheduleList(
+            Long memberId,
+            LocalDate startDate,
+            LocalDate maxSearchDate,
+            LocalDate lastDate,
+            Long lastId
+    ) {
+        LocalDate cursorDate = (lastDate != null) ? lastDate : startDate;
+        Long cursorId = (lastId != null) ? lastId : 0L;
+        Pageable pageable = PageRequest.of(0, 20);
+        List<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId,cursorDate, cursorId, maxSearchDate, pageable);
+
+        return schedules.stream()
+                .map(ScheduleResDtoConverter::toScheduleResDto)
+                .toList();
     }
 }
