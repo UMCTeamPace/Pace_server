@@ -47,7 +47,7 @@ services:
     networks:
       - pace-network
 
-# 서비스들이 서로 소통할 수 있는 가상 네트워크 정의
+# 서비스들이 서로 소통할 수 있는 가상 네  트워크 정의
 networks:
   pace-network:
     driver: bridge
