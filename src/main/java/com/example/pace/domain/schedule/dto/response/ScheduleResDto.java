@@ -20,6 +20,7 @@ public class ScheduleResDto {
     private PlaceDto place;
     private List<ReminderDto> reminders;
     private RouteDto route;
+
     @Getter
     @Builder
     @AllArgsConstructor
@@ -78,5 +79,4 @@ public class ScheduleResDto {
         private BigDecimal originLat;
         private BigDecimal originLng;
     }
-
 }

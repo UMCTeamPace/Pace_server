@@ -34,20 +34,20 @@ public class SavedPlace extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "place_name")
+    @Column(name = "place_name", nullable = false)
     private String placeName;
 
-    @Column(name = "place_lat")
+    @Column(name = "place_lat", nullable = false, precision = 18, scale = 10)
     private BigDecimal placeLat;
 
-    @Column(name = "place_lng")
+    @Column(name = "place_lng", nullable = false, precision = 18, scale = 10)
     private BigDecimal placeLng;
 
     @Column(name = "place_id")
     private String placeId; // 고유 장소 ID (예: 구글 플레이스 ID)
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
 }

@@ -1,15 +1,15 @@
 package com.example.pace.domain.schedule.dto.response.info;
 
 import com.example.pace.domain.schedule.enums.TransitType;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-
-@Getter
-@Builder
 public class TransitRouteDetailInfoResDTO {
-
-    public static class TransitRouteDetailInfoRes {
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    public static class RouteDetailInfoDTO {
         private TransitType transitType;
         private String lineName;
         private String lineColor;

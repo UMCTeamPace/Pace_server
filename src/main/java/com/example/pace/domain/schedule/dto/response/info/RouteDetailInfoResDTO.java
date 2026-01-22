@@ -1,13 +1,14 @@
 package com.example.pace.domain.schedule.dto.response.info;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Builder
 public class RouteDetailInfoResDTO {
-
-
+    @Getter
+    @Builder
+    @AllArgsConstructor
     public static class RouteDetailInfoRes {
         private Integer sequence;
         private Integer duration;
@@ -15,6 +16,5 @@ public class RouteDetailInfoResDTO {
 
         // 교통수단일 경우만 채워짐 (service)
         private TransitRouteDetailInfoResDTO transitDetail;
-
     }
 }
