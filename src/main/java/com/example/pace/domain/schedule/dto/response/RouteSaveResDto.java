@@ -1,6 +1,6 @@
 package com.example.pace.domain.schedule.dto.response;
 
-import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoDTO;
+import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,5 +11,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class RouteSaveResDto {
     private Long routeId;               // 저장된 경로 식별자
-    private List<RouteDetailInfoDTO> routes; // 경로 상세
+    private List<RouteDetailInfoResDTO> routes; // 경로 상세
 }

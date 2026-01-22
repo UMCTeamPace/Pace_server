@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -37,10 +38,10 @@ public class SavedPlace extends BaseEntity {
     private String placeName;
 
     @Column(name = "place_lat")
-    private Double placeLat;
+    private BigDecimal placeLat;
 
     @Column(name = "place_lng")
-    private Double placeLng;
+    private BigDecimal placeLng;
 
     @Column(name = "place_id")
     private String placeId; // 고유 장소 ID (예: 구글 플레이스 ID)
