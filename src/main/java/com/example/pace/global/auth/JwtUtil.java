@@ -45,24 +45,16 @@ public class JwtUtil {
     // 토큰이 유효한지 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token);
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
 
             return true;
         } catch (Exception e) {
             log.warn("Invalid JWT token: {}", token);
             return false;
         }
-    }
-
-    // 토큰에서 memberId를 추출
-    public Long getMemberIdFromToken(String token) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-
-        return Long.parseLong(claims.getSubject());
     }
 
     // 토큰에서 클레임을 추출하는 메서드
@@ -86,6 +78,6 @@ public class JwtUtil {
 
     // 신규 회원용 임시 토큰 생성
     public String createTempToken(Long memberId) {
-        return createToken(memberId, tempExpiration, Role.ROLE_IMCOMPLETE_USER);
+        return createToken(memberId, tempExpiration, Role.ROLE_INCOMPLETE_USER);
     }
 }
