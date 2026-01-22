@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +78,7 @@ public class  ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResDto> getScheduleList(
+    public Slice<ScheduleResDto> getScheduleList(
             Long memberId,
             LocalDate startDate,
             LocalDate maxSearchDate,
@@ -87,10 +88,8 @@ public class  ScheduleService {
         LocalDate cursorDate = (lastDate != null) ? lastDate : startDate;
         Long cursorId = (lastId != null) ? lastId : 0L;
         Pageable pageable = PageRequest.of(0, 20);
-        List<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId,cursorDate, cursorId, maxSearchDate, pageable);
+        Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId,cursorDate, cursorId, maxSearchDate, pageable);
 
-        return schedules.stream()
-                .map(ScheduleResDtoConverter::toScheduleResDto)
-                .toList();
+        return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
     }
 }

@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
-import java.util.List;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -26,7 +26,7 @@ public interface ScheduleControllerDocs {
             @PathVariable Long scheduleId);
 
     @Operation(summary = "일정 목록 조회")
-    ResponseEntity<ApiResponse<List<ScheduleResDto>>> getScheduleList(
+    ResponseEntity<ApiResponse<Slice<ScheduleResDto>>> getScheduleList(
             CustomUserDetails customUserDetails,
             LocalDate startDate,
             LocalDate maxSearchDate,

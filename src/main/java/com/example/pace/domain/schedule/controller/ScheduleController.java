@@ -7,9 +7,8 @@ import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
 import com.example.pace.global.auth.CustomUserDetails;
 import java.time.LocalDate;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,7 +50,7 @@ public class ScheduleController implements ScheduleControllerDocs {
     //일정 목록조회 API
     @Override
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ScheduleResDto>>> getScheduleList(
+    public ResponseEntity<ApiResponse<Slice<ScheduleResDto>>> getScheduleList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate,
@@ -60,7 +59,7 @@ public class ScheduleController implements ScheduleControllerDocs {
     ){
         Long memberId = customUserDetails.member().getId();
         LocalDate maxSearchDate = (endDate != null) ? endDate : LocalDate.of(9999, 12, 31);
-        List<ScheduleResDto> responseDto = scheduleService.getScheduleList(memberId, startDate, maxSearchDate, lastDate, lastId);
+        Slice<ScheduleResDto> responseDto = scheduleService.getScheduleList(memberId, startDate, maxSearchDate, lastDate, lastId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(GeneralSuccessCode.OK, responseDto));
