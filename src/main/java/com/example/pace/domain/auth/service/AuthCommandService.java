@@ -12,6 +12,8 @@ import com.example.pace.domain.member.exception.MemberErrorCode;
 import com.example.pace.domain.member.exception.MemberException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.global.auth.JwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +33,10 @@ public class AuthCommandService {
         String email = kakaoUserInfoResDTO.getKakaoAccount().getEmail();
         String socialId = kakaoUserInfoResDTO.getId().toString();
 
-        Optional<Member> memberOptional = memberRepository.findByEmailIgnoreStatus(email);
+        Optional<Member> memberOptional = memberRepository.findBySocialProviderAndSocialIdIgnoreStatus(
+                SocialProvider.KAKAO.name(),
+                socialId
+        );
 
         // 값이 있을 경우(기존 회원일 경우)
         if (memberOptional.isPresent()) {
@@ -53,7 +58,7 @@ public class AuthCommandService {
                     .socialId(socialId)
                     .email(email)
                     .nickname(kakaoUserInfoResDTO.getKakaoAccount().getProfile().getNickname())
-                    .role(Role.ROLE_IMCOMPLETE_USER)
+                    .role(Role.ROLE_INCOMPLETE_USER)
                     .socialProvider(SocialProvider.KAKAO)
                     .isActive(true)
                     .build();
@@ -76,7 +81,8 @@ public class AuthCommandService {
         }
 
         // 토큰에서 memberId 추출
-        Long memberId = jwtUtil.getMemberIdFromToken(refreshToken);
+        Claims claims = jwtUtil.getClaimsFromToken(refreshToken);
+        Long memberId = Long.parseLong(claims.getSubject());
 
         // 데이터베이스에서 memberId로 회원 조회
         Member member = memberRepository.findByIdIgnoreStatus(memberId)
@@ -95,5 +101,13 @@ public class AuthCommandService {
         member.updateRefreshToken(newRefreshToken);
 
         return AuthConverter.toExistingUserDTO(member, newAccessToken, newRefreshToken);
+    }
+
+    // 로그아웃 처리
+    public void logout(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+
+        member.updateRefreshToken(null);
     }
 }
