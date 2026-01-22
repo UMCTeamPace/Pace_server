@@ -2,7 +2,9 @@ package com.example.pace.domain.member.entity;
 
 import com.example.pace.domain.member.enums.Role;
 import com.example.pace.domain.member.enums.SocialProvider;
+import com.example.pace.domain.schedule.entity.Schedule;
 import com.example.pace.global.entity.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,11 +12,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -71,8 +75,17 @@ public class Member extends BaseEntity {
     private Boolean isActive = true;
 
     // 추후에 매핑 관계 반영 예정
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<Schedule> scheduleList = new ArrayList<>();
 
     public void updateRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    // schedule 관계 매핑
+    public void addSchedule(Schedule schedule) {
+        this.scheduleList.add(schedule);
+        schedule.setMember(this);
     }
 }
