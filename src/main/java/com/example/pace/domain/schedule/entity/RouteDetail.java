@@ -37,7 +37,7 @@ public class RouteDetail extends BaseEntity {
     private Route route;
 
     @Column(name = "sequence")
-    private int sequence; //경로 내 순서
+    private Integer sequence; //경로 내 순서
 
     @Column(name = "start_lat")
     private BigDecimal startLat; //경로 내 시작 장소 위도
@@ -56,10 +56,10 @@ public class RouteDetail extends BaseEntity {
     private TransitType transitType; //이동수단
 
     @Column(name = "duration")
-    private int duration; //해당 구간 소요 시간
+    private Integer duration; //해당 구간 소요 시간
 
     @Column(name = "distance")
-    private int distance; //해당 구간 이동 거리
+    private Integer distance; //해당 구간 이동 거리
 
     @Column(name = "description")
     private String description; //안내 문구
@@ -71,13 +71,12 @@ public class RouteDetail extends BaseEntity {
     private String lineColor; //노선 색상
 
     @Column(name = "stop_count")
-    private int stopCount; //정차역 개수
+    private Integer stopCount; //정차역 개수
 
     @Column(name = "departure_stop")
     private String departureStop; //승차역 정류장 이름
 
     @Column(name = "arrival_stop")
     private String arrivalStop; //하차역 정류장 이름
-
-
+    
 }

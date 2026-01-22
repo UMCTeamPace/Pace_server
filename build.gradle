@@ -55,6 +55,9 @@ dependencies {
     // WebClient
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
+    // Excel (Apache POI)
+    implementation 'org.apache.poi:poi-ooxml:5.4.0'
+
     // idk
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
