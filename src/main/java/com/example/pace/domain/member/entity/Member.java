@@ -10,6 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -26,6 +29,12 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "social_provider_id_unique",
+                columnNames = {"socialProvider", "socialId"}
+        )
+})
 @SQLDelete(sql = "UPDATE member SET is_active = false WHERE id = ?") // delete()시 hard delete 하는 것이 아닌 soft delete를 진행
 @SQLRestriction("is_active = true") // 조회시 isActive 필드가 true인 데이터만 조회
 public class Member extends BaseEntity {
@@ -37,17 +46,18 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String nickname;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "social_id", nullable = false)
     private String socialId; // 확장성을 위해 String 타입으로 필드 선언
 
+    @Column(name = "refresh_token")
     private String refreshToken;
 
     @NotBlank
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "social_provider", nullable = false)
     @Enumerated(EnumType.STRING)
     private SocialProvider socialProvider;
 
@@ -56,7 +66,7 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Role role = Role.ROLE_USER;
 
-    @Column(nullable = false)
+    @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean isActive = true;
 

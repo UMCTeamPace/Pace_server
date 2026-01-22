@@ -2,6 +2,7 @@ package com.example.pace.global.auth.filter;
 
 import com.example.pace.global.auth.CustomUserDetailsService;
 import com.example.pace.global.auth.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +39,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             token = authHeader.replace("Bearer ", "");
 
             try {
-                memberId = jwtUtil.getMemberIdFromToken(token);
+                Claims claims = jwtUtil.getClaimsFromToken(token);
+                memberId = Long.parseLong(claims.getSubject());
             } catch (Exception e) {
                 // 해당 예외는 JwtExceptionFilter에서 처리
                 logger.warn("잘못된 JWT token입니다: " + e.getMessage());

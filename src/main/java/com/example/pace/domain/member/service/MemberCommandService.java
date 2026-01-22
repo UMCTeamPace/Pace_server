@@ -1,4 +1,24 @@
 package com.example.pace.domain.member.service;
 
+import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.member.exception.MemberErrorCode;
+import com.example.pace.domain.member.exception.MemberException;
+import com.example.pace.domain.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
 public class MemberCommandService {
+    private final MemberRepository memberRepository;
+
+    // 회원 탈퇴 로직
+    public void withdrawalMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+        member.updateRefreshToken(null);
+        memberRepository.deleteById(member.getId());
+    }
 }
