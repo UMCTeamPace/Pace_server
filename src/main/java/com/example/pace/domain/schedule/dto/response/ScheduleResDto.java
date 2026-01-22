@@ -16,17 +16,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ScheduleResDto {
     private Long scheduleId;
-
-    private String title;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private LocalTime startTime;
-    private LocalTime endTime;
-    private String memo;
+    private ScheduleInfoDto scheduleInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;
     private RouteDto route;
-
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class ScheduleInfoDto {
+        private String title;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private LocalTime startTime;
+        private LocalTime endTime;
+        private String memo;
+    }
 
     @Getter
     @Builder

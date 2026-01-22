@@ -67,6 +67,7 @@ public class Member extends BaseEntity {
 
     // 추후에 매핑 관계 반영 예정
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Schedule> scheduleList = new ArrayList<>();
 
     public void updateRefreshToken(String refreshToken) {

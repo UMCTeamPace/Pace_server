@@ -4,18 +4,21 @@ import com.example.pace.domain.schedule.dto.response.ScheduleResDto.ReminderDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto.PlaceDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto.RouteDto;
+import com.example.pace.domain.schedule.dto.response.ScheduleResDto.ScheduleInfoDto;
 import com.example.pace.domain.schedule.entity.Schedule;
 
 public class ScheduleResDtoConverter {
     public static ScheduleResDto toScheduleResDto(Schedule schedule) {
         return ScheduleResDto.builder()
                 .scheduleId(schedule.getId())
-                .title(schedule.getTitle())
-                .startDate(schedule.getStartDate())
-                .endDate(schedule.getEndDate())
-                .startTime(schedule.getStartTime())
-                .endTime(schedule.getEndTime())
-                .memo(schedule.getMemo())
+                .scheduleInfo(ScheduleInfoDto.builder()
+                        .title(schedule.getTitle())
+                        .startDate(schedule.getStartDate())
+                        .endDate(schedule.getEndDate())
+                        .startTime(schedule.getStartTime())
+                        .endTime(schedule.getEndTime())
+                        .memo(schedule.getMemo())
+                        .build())
                 .place(schedule.getPlace() != null ?
                         PlaceDto.builder()
                                 .targetName(schedule.getPlace().getTargetName())
