@@ -12,7 +12,7 @@ public interface BusInfoRepository extends JpaRepository<BusInfo, Long> {
 
     // 특정 노선(lineName)에서 출발 순번과 도착 순번 사이의 정류장들을 조회 (순서대로)
     @Query("SELECT b FROM BusInfo b "
-            + "WHERE b.lineName = :lineName AND b.sequence > :startSeq AND b.sequence < :endSeq "
+            + "WHERE b.lineName = :lineName AND b.sequence >= :startSeq AND b.sequence <= :endSeq "
             + "ORDER BY b.sequence ASC")
     List<BusInfo> findIntermediateStops(
             @Param("lineName") String lineName,
@@ -21,7 +21,7 @@ public interface BusInfoRepository extends JpaRepository<BusInfo, Long> {
     );
 
     // 노선 번호와 정류장 이름으로 특정 정류장 정보 찾기 (순번을 알아내기 위해 사용)
-    List<BusInfo> findByLineNameAndStationName(String lineName, String stationName);
+    List<BusInfo> findByLineNameAndStationName(String lineName, String startStationName);
 
     // 데이터 중복 적재 방지를 위해 존재 여부 확인
     boolean existsByBusRouteId(String busRouteId);

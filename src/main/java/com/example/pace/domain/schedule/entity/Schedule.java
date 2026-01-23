@@ -59,6 +59,7 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     private Place place;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Reminder> reminders = new ArrayList<>();
 
 }
