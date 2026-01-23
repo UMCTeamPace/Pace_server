@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
@@ -60,6 +61,7 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     private Place place;
 
     @Builder.Default
+    @BatchSize(size = 100)
     @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reminder> reminderList = new ArrayList<>();
 
