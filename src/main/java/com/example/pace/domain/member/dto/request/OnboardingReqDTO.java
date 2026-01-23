@@ -2,6 +2,7 @@ package com.example.pace.domain.member.dto.request;
 
 import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.enums.CalendarType;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ public record OnboardingReqDTO (
 
         @NotNull CalendarType calendarType,                           // enum이면 enum으로 바꾸기
 
+        @Valid
         List<AlarmConfig> alarms
 ){
     public record AlarmConfig(

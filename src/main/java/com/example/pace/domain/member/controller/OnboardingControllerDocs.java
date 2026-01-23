@@ -3,6 +3,7 @@ package com.example.pace.domain.member.controller;
 import com.example.pace.domain.member.dto.request.OnboardingReqDTO;
 import com.example.pace.domain.member.dto.response.OnboardingResDTO;
 import com.example.pace.global.apiPayload.ApiResponse;
+import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Onboarding", description = "온보딩 API")
@@ -38,7 +40,7 @@ public interface OnboardingControllerDocs {
             )
     )
     ApiResponse<OnboardingResDTO> upsertOnboarding(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody OnboardingReqDTO request
     );
 }

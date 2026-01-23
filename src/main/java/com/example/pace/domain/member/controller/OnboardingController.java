@@ -5,8 +5,10 @@ import com.example.pace.domain.member.dto.response.OnboardingResDTO;
 import com.example.pace.domain.member.exception.OnboardingSuccessCode;
 import com.example.pace.domain.member.service.OnboardingService;
 import com.example.pace.global.apiPayload.ApiResponse;
+import com.example.pace.global.auth.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,11 +19,13 @@ public class OnboardingController implements OnboardingControllerDocs {
     private final OnboardingService onboardingService;
 
     @Override
-    @PutMapping("/onboarding")
+    @PostMapping("/onboarding")
     public ApiResponse<OnboardingResDTO> upsertOnboarding(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @Valid @RequestBody OnboardingReqDTO request
     ) {
+        Long memberId = customUserDetails.member().getId();
+
         OnboardingResDTO result = onboardingService.upsertOnboarding(memberId, request);
         return ApiResponse.onSuccess(OnboardingSuccessCode.ONBOARDING_SUCCESS, result);
     }
