@@ -55,24 +55,20 @@ public class Route extends BaseEntity {
     private BigDecimal destLng; //목적지 경도
 
     @Column(name = "total_time")
-    private int totalTime; //총 소요 시간
+    private Integer totalTime; //총 소요 시간
 
     @Column(name = "total_distance")
-    private int totalDistance; //총 이동 거리(m)
+    private Integer totalDistance; //총 이동 거리(m)
 
     @Column(name = "is_saved")
-    private boolean isSaved; //저장 여부
+    private Boolean isSaved; //저장 여부
 
-    //Fk,연관관계 추후 진행
-    // FK
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<RouteDetail> routeDetails = new ArrayList<>();
-
 
 }
