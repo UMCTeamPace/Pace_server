@@ -20,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 @Entity
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -55,11 +57,21 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Route route;
 
-    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "schedule",cascade = CascadeType.ALL, orphanRemoval = true)
     private Place place;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
-    private List<Reminder> reminders = new ArrayList<>();
+    @BatchSize(size = 100)
+    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reminder> reminderList = new ArrayList<>();
 
+    public void addReminder(Reminder reminder) {
+        this.reminderList.add(reminder);
+        reminder.setSchedule(this);
+    }
+
+    public void addPlace(Place place) {
+        this.place = place;
+        place.setSchedule(this);
+    }
 }
