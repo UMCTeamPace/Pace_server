@@ -104,6 +104,11 @@ public class BusDataLoader implements CommandLineRunner {
                     log.warn("{} 번째 행 파싱 에러: {}", row.getRowNum(), e.getMessage());
                 }
             }
+
+            if (!busInfoList.isEmpty()) {
+                busInfoRepository.saveAll(busInfoList);
+                log.info("마지막 남은 버스 노선 데이터 {}개를 저장하였습니다.", rowCount);
+            }
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
