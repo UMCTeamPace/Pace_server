@@ -2,10 +2,7 @@ package com.example.pace.domain.transit.service;
 
 import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.repository.BusInfoRepository;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

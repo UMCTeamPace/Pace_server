@@ -1,7 +1,7 @@
 package com.example.pace.domain.schedule.entity;
 
 import com.example.pace.domain.schedule.enums.ReminderType;
-import com.example.pace.global.BaseEntity;
+import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.*;
@@ -15,7 +15,8 @@ import lombok.*;
 @Table(name = "reminder")
 public class Reminder extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

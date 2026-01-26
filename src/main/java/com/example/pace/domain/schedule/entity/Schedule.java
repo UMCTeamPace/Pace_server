@@ -1,7 +1,7 @@
 package com.example.pace.domain.schedule.entity;
 
 import com.example.pace.domain.member.entity.Member;
-import com.example.pace.global.BaseEntity;
+import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,12 +57,12 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Route route;
 
-    @OneToOne(mappedBy = "schedule",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Place place;
 
     @Builder.Default
     @BatchSize(size = 100)
-    @OneToMany(mappedBy = "schedule",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reminder> reminderList = new ArrayList<>();
 
     public void addReminder(Reminder reminder) {
