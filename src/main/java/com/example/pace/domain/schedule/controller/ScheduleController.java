@@ -65,4 +65,18 @@ public class ScheduleController implements ScheduleControllerDocs {
                 .body(ApiResponse.onSuccess(GeneralSuccessCode.OK, responseDto));
 
     }
+
+    //일정 삭제 API
+    @Override
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<ApiResponse<String>> deleteSchedule(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @PathVariable Long scheduleId
+    ){
+        Long memberId = customUserDetails.member().getId();
+        scheduleService.deleteSchedule(memberId, scheduleId);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK,"일정이 삭제되었습니다"));
+    }
 }

@@ -12,6 +12,8 @@ import com.example.pace.domain.schedule.entity.Reminder;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.entity.Schedule;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
+import com.example.pace.global.apiPayload.code.GeneralErrorCode;
+import com.example.pace.global.apiPayload.exception.GeneralException;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,5 +93,15 @@ public class  ScheduleService {
         Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId,cursorDate, cursorId, maxSearchDate, pageable);
 
         return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
+    }
+
+    @Transactional
+    public void deleteSchedule(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                        .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
+        if (!schedule.getMember().getId().equals(memberId)) {
+            throw new GeneralException(GeneralErrorCode.FORBIDDEN);
+        }
+        scheduleRepository.deleteById(scheduleId);
     }
 }
