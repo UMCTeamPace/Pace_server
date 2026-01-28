@@ -20,6 +20,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -78,7 +79,7 @@ public class Setting extends BaseEntity {
     public static com.example.pace.domain.member.entity.Setting defaultOf(Member member) {
         return com.example.pace.domain.member.entity.Setting.builder()
                 .member(member)
-                .isNotiEnabled(true)      // 권한 허용(또는 허용 유무)
+                .isNotiEnabled(false)      // 권한 허용(또는 허용 유무)
                 .isLocEnabled(false)
                 .earlyArrivalTime(20)
                 .isReminderActive(true)
@@ -89,12 +90,17 @@ public class Setting extends BaseEntity {
     public void replaceReminderTimes(AlarmType alarmType, List<Integer> minutesList) {
         this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
 
-        if (minutesList == null) return;
+        if (minutesList == null || minutesList.isEmpty()) { return; }
 
-        for (Integer minutes : minutesList) {
-            if (minutes == null) continue;
-            reminderTimes.add(SettingConverter.toEntity(this, alarmType, minutes));
-        }
+        minutesList.stream()
+                .filter(Objects::nonNull)
+                .filter(m -> m > 0)
+                .distinct()
+                .forEach(minutes ->
+                        this.reminderTimes.add(
+                                SettingConverter.toEntity(this, alarmType, minutes)
+                        )
+                );
     }
 
     public List<Integer> getScheduleReminderTimes() {
@@ -103,7 +109,7 @@ public class Setting extends BaseEntity {
                 .map(ReminderTime::getMinutes)
                 .toList();
     }
-
+    // 명시적 getter Converter때문에 사용(Lombok 우회)
     public List<Integer> getDepartureReminderTimes() {
         return reminderTimes.stream()
                 .filter(rt -> rt.getAlarmType() == AlarmType.DEPARTURE)
