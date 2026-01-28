@@ -12,6 +12,11 @@ public enum MemberSuccessCode implements BaseSuccessCode {
             "성공적으로 로그인에 성공하였습니다.",
             "MEMBER200_1"
     ),
+    SAVED_PLACE_CREATE_OK(
+            HttpStatus.OK,
+            "장소가 성공적으로 저장되었습니다.",
+            "MEMBER201_1"
+    ),
     ;
 
     private final HttpStatus httpStatus;

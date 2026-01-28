@@ -1,4 +1,9 @@
 package com.example.pace.domain.member.repository;
 
-public interface SavedPlaceRepository {
+import com.example.pace.domain.member.entity.SavedPlace;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface SavedPlaceRepository extends JpaRepository<SavedPlace, Long>, SavedPlaceRepositoryCustom {
 }
