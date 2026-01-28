@@ -97,11 +97,8 @@ public class  ScheduleService {
 
     @Transactional
     public void deleteSchedule(Long memberId, Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
                         .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
-        if (!schedule.getMember().getId().equals(memberId)) {
-            throw new GeneralException(GeneralErrorCode.FORBIDDEN);
-        }
         scheduleRepository.deleteById(scheduleId);
     }
 }
