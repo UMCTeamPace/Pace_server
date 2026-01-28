@@ -33,4 +33,10 @@ public interface ScheduleControllerDocs {
             LocalDate lastDate,
             Long lastId
     );
+
+    @Operation(summary = "일정 삭제")
+    ResponseEntity<ApiResponse<String>> deleteSchedule(
+            CustomUserDetails customUserDetails,
+            @PathVariable Long scheduleId
+    );
 }
