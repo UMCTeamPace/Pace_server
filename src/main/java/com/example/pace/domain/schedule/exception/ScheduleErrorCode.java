@@ -1,4 +1,17 @@
 package com.example.pace.domain.schedule.exception;
 
-public enum ScheduleErrorCode {
+import com.example.pace.global.apiPayload.code.BaseErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.springframework.http.HttpStatus;
+
+@AllArgsConstructor
+@Getter
+public enum ScheduleErrorCode implements BaseErrorCode {
+
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "일정을 찾을 수 없습니다.", "SCHEDULE404_1");
+
+    private final HttpStatus httpStatus;
+    private final String message;
+    private final String code;
 }
