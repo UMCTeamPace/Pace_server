@@ -15,7 +15,7 @@ spring:
 
 # 테스트용 더미 시크릿 키 (운영 환경과 무관)
 jwt:
-  secret: testest
+  secret: dGhpcy1pcy1hLWR1bW15LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXM=
   access-token:
     expiration-time: 3600000
   refresh-token:

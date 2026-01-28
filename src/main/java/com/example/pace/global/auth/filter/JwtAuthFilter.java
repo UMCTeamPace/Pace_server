@@ -41,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             try {
                 Claims claims = jwtUtil.getClaimsFromToken(token);
 
-                String category = claims.get("category").toString();
+                String category = claims.get("category", String.class);
 
                 if (category == null || category.equals("refresh")) {
                     logger.warn("access token이 아닌 토큰으로 인증을 시도하셨습니다.");

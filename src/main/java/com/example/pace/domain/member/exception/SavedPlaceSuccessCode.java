@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum SavedPlaceSuccessCode implements BaseSuccessCode {
     SAVED_PLACE_CREATE_OK(
-            HttpStatus.OK,
+            HttpStatus.CREATED,
             "장소가 성공적으로 저장되었습니다.",
             "PLACE201_1"
     ),

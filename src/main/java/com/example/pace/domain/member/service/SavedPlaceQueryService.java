@@ -18,15 +18,12 @@ public class SavedPlaceQueryService {
     private final SavedPlaceRepository savedPlaceRepository;
 
     public SavedPlaceResDTO.PlaceListDTO getSavedPlaceList(Long memberId, String groupName) {
-        if (groupName == null) {
+        if (groupName.isBlank()) {
             throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_NOT_EXISTS_GROUP_NAME);
         }
 
         List<SavedPlace> placeList = savedPlaceRepository.findAllPlaceByMemberAndGroupName(memberId, groupName);
 
-        if (placeList.isEmpty()) {
-            throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_NOT_FOUND);
-        }
         return SavedPlaceConverter.toPlaceListDTO(placeList);
     }
 }

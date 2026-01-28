@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 public enum SavedPlaceErrorCode implements BaseErrorCode {
     SAVED_PLACE_ALREADY_EXISTS(HttpStatus.BAD_REQUEST,
             "이미 해당 그룹 내에 동일한 장소가 있습니다.",
-            "MEMBER400_1"),
+            "PLACE400_1"),
     SAVED_PLACE_NOT_EXISTS_GROUP_NAME(
             HttpStatus.BAD_REQUEST,
             "그룹명이 없습니다.",

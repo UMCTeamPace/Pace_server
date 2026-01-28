@@ -1,11 +1,13 @@
 package com.example.pace.global.auth;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 // 개발자 전용 인증 토큰 발급기(?)
+@Disabled
 @SpringBootTest
 public class JwtTokenGeneratorTest {
     @Autowired

@@ -59,7 +59,7 @@ public interface SavedPlaceControllerDocs {
                     responseCode = "400",
                     description = "잘못된 그룹명 요청",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_2\", \"message\":\"그룹명이 필요합니다.\", \"result\":null}")
+                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_2\", \"message\":\"그룹명이 없습니다.\", \"result\":null}")
                     )
             )
     })
