@@ -2,7 +2,6 @@ package com.example.pace.domain.transit.service;
 
 import com.example.pace.domain.transit.dto.SubwayStationDTO;
 import com.example.pace.domain.transit.loader.SubwayDataLoader;
-import com.example.pace.domain.transit.vo.SubwayGraphNode;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
