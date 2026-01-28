@@ -12,12 +12,13 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Onboarding", description = "온보딩 API")
 public interface OnboardingControllerDocs {
 
     @Operation(summary = "온보딩 설정 저장", description = "온보딩에서 입력한 값을 사용자 설정으로 저장합니다.")
+
+
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "온보딩 설정 저장 성공",
