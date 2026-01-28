@@ -45,4 +45,26 @@ public interface SavedPlaceControllerDocs {
             @Parameter(hidden = true) CustomUserDetails userDetails,
             @RequestBody SavedPlaceReqDTO.SavedPlaceDTO request
     );
+
+    @Operation(summary = "저장된 장소 조회 API", description = "사용자가 저장한 장소 목록을 특정 그룹별로 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "장소 조회 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_1\", \"message\":\"저장된 장소 조회 성공\", \"result\":{\"placeDTOList\":[{\"savedPlaceId\":\"1\", \"groupName\":\"맛집\", \"placeName\":\"스타벅스 강남역점\", \"placeId\":\"21160611\", \"createdAt\":\"2024-01-21 16:00\"}], \"count\":1}}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 그룹명 요청",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_2\", \"message\":\"그룹명이 필요합니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @Parameter(description = "조회할 그룹 이름", required = true) String groupName
+    );
 }

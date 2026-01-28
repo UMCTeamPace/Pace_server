@@ -16,11 +16,13 @@ public class JwtProperties {
     // 토큰을 발급하는 주체를 명시하여, 우리 서버에서 만든 토큰이 맞는지 확인
     private String issuer;
     // access-token 섹션에 적힌 값을 저장하는 필드
-    private AccessToken accessToken;
+    private AccessToken accessToken = new AccessToken();
     // refresh-token
-    private RefreshToken refreshToken;
+    private RefreshToken refreshToken = new RefreshToken();
     // temp-token
-    private TempToken tempToken;
+    private TempToken tempToken = new TempToken();
+    // dev-token
+    private DevToken devToken = new DevToken();
 
     // 인스턴스 없이도 내부 객체를 만들 수 있어야 하므로 static으로 선언
     @Getter
@@ -38,6 +40,12 @@ public class JwtProperties {
     @Getter
     @Setter
     public static class TempToken {
+        private long expirationTime;
+    }
+
+    @Getter
+    @Setter
+    public static class DevToken {
         private long expirationTime;
     }
 }

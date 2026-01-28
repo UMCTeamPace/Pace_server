@@ -7,6 +7,8 @@ import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.entity.SavedPlace;
 import com.example.pace.domain.member.exception.MemberErrorCode;
 import com.example.pace.domain.member.exception.MemberException;
+import com.example.pace.domain.member.exception.SavedPlaceErrorCode;
+import com.example.pace.domain.member.exception.SavedPlaceException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.member.repository.SavedPlaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +28,7 @@ public class SavedPlaceCommandService {
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         if (savedPlaceRepository.isPlaceSavedInGroup(memberId, request.getPlaceId(), request.getGroupName())) {
-            throw new MemberException(MemberErrorCode.SAVED_PLACE_ALREADY_EXISTS);
+            throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_ALREADY_EXISTS);
         }
 
         SavedPlace savedPlace = SavedPlaceConverter.toEntity(request, member);

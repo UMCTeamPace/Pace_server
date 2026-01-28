@@ -40,6 +40,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             try {
                 Claims claims = jwtUtil.getClaimsFromToken(token);
+
+                String category = claims.get("category").toString();
+
+                if (category == null || category.equals("refresh")) {
+                    logger.warn("access token이 아닌 토큰으로 인증을 시도하셨습니다.");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
                 memberId = Long.parseLong(claims.getSubject());
             } catch (Exception e) {
                 // 해당 예외는 JwtExceptionFilter에서 처리

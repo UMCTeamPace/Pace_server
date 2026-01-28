@@ -15,13 +15,15 @@ spring:
 
 # 테스트용 더미 시크릿 키 (운영 환경과 무관)
 jwt:
-  secret: dGhpcy1pcy1hLWR1bW15LXNlY3JldC1rZXktZm9yLXRlc3RpbmctcHVycG9zZXM=
+  secret: testest
   access-token:
     expiration-time: 3600000
   refresh-token:
     expiration-time: 1209600000
   temp-token:
     expiration-time: 600000
+  dev-token:
+    expiration-time: 1209600000
   issuer: pace-server-test
 
 kakao:
