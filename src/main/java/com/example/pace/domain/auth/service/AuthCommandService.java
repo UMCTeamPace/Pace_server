@@ -78,8 +78,14 @@ public class AuthCommandService {
             throw new AuthException(AuthErrorCode.TOKEN_INVALID);
         }
 
-        // 토큰에서 memberId 추출
+        // 토큰에서 클레임 정보 추출
         Claims claims = jwtUtil.getClaimsFromToken(refreshToken);
+        String category = claims.get("category", String.class);
+
+        if (category == null || !category.equals("refresh")) {
+            throw new AuthException(AuthErrorCode.TOKEN_INVALID);
+        }
+
         Long memberId = Long.parseLong(claims.getSubject());
 
         Member member = memberRepository.findById(memberId)

@@ -5,6 +5,7 @@ import com.example.pace.domain.member.dto.response.SavedPlaceResDTO;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.entity.SavedPlace;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class SavedPlaceConverter {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -27,6 +28,16 @@ public class SavedPlaceConverter {
                 .groupName(savedPlace.getGroupName())
                 .placeName(savedPlace.getPlaceName())
                 .createdAt(savedPlace.getCreatedAt().format(formatter))
+                .build();
+    }
+
+    public static SavedPlaceResDTO.PlaceListDTO toPlaceListDTO(List<SavedPlace> savedPlaceList) {
+        List<SavedPlaceResDTO.PlaceDTO> placeDTOList = savedPlaceList.stream()
+                .map(SavedPlaceConverter::toPlaceDTO).toList();
+
+        return SavedPlaceResDTO.PlaceListDTO.builder()
+                .placeDTOList(placeDTOList)
+                .count(savedPlaceList.size())
                 .build();
     }
 }
