@@ -11,15 +11,15 @@ import java.util.List;
 public record OnboardingReqDTO (
         @NotNull Boolean isReminderActive,
 
-        @Min(0) @Max(240) Integer earlyArrivalTime,   // 정책에 맞게 상한 조절
+        @Min(0) @Max(60) Integer earlyArrivalTime,   // 정책에 맞게 1시간으로 상한 조절
 
-        @NotNull CalendarType calendarType,                           // enum이면 enum으로 바꾸기
+        @NotNull CalendarType calendarType,  // enum이면 enum으로 바꾸기
 
         @Valid
         List<AlarmConfig> alarms
 ){
     public record AlarmConfig(
             @NotNull AlarmType type,
-            List<@Min(1) @Max(1440) Integer> minutes    // 1~1440분 예시
+            List<@NotNull @Min(1) @Max(1440) Integer> minutes    // 실제 유효성은 service에서 alarmtype별 whitelist로 검증
     ) {}
 }
