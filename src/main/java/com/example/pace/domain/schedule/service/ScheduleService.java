@@ -65,23 +65,22 @@ public class  ScheduleService {
          * if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
          * }
          */
-        // 경로 저장
-//        if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-//
-//            // 1. Route 생성
-//            Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
-//
-//            // 2. 양방향 연관관계 세팅
-//            schedule.setRoute(route);   // 내부에서 route.setSchedule(this) 세팅
-//
-//            // 3. RouteDetail 세팅
+         //경로 저장
+        if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
+
+            Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
+
+            // 양방향 세팅
+            schedule.addRoute(route);
+
+            // RouteDetail 세팅
 //            if (request.getRoute().getRouteDetails() != null) {
 //                request.getRoute().getRouteDetails().forEach(detailDto -> {
 //                    RouteDetail detail = ScheduleReqDtoConverter.toRouteDetail(detailDto);
-//                    route.addRouteDetail(detail); // detail.setRoute(this) 포함
+//                    route.addRouteDetail(detail);
 //                });
 //            }
-//        }
+        }
 
 
         Schedule savedSchedule = scheduleRepository.save(schedule);

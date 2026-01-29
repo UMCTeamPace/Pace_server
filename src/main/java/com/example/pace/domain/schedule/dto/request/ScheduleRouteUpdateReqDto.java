@@ -27,7 +27,7 @@ public class ScheduleRouteUpdateReqDto {
     private OriginDto origin;
     private DestDto dest;
 
-    private List<RouteDetailDto> route;
+    private List<RouteDetailDto> routeDetails;
 
     @Getter
     @Builder

@@ -11,56 +11,40 @@ import java.util.List;
 
 public class ScheduleRouteUpdateReqDtoConverter {
 
-    public static Route toRoute(ScheduleRouteUpdateReqDto req, Schedule schedule) {
+    public static Route toRoute(ScheduleRouteUpdateReqDto req) {
         return Route.builder()
                 .originName(req.getOrigin().getOriginName())
-                .originLat(toBigDecimal(req.getOrigin().getOriginLat()))
-                .originLng(toBigDecimal(req.getOrigin().getOriginLng()))
+                .originLat(req.getOrigin().getOriginLat() != null
+                        ? BigDecimal.valueOf(req.getOrigin().getOriginLat()) : null)
+                .originLng(req.getOrigin().getOriginLng() != null
+                        ? BigDecimal.valueOf(req.getOrigin().getOriginLng()) : null)
                 .destName(req.getDest().getDestName())
-                .destLat(toBigDecimal(req.getDest().getDestLat()))
-                .destLng(toBigDecimal(req.getDest().getDestLng()))
+                .destLat(req.getDest().getDestLat() != null
+                        ? BigDecimal.valueOf(req.getDest().getDestLat()) : null)
+                .destLng(req.getDest().getDestLng() != null
+                        ? BigDecimal.valueOf(req.getDest().getDestLng()) : null)
                 .totalTime(req.getTotalTime())
                 .totalDistance(req.getTotalDistance())
                 .isSaved(false)
-                .schedule(schedule)
-                .routeDetails(new ArrayList<>())
                 .build();
     }
 
-    //route(step) 리스트 -> RouteDetail 리스트
-
-    public static List<RouteDetail> toRouteDetails(
-            Route route,
-            List<ScheduleRouteUpdateReqDto.RouteDetailDto> dtos) {
-
-        if (dtos == null || dtos.isEmpty()) return List.of();
-
-        List<RouteDetail> details = new ArrayList<>();
-        for (ScheduleRouteUpdateReqDto.RouteDetailDto d : dtos) {
-            RouteDetail detail = RouteDetail.builder()
-                    .route(route)
-                    .sequence(d.getSequence())
-                    .startLat(toBigDecimal(d.getStartLat()))
-                    .startLng(toBigDecimal(d.getStartLng()))
-                    .endLat(toBigDecimal(d.getEndLat()))
-                    .endLng(toBigDecimal(d.getEndLng()))
-                    .transitType(d.getTransitType())
-                    .duration(d.getDuration())
-                    .distance(d.getDistance())
-                    .description(d.getDescription())
-                    .lineName(d.getLineName())
-                    .lineColor(d.getLineColor())
-                    .stopCount(d.getStopCount())
-                    .departureStop(d.getDepartureStop())
-                    .arrivalStop(d.getArrivalStop())
-                    .build();
-
-            details.add(detail);
-        }
-        return details;
-    }
-
-    private static BigDecimal toBigDecimal(Double value) {
-        return value == null ? null : BigDecimal.valueOf(value);
+    public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailDto dto) {
+        return RouteDetail.builder()
+                .sequence(dto.getSequence())
+                .duration(dto.getDuration())
+                .distance(dto.getDistance())
+                .description(dto.getDescription())
+                .transitType(dto.getTransitType())
+                .lineName(dto.getLineName())
+                .lineColor(dto.getLineColor())
+                .stopCount(dto.getStopCount())
+                .departureStop(dto.getDepartureStop())
+                .arrivalStop(dto.getArrivalStop())
+                .startLat(dto.getStartLat() != null ? BigDecimal.valueOf(dto.getStartLat()) : null)
+                .startLng(dto.getStartLng() != null ? BigDecimal.valueOf(dto.getStartLng()) : null)
+                .endLat(dto.getEndLat() != null ? BigDecimal.valueOf(dto.getEndLat()) : null)
+                .endLng(dto.getEndLng() != null ? BigDecimal.valueOf(dto.getEndLng()) : null)
+                .build();
     }
 }

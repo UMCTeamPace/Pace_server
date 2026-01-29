@@ -24,33 +24,39 @@ public class ScheduleRouteUpdateService {
     private final RouteRepository routeRepository;
 
     @Transactional
-    public ScheduleRouteUpdateResDto updateScheduleRoute(
-            Long memberId,
-            Long scheduleId,
-            ScheduleRouteUpdateReqDto req
-    ) {
-        // memberId AND 조건으로 조회
-        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND.getMessage()));
+    public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId, ScheduleRouteUpdateReqDto req) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow();
 
-        // 기존 route 제거 (기존 route + detail 자동)
-        if (schedule.getRoute() != null) {
-            schedule.setRoute(null);
+        if (!schedule.getMember().getId().equals(memberId)) {
+            throw new ScheduleException(ScheduleErrorCode.SCHEDULE_FORBIDDEN.getMessage());
+        }
+        // 0) 기존 route 제거
+        Route oldRoute = schedule.getRoute();
+        if (oldRoute != null) {
+            schedule.setRoute(null);          // 연관 끊고
+            routeRepository.delete(oldRoute); // 기존 route 삭제
+            routeRepository.flush();          // 즉시 DB 반영
         }
 
-        // 새 route 생성
-        Route newRoute = ScheduleRouteUpdateReqDtoConverter.toRoute(req, schedule);
+        // 1) Route 변환
+        Route newRoute = ScheduleRouteUpdateReqDtoConverter.toRoute(req);
 
-        // route details 생성 + route랑 연결
-        List<RouteDetail> details = ScheduleRouteUpdateReqDtoConverter.toRouteDetails(newRoute, req.getRoute());
-        newRoute.getRouteDetails().addAll(details);
+        // 2) Schedule - Route 연결
+        schedule.addRoute(newRoute);
 
-        // schedule에 연결
-        schedule.setRoute(newRoute);
+        // 3) RouteDetail 변환/연결
+        if (req.getRouteDetails() != null) {
+            for (ScheduleRouteUpdateReqDto.RouteDetailDto dto : req.getRouteDetails()) {
+                RouteDetail detail =
+                        ScheduleRouteUpdateReqDtoConverter.toRouteDetail(dto);
+                newRoute.addRouteDetail(detail);
+            }
+        }
 
-        // 저장
-        routeRepository.save(newRoute);
+        scheduleRepository.save(schedule);
 
         return ScheduleRouteUpdateResDto.from(schedule);
     }
+
 }
