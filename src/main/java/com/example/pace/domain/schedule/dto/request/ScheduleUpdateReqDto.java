@@ -19,6 +19,7 @@ public class ScheduleUpdateReqDto {
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
+    private Boolean isPathIncluded;
     private RepeatDto repeatInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;

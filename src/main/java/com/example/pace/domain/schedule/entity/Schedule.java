@@ -1,6 +1,8 @@
 package com.example.pace.domain.schedule.entity;
 
 import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
@@ -90,5 +92,26 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         if (dto.getStartTime() != null) this.startTime = dto.getStartTime();
         if (dto.getEndTime() != null) this.endTime = dto.getEndTime();
         if (dto.getIsAllDay() != null) this.isAllDay = dto.getIsAllDay();
+        if (dto.getIsPathIncluded() != null) this.isPathIncluded = dto.getIsPathIncluded();
     }
+
+    public void updateDetailedInfo(ScheduleUpdateReqDto dto) {
+        this.updateGeneralInfo(dto);
+
+        if (dto.getPlace() != null) {
+            Place newPlace = PlaceReqDtoConverter.toPlace(dto.getPlace());
+            // 새 객체로 교체
+            this.addPlace(newPlace);
+        }
+
+        // 알림 업데이트
+        if (dto.getReminders() != null) {
+            this.reminderList.clear();
+            dto.getReminders().forEach(reminderDto ->
+                    this.addReminder(ReminderReqDtoConverter.toReminder(reminderDto))
+            );
+        }
+    }
+
+
 }
