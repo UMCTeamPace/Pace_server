@@ -40,7 +40,7 @@ public interface PlaceGroupControllerDocs {
                     )
             )
     })
-    ResponseEntity<ApiResponse<PlaceGroupResDTO.PlaceGroupDTO>> createPlaceGroup(
+    ApiResponse<PlaceGroupResDTO.PlaceGroupDTO> createPlaceGroup(
             @Parameter(hidden = true) CustomUserDetails userDetails,
             @RequestBody PlaceGroupReqDTO.SaveGroupReqDTO request
     );
