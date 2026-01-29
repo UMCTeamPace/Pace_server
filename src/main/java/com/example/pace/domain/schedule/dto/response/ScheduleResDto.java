@@ -27,6 +27,7 @@ public class ScheduleResDto {
     @NoArgsConstructor
     public static class ScheduleInfoDto {
         private String title;
+        private Boolean isAllDay;
         private LocalDate startDate;
         private LocalDate endDate;
         private LocalTime startTime;

@@ -2,6 +2,7 @@ package com.example.pace.domain.schedule.controller;
 
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
+import com.example.pace.domain.schedule.exception.ScheduleSuccessCode;
 import com.example.pace.domain.schedule.service.ScheduleService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
-public class ScheduleController implements ScheduleControllerDocs {
+public class          ScheduleController implements ScheduleControllerDocs {
 
     private final ScheduleService scheduleService;
 
@@ -33,7 +34,7 @@ public class ScheduleController implements ScheduleControllerDocs {
         ScheduleResDto responseDto= scheduleService.createSchedule(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK, responseDto));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_CREATE_OK, responseDto));
     }
 
     //일정 상세조회 API
@@ -44,7 +45,7 @@ public class ScheduleController implements ScheduleControllerDocs {
     ) {
         ScheduleResDto responseDto = scheduleService.getSchedule(scheduleId);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK,responseDto));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_GET_OK, responseDto));
     }
 
     //일정 목록조회 API
@@ -62,7 +63,7 @@ public class ScheduleController implements ScheduleControllerDocs {
         Slice<ScheduleResDto> responseDto = scheduleService.getScheduleList(memberId, startDate, maxSearchDate, lastDate, lastId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK, responseDto));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_GET_OK, responseDto));
 
     }
 
@@ -77,6 +78,6 @@ public class ScheduleController implements ScheduleControllerDocs {
         scheduleService.deleteSchedule(memberId, scheduleId);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(GeneralSuccessCode.OK,"일정이 삭제되었습니다"));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_DELETE_OK,null));
     }
 }

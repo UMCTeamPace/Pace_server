@@ -41,11 +41,18 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Column(nullable = false)
     private String title;
-
+    @Column(nullable = false)
+    private Boolean isAllDay;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
+    private Boolean isRepeat;
+    private String repeatGroupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "repeat_rule_id")
+    private RepeatRule repeatRule;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
