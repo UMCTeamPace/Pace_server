@@ -23,22 +23,4 @@ public class ScheduleRouteUpdateResDto {
                 .updatedAt(schedule.getUpdatedAt())
                 .build();
     }
-
-    //경로 수정 후 scheduleId, routeId, 수정 시각을 반환
-    @Getter
-    @Builder
-    @Schema(description = "일정 경로 수정 최소 응답 DTO")
-    public static class Simple {
-        private Long scheduleId;
-        private Long routeId;
-        private LocalDateTime updatedAt;
-
-        public static Simple from(Schedule schedule) {
-            return Simple.builder()
-                    .scheduleId(schedule.getId())
-                    .routeId(schedule.getRoute() != null ? schedule.getRoute().getId() : null)
-                    .updatedAt(schedule.getUpdatedAt())
-                    .build();
-        }
-    }
 }
