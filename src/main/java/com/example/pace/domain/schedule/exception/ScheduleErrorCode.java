@@ -11,7 +11,9 @@ public enum ScheduleErrorCode implements BaseErrorCode {
 
     SCHEDULE_CANNOT_REPEAT_WITH_PATH(HttpStatus.BAD_REQUEST, "SCHEDULE400_1", "경로일정은 반복이 불가능합니다."),
 
-    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404_1", "해당 일정을 찾을 수 없습니다.");
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404_1", "해당 일정을 찾을 수 없습니다."),
+
+    INVALID_TIME_RANGE(HttpStatus.BAD_REQUEST, "SCHEDULE400_2", "시작 시간이 종료 시간보다 늦을 수 없습니다");
 
     private final HttpStatus httpStatus;
     private final String code;

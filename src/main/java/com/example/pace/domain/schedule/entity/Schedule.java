@@ -1,6 +1,7 @@
 package com.example.pace.domain.schedule.entity;
 
 import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -80,5 +81,14 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     public void addPlace(Place place) {
         this.place = place;
         place.setSchedule(this);
+    }
+    public void updateGeneralInfo(ScheduleUpdateReqDto dto) {
+        if (dto.getTitle() != null) this.title = dto.getTitle();
+        if (dto.getMemo() != null) this.memo = dto.getMemo();
+        if (dto.getStartDate() != null) this.startDate = dto.getStartDate();
+        if (dto.getEndDate() != null) this.endDate = dto.getEndDate();
+        if (dto.getStartTime() != null) this.startTime = dto.getStartTime();
+        if (dto.getEndTime() != null) this.endTime = dto.getEndTime();
+        if (dto.getIsAllDay() != null) this.isAllDay = dto.getIsAllDay();
     }
 }

@@ -1,8 +1,8 @@
 package com.example.pace.domain.schedule.repository;
 
-import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.schedule.entity.Schedule;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,4 +28,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             @Param("endDate") LocalDate endDate,
             Pageable pageable);
     Optional<Schedule> findByMemberIdAndId(Long memberId, Long scheduleId);
+    List<Schedule> findAllByRepeatGroupId(String repeatGroupId);
+    void deleteAllByRepeatGroupId(@Param("repeatGroupId") String repeatGroupId);
 }

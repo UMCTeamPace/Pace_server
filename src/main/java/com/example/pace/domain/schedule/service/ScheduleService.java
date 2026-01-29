@@ -4,6 +4,7 @@ import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleResDtoConverter;
+import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.entity.RepeatRule;
@@ -15,7 +16,9 @@ import com.example.pace.domain.schedule.repository.RepeatRuleRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
 import com.example.pace.global.apiPayload.code.GeneralErrorCode;
 import com.example.pace.global.apiPayload.exception.GeneralException;
+import java.time.LocalTime;
 import java.util.UUID;
+import java.util.Objects;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 import java.util.List;
@@ -101,5 +104,71 @@ public class  ScheduleService {
         Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
                 .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    // 일정 수정
+    @Transactional
+    public ScheduleResDto updateSchedule(Long memberId, Long  scheduleId, ScheduleUpdateReqDto request, String scope ) {
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
+                .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
+        if (Boolean.FALSE.equals(request.getIsAllDay())) {
+            validateTimeRange(request.getStartTime(), request.getEndTime());
+        }
+        if ("ALL".equals(scope) && schedule.getRepeatGroupId() != null) {
+            // 반복 규칙 자체가 바뀐 경우 -> 기존 그룹 삭제 후 재생성
+            if (request.getRepeatInfo() != null && isRepeatRuleChanged(schedule.getRepeatRule(), request.getRepeatInfo())) {
+                scheduleRepository.deleteAllByRepeatGroupId(schedule.getRepeatGroupId());
+
+                RepeatRule newRule = repeatRuleRepository.save(ScheduleReqDtoConverter.toRepeatRule(request.getRepeatInfo()));
+
+                // 날짜 계산
+                LocalDate baseDate = (request.getStartDate() != null) ? request.getStartDate() : schedule.getStartDate();
+                List<LocalDate> newDates = repeatCalculator.calculateDates(request.getRepeatInfo(), baseDate);
+
+                // 새 일정 생성
+                List<Schedule> newSchedules = newDates.stream()
+                        .map(date -> scheduleFactory.createFromUpdate(
+                                schedule.getMember(),
+                                date,
+                                request,
+                                newRule, // 새로 저장한 규칙 전달
+                                schedule.getRepeatGroupId()
+                        ))
+                        .toList();
+                List<Schedule> savedSchedules = scheduleRepository.saveAll(newSchedules);
+
+                return ScheduleResDtoConverter.toScheduleResDto(savedSchedules.get(0));
+            }
+            // 내용만 바뀐 경우
+            else {
+                List<Schedule> groupSchedules = scheduleRepository.findAllByRepeatGroupId(schedule.getRepeatGroupId());
+                groupSchedules.forEach(s -> s.updateGeneralInfo(request));
+            }
+        }
+        // 단일 수정
+        else {
+            schedule.updateGeneralInfo(request);
+        }
+
+        return ScheduleResDtoConverter.toScheduleResDto(schedule);
+
+    }
+
+    // 시간 검증
+    private void validateTimeRange(LocalTime start, LocalTime end) {
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new GeneralException(ScheduleErrorCode.INVALID_TIME_RANGE);
+        }
+    }
+
+    private boolean isRepeatRuleChanged(RepeatRule existing, ScheduleReqDto.RepeatDto requestInfo) {
+        if (requestInfo == null || existing == null) return false;
+
+        return !existing.getRepeatType().equals(requestInfo.getRepeatType()) ||
+                !existing.getRepeatInterval().equals(requestInfo.getRepeatInterval()) ||
+                !Objects.equals(existing.getDaysOfWeek(), requestInfo.getDaysOfWeek()) ||
+                !existing.getEndType().equals(requestInfo.getEndType()) ||
+                !Objects.equals(existing.getEndCount(), requestInfo.getEndCount()) ||
+                !Objects.equals(existing.getEndDate(), requestInfo.getRepeatEndDate());
     }
 }

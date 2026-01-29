@@ -1,6 +1,7 @@
 package com.example.pace.domain.schedule.controller;
 
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
+import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
@@ -40,5 +41,13 @@ public interface ScheduleControllerDocs {
     ResponseEntity<ApiResponse<String>> deleteSchedule(
             CustomUserDetails customUserDetails,
             @PathVariable Long scheduleId
+    );
+
+    @Operation(summary = "일정 수정")
+    ResponseEntity<ApiResponse<ScheduleResDto>> updateSchedule(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            Long scheduleId,
+            String scope,
+            ScheduleUpdateReqDto request
     );
 }

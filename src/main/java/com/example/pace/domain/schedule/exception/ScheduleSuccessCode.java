@@ -13,7 +13,9 @@ public enum ScheduleSuccessCode implements BaseSuccessCode {
 
     SCHEDULE_GET_OK(HttpStatus.OK, "SCHEDULE200_1", "일정을 성공적으로 조회하였습니다."),
 
-    SCHEDULE_DELETE_OK(HttpStatus.OK, "SCHEDULE200_2", "일정이 성공적으로 삭제되었습니다.");
+    SCHEDULE_DELETE_OK(HttpStatus.OK, "SCHEDULE200_2", "일정이 성공적으로 삭제되었습니다."),
+
+    SCHEDULE_UPDATE_OK(HttpStatus.OK, "SCHEDULE200_3", "일정이 성공적으로 수정되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
