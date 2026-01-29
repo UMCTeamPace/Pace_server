@@ -19,16 +19,18 @@ public class JwtUtil {
     private final Duration accessExpiration;
     private final Duration refreshExpiration;
     private final Duration tempExpiration;
+    private final Duration devExpiration;
 
     public JwtUtil(JwtProperties jwtProperties) {
         this.secretKey = Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
         this.accessExpiration = Duration.ofMillis(jwtProperties.getAccessToken().getExpirationTime());
         this.refreshExpiration = Duration.ofMillis(jwtProperties.getRefreshToken().getExpirationTime());
         this.tempExpiration = Duration.ofMillis(jwtProperties.getTempToken().getExpirationTime());
+        this.devExpiration = Duration.ofMillis(jwtProperties.getDevToken().getExpirationTime());
     }
 
     // 토큰 생성
-    private String createToken(Long memberId, Duration accessExpiration, Role role) {
+    private String createToken(Long memberId, Duration accessExpiration, Role role, String category) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + accessExpiration.toMillis());
 
@@ -39,6 +41,7 @@ public class JwtUtil {
                 .expiration(validity)
                 .signWith(secretKey)
                 .claim("role", role)
+                .claim("category", category)
                 .compact();
     }
 
@@ -68,16 +71,21 @@ public class JwtUtil {
 
     // 액세스 토큰 생성
     public String createAccessToken(Long memberId, Role role) {
-        return createToken(memberId, accessExpiration, role);
+        return createToken(memberId, accessExpiration, role, "access");
     }
 
     // 리프레쉬 토큰 생성
     public String createRefreshToken(Long memberId) {
-        return createToken(memberId, refreshExpiration, Role.ROLE_USER);
+        return createToken(memberId, refreshExpiration, Role.ROLE_USER, "refresh");
     }
 
     // 신규 회원용 임시 토큰 생성
     public String createTempToken(Long memberId) {
-        return createToken(memberId, tempExpiration, Role.ROLE_INCOMPLETE_USER);
+        return createToken(memberId, tempExpiration, Role.ROLE_INCOMPLETE_USER, "temp");
+    }
+
+    // 개발자 전용 임시 토큰 생성
+    public String createDevToken(Long memberId) {
+        return createToken(memberId, devExpiration, Role.ROLE_USER, "access");
     }
 }

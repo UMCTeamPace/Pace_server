@@ -14,7 +14,6 @@ public enum MemberErrorCode implements BaseErrorCode {
     MEMBER_NOT_ACTIVE(HttpStatus.UNAUTHORIZED,
             "탈퇴한 회원입니다.",
             "MEMBER401_1"),
-
     ;
 
     private final HttpStatus httpStatus;

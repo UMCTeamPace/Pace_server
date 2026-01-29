@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -23,15 +24,15 @@ public class SubwayDataLoader implements CommandLineRunner {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final Map<String, SubwayStationDTO> stationMap = new HashMap<>();
-    private final String SUBWAY_JSON_PATH = "data/subway_final_data.json";
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(@NotNull String... args) throws Exception {
         log.info("지하철 데이터 불러오는 중...");
         loadSubwayDataFromJson();
     }
 
     private void loadSubwayDataFromJson() {
+        String SUBWAY_JSON_PATH = "data/subway_final_data.json";
         ClassPathResource resource = new ClassPathResource(SUBWAY_JSON_PATH);
 
         if (!resource.exists()) {
