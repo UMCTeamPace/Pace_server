@@ -19,10 +19,6 @@ public class ScheduleRouteDeleteService {
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
 
-    /**
-     * 일정에 연결된 경로 삭제
-     * - 보안: scheduleId + memberId로 "내 일정"인지 검증 후 삭제
-     */
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
 
         // 내 일정인지(scheduleId + memberId)로 조회
@@ -36,11 +32,11 @@ public class ScheduleRouteDeleteService {
         // Schedule - Route 연관관계 끊기
         schedule.setRoute(null);
 
-        //일반 일정으로 진행
-        schedule.setIsPathIncluded(false);
-
         // 실제 Route 삭제 (RouteDetail은 cascade+orphanRemoval로 같이 삭제되는 구조가 일반적)
         routeRepository.delete(route);
+
+        //일반 일정으로 진행
+        schedule.setIsPathIncluded(false);
 
         // 응답용 (updatedAt은 auditing으로 갱신되거나, 필요시 scheduleRepository.save(schedule) 해도 됨)
         return ScheduleRouteDeleteResDto.of(schedule.getId(), schedule.getUpdatedAt());

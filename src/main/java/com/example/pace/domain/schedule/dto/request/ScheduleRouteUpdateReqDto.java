@@ -21,7 +21,6 @@ public class ScheduleRouteUpdateReqDto {
     @JsonProperty("total_time")
     private Integer totalTime;
 
-    // (선택) 너희 Route 엔티티에 totalDistance가 있으니 받으면 좋음
     @JsonProperty("total_distance")
     private Integer totalDistance;
 
