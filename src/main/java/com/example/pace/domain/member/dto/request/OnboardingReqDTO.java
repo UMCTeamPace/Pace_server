@@ -20,6 +20,6 @@ public record OnboardingReqDTO (
 ){
     public record AlarmConfig(
             @NotNull AlarmType type,
-            List<@NotNull Integer> minutes    // 실제 유효성은 service에서 alarmtype별 whitelist로 검증
+            List<@NotNull @Min(1) @Max(1440) Integer> minutes    // 실제 유효성은 service에서 alarmtype별 whitelist로 검증
     ) {}
 }

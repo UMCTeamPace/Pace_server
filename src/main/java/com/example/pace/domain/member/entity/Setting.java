@@ -90,7 +90,7 @@ public class Setting extends BaseEntity {
     public void replaceReminderTimes(AlarmType alarmType, List<Integer> minutesList) {
         this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
 
-        if (minutesList == null || minutesList.isEmpty()) { return; }
+        if (minutesList.isEmpty()) { return; }
 
         minutesList.stream()
                 .filter(Objects::nonNull)
