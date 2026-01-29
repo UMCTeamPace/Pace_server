@@ -17,12 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class SavedPlaceQueryService {
     private final SavedPlaceRepository savedPlaceRepository;
 
-    public SavedPlaceResDTO.PlaceListDTO getSavedPlaceList(Long memberId, String groupName) {
-        if (groupName.isBlank()) {
-            throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_NOT_EXISTS_GROUP_NAME);
-        }
-
-        List<SavedPlace> placeList = savedPlaceRepository.findAllPlaceByMemberAndGroupName(memberId, groupName);
+    public SavedPlaceResDTO.PlaceListDTO getSavedPlaceList(Long memberId, Long groupId) {
+        List<SavedPlace> placeList = savedPlaceRepository.findAllPlaceByMemberAndGroupId(memberId, groupId);
 
         return SavedPlaceConverter.toPlaceListDTO(placeList);
     }

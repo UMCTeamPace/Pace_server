@@ -68,11 +68,6 @@ public class BusDataLoader implements CommandLineRunner {
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next(); // 다음 행으로
 
-                // 필수 값이(노선ID, 순번)이 비어있는 행은 넘어가기(일단 모두 넣는걸로)
-//                if (isCellEmpty(row.getCell(0)) || isCellEmpty(row.getCell(2))) {
-//                    continue;
-//                }
-
                 try {
                     String routeId = getCellValue(row.getCell(0));
                     String lineName = getCellValue(row.getCell(1));

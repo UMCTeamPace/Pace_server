@@ -12,8 +12,8 @@ public class SavedPlaceResDTO {
     @AllArgsConstructor
     @Builder
     public static class PlaceDTO {
-        private String savedPlaceId;
-        private String groupName;
+        private Long savedPlaceId;
+        private Long groupId;
         private String placeName;
         private String placeId;
         private String createdAt;
