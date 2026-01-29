@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Saved Place API", description = "장소 저장(즐겨찾기) 관련 API")
@@ -59,15 +60,37 @@ public interface SavedPlaceControllerDocs {
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 그룹 ID 요청",
+                    responseCode = "404",
+                    description = "장소를 찾을 수 없음 (그룹에 저장된 장소가 0개)",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_2\", \"message\":\"그룹 ID가 유효하지 않습니다.\", \"result\":null}")
+                            examples = @ExampleObject(name = "결과 없음 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 그룹에 저장된 장소가 없습니다.\", \"result\":null}")
                     )
             )
     })
     ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @Parameter(hidden = true) CustomUserDetails userDetails,
-            @Parameter(description = "조회할 그룹 ID", required = true) Long groupId
+            @Parameter(description = "조회할 그룹 ID (Path Variable)", required = true) @PathVariable Long groupId
+    );
+
+    @Operation(summary = "저장된 장소 다중 삭제 API", description = "저장된 장소들을 ID 리스트를 통해 한 번에 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "장소 삭제 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "삭제 성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_2\", \"message\":\"장소들이 성공적으로 삭제되었습니다.\", \"result\":\"장소들이 성공적으로 삭제되었습니다.\"}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "장소를 찾을 수 없거나 삭제 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 장소를 찾을 수 없습니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<String> deletePlaces(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @RequestBody SavedPlaceReqDTO.DeletePlaceListDTO request
     );
 }

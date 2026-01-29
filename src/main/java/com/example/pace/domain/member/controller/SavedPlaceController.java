@@ -8,12 +8,15 @@ import com.example.pace.domain.member.service.SavedPlaceCommandService;
 import com.example.pace.domain.member.service.SavedPlaceQueryService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,15 +46,30 @@ public class SavedPlaceController implements SavedPlaceControllerDocs {
                 );
     }
 
-    @GetMapping("/saved")
+    @GetMapping("/saved/{groupId}")
     public ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam Long groupId
+            @PathVariable Long groupId
     ) {
         Long memberId = userDetails.member().getId();
         return ApiResponse.onSuccess(
                 SavedPlaceSuccessCode.SAVED_PLACE_FOUND_OK,
                 savedPlaceQueryService.getSavedPlaceList(memberId, groupId)
+        );
+    }
+
+    @Override
+    @DeleteMapping("/saved")
+    public ApiResponse<String> deletePlaces(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody SavedPlaceReqDTO.DeletePlaceListDTO request
+    ) {
+        Long memberId = userDetails.member().getId();
+        savedPlaceCommandService.deletePlaces(memberId, request.getPlaceIdList());
+
+        return ApiResponse.onSuccess(
+                SavedPlaceSuccessCode.SAVED_PLACE_DELETE_OK,
+                "장소들이 성공적으로 삭제되었습니다."
         );
     }
 }

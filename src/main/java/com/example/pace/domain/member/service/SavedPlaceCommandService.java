@@ -15,6 +15,7 @@ import com.example.pace.domain.member.exception.SavedPlaceException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.member.repository.PlaceGroupRepository;
 import com.example.pace.domain.member.repository.SavedPlaceRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,5 +44,17 @@ public class SavedPlaceCommandService {
         placeGroup.addSavedPlace(savedPlace);
 
         return SavedPlaceConverter.toPlaceDTO(savedPlaceRepository.save(savedPlace));
+    }
+
+    // 장소들 삭제
+    public void deletePlaces(Long memberId, List<Long> placeIdList) {
+        List<SavedPlace> myPlaceList = savedPlaceRepository.findAllByIdInAndMemberId(placeIdList, memberId);
+
+        // 요청한 id 개수와 실제 조회된 찾은 개수가 다르면 에러
+        if (myPlaceList.size() != placeIdList.size()) {
+            throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_NOT_FOUND);
+        }
+
+        savedPlaceRepository.deleteAllInBatch(myPlaceList);
     }
 }
