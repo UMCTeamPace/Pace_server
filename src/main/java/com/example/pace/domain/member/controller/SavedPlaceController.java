@@ -46,12 +46,12 @@ public class SavedPlaceController implements SavedPlaceControllerDocs {
     @GetMapping("/saved")
     public ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam String groupName
+            @RequestParam Long groupId
     ) {
         Long memberId = userDetails.member().getId();
         return ApiResponse.onSuccess(
                 SavedPlaceSuccessCode.SAVED_PLACE_FOUND_OK,
-                savedPlaceQueryService.getSavedPlaceList(memberId, groupName)
+                savedPlaceQueryService.getSavedPlaceList(memberId, groupId)
         );
     }
 }
