@@ -5,7 +5,6 @@ import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.exception.ScheduleSuccessCode;
 import com.example.pace.domain.schedule.service.ScheduleService;
 import com.example.pace.global.apiPayload.ApiResponse;
-import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
 import com.example.pace.global.auth.CustomUserDetails;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/schedules")
-public class          ScheduleController implements ScheduleControllerDocs {
+public class ScheduleController implements ScheduleControllerDocs {
 
     private final ScheduleService scheduleService;
 
@@ -41,9 +40,11 @@ public class          ScheduleController implements ScheduleControllerDocs {
     @Override
     @GetMapping("/{scheduleId}")
     public ResponseEntity<ApiResponse<ScheduleResDto>> getSchedule(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long scheduleId
     ) {
-        ScheduleResDto responseDto = scheduleService.getSchedule(scheduleId);
+        Long  memberId = customUserDetails.member().getId();
+        ScheduleResDto responseDto = scheduleService.getSchedule(memberId,scheduleId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_GET_OK, responseDto));
     }

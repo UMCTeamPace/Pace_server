@@ -22,6 +22,7 @@ public interface ScheduleControllerDocs {
 
     @Operation(summary = "일정 상세 조회")
     ResponseEntity<ApiResponse<ScheduleResDto>> getSchedule(
+            CustomUserDetails customUserDetails,
             @Parameter(description = "조회할 일정의 ID")
             @PathVariable Long scheduleId);
 

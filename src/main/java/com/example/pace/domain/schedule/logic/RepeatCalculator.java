@@ -3,23 +3,33 @@ package com.example.pace.domain.schedule.logic;
 
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.enums.EndType;
+import com.example.pace.global.apiPayload.code.GeneralErrorCode;
+import com.example.pace.global.apiPayload.exception.GeneralException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RepeatCalculator {
 
     public List<LocalDate> calculateDates(ScheduleReqDto.RepeatDto info, LocalDate start) {
+        if (info == null) {
+            return List.of(start);
+        }
+        if (info.getRepeatInterval() <= 0) {
+            throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
+        }
         List<LocalDate> dates = new ArrayList<>();
         int interval = info.getRepeatInterval();
 
         switch (info.getRepeatType()) {
             case DAILY -> calculateDaily(dates, info, start, interval);
             case WEEKLY -> calculateWeekly(dates, info, start, interval);
+            case MONTHLY -> calculateMonthly(dates, info, start, interval);
             case YEARLY -> calculateYearly(dates, info, start, interval);
         }
         return dates;
@@ -36,6 +46,17 @@ public class RepeatCalculator {
         }
     }
 
+    // 월간 반복 계산
+    private void calculateMonthly(List<LocalDate> dates, ScheduleReqDto.RepeatDto info, LocalDate start, int interval) {
+        LocalDate current = start;
+        int count = 0;
+        while (shouldContinue(info, current, count, start)) {
+            dates.add(current);
+            count++;
+            current = current.plusMonths(interval);
+        }
+    }
+
     // 연간 반복 계산
     private void calculateYearly(List<LocalDate> dates, ScheduleReqDto.RepeatDto info, LocalDate start, int interval) {
         LocalDate current = start;
@@ -49,9 +70,19 @@ public class RepeatCalculator {
 
     // 요일 파싱 로직: "MONDAY,WEDNESDAY" -> 리스트 변환
     private List<DayOfWeek> parseDays(String daysOfWeek) {
+        if (daysOfWeek == null || daysOfWeek.isEmpty()) {
+            return new ArrayList<>();
+        }
         return Arrays.stream(daysOfWeek.split(","))
                 .map(String::trim)
-                .map(DayOfWeek::valueOf)
+                .map(day -> {
+                    try {
+                        return DayOfWeek.valueOf(day.toUpperCase()); // 대문자로 변환해서 체크
+                    } catch (IllegalArgumentException e) {
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .toList();
     }
 

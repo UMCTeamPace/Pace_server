@@ -40,7 +40,8 @@ public class  ScheduleService {
     // 일정 생성
     @Transactional
     public ScheduleResDto createSchedule(Long memberId, ScheduleReqDto request) {
-        Member member = memberRepository.findById(memberId).orElseThrow();
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new
+                GeneralException(GeneralErrorCode.NOT_FOUND));
         if (Boolean.TRUE.equals(request.getIsPathIncluded()) && Boolean.TRUE.equals(request.getIsRepeat())) {
             throw new GeneralException(ScheduleErrorCode.SCHEDULE_CANNOT_REPEAT_WITH_PATH);
         }
@@ -61,14 +62,20 @@ public class  ScheduleService {
                 .map(date -> scheduleFactory.create(member, date, request, repeatRule, groupId))
                 .toList();
 
-        return ScheduleResDtoConverter.toScheduleResDto(scheduleRepository.saveAll(scheduleList).get(0));
+        List<Schedule> savedSchedules = scheduleRepository.saveAll(scheduleList);
+
+        if (savedSchedules.isEmpty()) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return ScheduleResDtoConverter.toScheduleResDto(savedSchedules.get(0));
     }
 
 
     // 일정 상세 조회
-    public ScheduleResDto getSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow();
+    public ScheduleResDto getSchedule(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
+                .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         return ScheduleResDtoConverter.toScheduleResDto(schedule);
     }
