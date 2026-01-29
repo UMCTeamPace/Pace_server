@@ -81,4 +81,18 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         this.place = place;
         place.setSchedule(this);
     }
+
+    //schedule에 route 붙이기
+    public void addRoute(Route route) {
+        this.route = route;
+        route.setSchedule(this);
+    }
+
+    public void removeRoute() {
+        if (this.route != null) {
+            this.route.setSchedule(null);
+            this.route = null;
+        }
+    }
+
 }

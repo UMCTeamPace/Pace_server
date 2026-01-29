@@ -1,5 +1,6 @@
 package com.example.pace.domain.schedule.dto.request;
 
+import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.enums.EndType;
 import com.example.pace.domain.schedule.enums.RepeatType;
 import java.math.BigDecimal;
@@ -81,5 +82,19 @@ public class ScheduleReqDto {
     @Setter
     @NoArgsConstructor
     public static class RouteDetailDto {
+        private Integer sequence;
+        private Integer duration;
+        private Integer distance;
+        private String description;
+        private Double startLat;
+        private Double startLng;
+        private Double endLat;
+        private Double endLng;
+        private TransitType transitType;
+        private String lineName;
+        private String lineColor;
+        private Integer stopCount;
+        private String departureStop;
+        private String arrivalStop;
     }
 }
