@@ -12,25 +12,29 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Saved Place API", description = "장소 저장(즐겨찾기) 관련 API")
 public interface SavedPlaceControllerDocs {
 
-    @Operation(summary = "장소 저장 API", description = "사용자가 특정 장소를 저장(즐겨찾기)합니다. 같은 그룹 내 중복된 장소는 저장이 불가합니다.")
+    @Operation(summary = "장소 저장 API", description = "사용자가 특정 장소를 특정 그룹 내에 저장(즐겨찾기)합니다. 같은 그룹 내 중복된 장소는 저장이 불가합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "201",
                     description = "장소 저장 성공",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\":true, \"code\":\"MEMBER201_1\", \"message\":\"장소 저장 성공\", \"result\":{\"savedPlaceId\":\"1\", \"groupName\":\"맛집\", \"placeName\":\"스타벅스 강남역점\", \"placeId\":\"21160611\", \"createdAt\":\"2024-01-21 16:00\"}}")
+                            examples = @ExampleObject(name = "저장 성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_201_1\", \"message\":\"장소 저장 성공\", \"result\":{\"savedPlaceId\":1, \"groupId\":10, \"placeName\":\"스타벅스 강남역점\", \"placeId\":\"21160611\", \"createdAt\":\"2024-01-21 16:00\"}}")
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400",
-                    description = "중복된 장소 저장 시도",
+                    description = "저장 실패 (중복 또는 유효하지 않은 그룹)",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "중복 에러 예시", value = "{\"isSuccess\":false, \"code\":\"MEMBER400_1\", \"message\":\"이미 해당 그룹에 저장된 장소입니다.\", \"result\":null}")
+                            examples = {
+                                    @ExampleObject(name = "중복 에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_1\", \"message\":\"이미 해당 그룹에 저장된 장소입니다.\", \"result\":null}"),
+                                    @ExampleObject(name = "그룹 없음 예시", value = "{\"isSuccess\":false, \"code\":\"PLACE_GROUP_404_1\", \"message\":\"존재하지 않는 그룹입니다.\", \"result\":null}")
+                            }
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -52,19 +56,41 @@ public interface SavedPlaceControllerDocs {
                     responseCode = "200",
                     description = "장소 조회 성공",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_1\", \"message\":\"저장된 장소 조회 성공\", \"result\":{\"placeDTOList\":[{\"savedPlaceId\":\"1\", \"groupName\":\"맛집\", \"placeName\":\"스타벅스 강남역점\", \"placeId\":\"21160611\", \"createdAt\":\"2024-01-21 16:00\"}], \"count\":1}}")
+                            examples = @ExampleObject(name = "조회 성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_1\", \"message\":\"저장된 장소 조회 성공\", \"result\":{\"placeDTOList\":[{\"savedPlaceId\":1, \"groupId\":10, \"placeName\":\"스타벅스 강남역점\", \"placeId\":\"21160611\", \"createdAt\":\"2024-01-21 16:00\"}], \"count\":1}}")
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
-                    description = "잘못된 그룹명 요청",
+                    responseCode = "404",
+                    description = "장소를 찾을 수 없음 (그룹에 저장된 장소가 0개)",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
-                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_2\", \"message\":\"그룹명이 없습니다.\", \"result\":null}")
+                            examples = @ExampleObject(name = "결과 없음 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 그룹에 저장된 장소가 없습니다.\", \"result\":null}")
                     )
             )
     })
     ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @Parameter(hidden = true) CustomUserDetails userDetails,
-            @Parameter(description = "조회할 그룹 이름", required = true) String groupName
+            @Parameter(description = "조회할 그룹 ID (Path Variable)", required = true) @PathVariable Long groupId
+    );
+
+    @Operation(summary = "저장된 장소 다중 삭제 API", description = "저장된 장소들을 ID 리스트를 통해 한 번에 삭제합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "장소 삭제 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "삭제 성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_2\", \"message\":\"장소들이 성공적으로 삭제되었습니다.\", \"result\":\"장소들이 성공적으로 삭제되었습니다.\"}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "장소를 찾을 수 없거나 삭제 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 장소를 찾을 수 없습니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<String> deletePlaces(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @RequestBody SavedPlaceReqDTO.DeletePlaceListDTO request
     );
 }

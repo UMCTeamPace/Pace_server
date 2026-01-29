@@ -15,6 +15,11 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
      * 멤버의 일정 목록을 커서 기반 무한 스크롤로 조회
      * 마지막 조회 날짜보다 크거나 날짜가 같으면 ID가 큰 일정부터 조회
      */
+
+    //AND조건으로 조회하기
+    Optional<Schedule> findByIdAndMemberId(Long id, Long memberId);
+
+
     @Query("select s from Schedule s " +
             "left join fetch s.place " +
             "where s.member.id = :memberId " +

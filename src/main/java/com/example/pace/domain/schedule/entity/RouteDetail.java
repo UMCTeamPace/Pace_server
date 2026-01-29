@@ -33,7 +33,6 @@ public class RouteDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "route_id", nullable = false)
     private Route route;
@@ -81,4 +80,7 @@ public class RouteDetail extends BaseEntity {
     @Column(name = "arrival_stop")
     private String arrivalStop; //하차역 정류장 이름
 
+    public void setRoute(Route route) {
+        this.route = route;
+    }
 }

@@ -3,6 +3,7 @@ package com.example.pace.domain.member.converter;
 import com.example.pace.domain.member.dto.request.SavedPlaceReqDTO;
 import com.example.pace.domain.member.dto.response.SavedPlaceResDTO;
 import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.member.entity.PlaceGroup;
 import com.example.pace.domain.member.entity.SavedPlace;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -16,7 +17,6 @@ public class SavedPlaceConverter {
     ) {
         return SavedPlace.builder()
                 .placeId(dto.getPlaceId())
-                .groupName(dto.getGroupName())
                 .placeName(dto.getPlaceName())
                 .member(member)
                 .build();
@@ -24,9 +24,10 @@ public class SavedPlaceConverter {
 
     public static SavedPlaceResDTO.PlaceDTO toPlaceDTO(SavedPlace savedPlace) {
         return SavedPlaceResDTO.PlaceDTO.builder()
-                .placeId(savedPlace.getPlaceId())
-                .groupName(savedPlace.getGroupName())
+                .savedPlaceId(savedPlace.getId())
                 .placeName(savedPlace.getPlaceName())
+                .placeId(savedPlace.getPlaceId())
+                .groupId(savedPlace.getPlaceGroup().getId())
                 .createdAt(savedPlace.getCreatedAt().format(formatter))
                 .build();
     }

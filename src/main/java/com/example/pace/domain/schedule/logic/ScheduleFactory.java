@@ -4,9 +4,12 @@ package com.example.pace.domain.schedule.logic;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleRouteUpdateReqDtoConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.entity.RepeatRule;
+import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.Schedule;
 import java.time.LocalDate;
 import org.springframework.stereotype.Component;
@@ -40,10 +43,19 @@ public class ScheduleFactory {
             schedule.addPlace(PlaceReqDtoConverter.toPlace(request.getPlace()));
         }
 
-        /* * 경로 저장
-         * if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-         * }
-         */
+        //경로 저장
+        if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
+            Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
+            schedule.addRoute(route);
+
+//            if (request.getRoute().getRouteDetails() != null) {
+//                request.getRoute().getRouteDetails().forEach(dto -> {
+//                    route.addRouteDetail(
+//                            ScheduleReqDtoConverter.toRouteDetail(dto)
+//                    );
+//                });
+//            }
+        }
 
         if (request.getReminders() != null) {
             request.getReminders().forEach(dto ->
