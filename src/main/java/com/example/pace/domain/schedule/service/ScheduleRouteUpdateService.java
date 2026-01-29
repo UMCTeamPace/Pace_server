@@ -25,8 +25,8 @@ public class ScheduleRouteUpdateService {
 
     @Transactional
     public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId, ScheduleRouteUpdateReqDto req) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow();
+        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND.getMessage()));
 
         if (!schedule.getMember().getId().equals(memberId)) {
             throw new ScheduleException(ScheduleErrorCode.SCHEDULE_FORBIDDEN.getMessage());
