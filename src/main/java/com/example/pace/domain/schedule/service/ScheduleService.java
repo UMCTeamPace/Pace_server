@@ -2,21 +2,22 @@ package com.example.pace.domain.schedule.service;
 
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleResDtoConverter;
-import com.example.pace.domain.schedule.dto.request.ScheduleReqDto.ReminderDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
-import com.example.pace.domain.schedule.entity.Reminder;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
+import com.example.pace.domain.schedule.entity.RepeatRule;
 import com.example.pace.domain.schedule.entity.Schedule;
+import com.example.pace.domain.schedule.exception.ScheduleErrorCode;
+import com.example.pace.domain.schedule.logic.RepeatCalculator;
+import com.example.pace.domain.schedule.logic.ScheduleFactory;
+import com.example.pace.domain.schedule.repository.RepeatRuleRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
 import com.example.pace.global.apiPayload.code.GeneralErrorCode;
 import com.example.pace.global.apiPayload.exception.GeneralException;
+import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,50 +32,50 @@ public class  ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
+    private final RepeatRuleRepository repeatRuleRepository;
+    private final RepeatCalculator repeatCalculator;
+    private final ScheduleFactory scheduleFactory;
 
 
+    // 일정 생성
     @Transactional
     public ScheduleResDto createSchedule(Long memberId, ScheduleReqDto request) {
-        // 회원 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow();
-
-        // 일정 저장
-        Schedule schedule = ScheduleReqDtoConverter.toSchedule(request);
-
-        member.addSchedule(schedule);
-
-
-        // 장소 저장
-        // 조건 - 경로 포함X(False)+장소 정보가 있을 때
-        if (!Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getPlace() != null) {
-            schedule.addPlace(PlaceReqDtoConverter.toPlace(request.getPlace()));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new
+                GeneralException(GeneralErrorCode.NOT_FOUND));
+        if (Boolean.TRUE.equals(request.getIsPathIncluded()) && Boolean.TRUE.equals(request.getIsRepeat())) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_CANNOT_REPEAT_WITH_PATH);
         }
 
-        // 알림 저장
-        if (request.getReminders() != null && !request.getReminders().isEmpty()) {
-            List<Reminder> reminderList = new ArrayList<>();
-            for(ReminderDto reminderDto: request.getReminders()) {
-                reminderList.add(ReminderReqDtoConverter.toReminder(reminderDto));
-            }
+        // 반복 그룹 정보 생성
+        String groupId = Boolean.TRUE.equals(request.getIsRepeat()) ? UUID.randomUUID().toString() : null;
+        RepeatRule repeatRule = (groupId != null) ?
+                repeatRuleRepository.save(ScheduleReqDtoConverter.toRepeatRule(request.getRepeatInfo())) : null;
 
-            reminderList.forEach(schedule::addReminder);
+        List<LocalDate> dates;
+        if (Boolean.TRUE.equals(request.getIsRepeat()) && request.getRepeatInfo() != null) {
+            dates = repeatCalculator.calculateDates(request.getRepeatInfo(), request.getStartDate());
+        } else {
+            dates = List.of(request.getStartDate());
         }
 
-        /* * 경로 저장
-         * if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-         * }
-         */
+        List<Schedule> scheduleList = dates.stream()
+                .map(date -> scheduleFactory.create(member, date, request, repeatRule, groupId))
+                .toList();
 
+        List<Schedule> savedSchedules = scheduleRepository.saveAll(scheduleList);
 
-        Schedule savedSchedule = scheduleRepository.save(schedule);
-        return ScheduleResDtoConverter.toScheduleResDto(savedSchedule);
+        if (savedSchedules.isEmpty()) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
+        }
+
+        return ScheduleResDtoConverter.toScheduleResDto(savedSchedules.get(0));
     }
 
+
     // 일정 상세 조회
-    public ScheduleResDto getSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow();
+    public ScheduleResDto getSchedule(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
+                .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         return ScheduleResDtoConverter.toScheduleResDto(schedule);
     }
@@ -98,7 +99,7 @@ public class  ScheduleService {
     @Transactional
     public void deleteSchedule(Long memberId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
-                        .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
+                .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
         scheduleRepository.deleteById(scheduleId);
     }
 }
