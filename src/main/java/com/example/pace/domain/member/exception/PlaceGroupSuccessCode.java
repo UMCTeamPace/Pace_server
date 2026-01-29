@@ -13,7 +13,11 @@ public enum PlaceGroupSuccessCode implements BaseSuccessCode {
             "그룹이 성공적으로 조회되었습니다.",
             "PLACE_GROUP200_1"
     ),
-    ;
+    PLACE_GROUP_CREATE_OK(
+            HttpStatus.CREATED,
+            "그룹이 성공적으로 저장되었습니다.",
+            "PLACE_GROUP201_1"
+    );
     private final HttpStatus httpStatus;
     private final String message;
     private final String code;
