@@ -27,10 +27,4 @@ public class SavedPlaceResDTO {
         private List<PlaceDTO> placeDTOList;
         private Integer count;
     }
-
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    @Builder
-//    public static class Del
 }

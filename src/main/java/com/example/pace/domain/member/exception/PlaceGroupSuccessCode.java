@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum PlaceGroupSuccessCode implements BaseSuccessCode {
     PLACE_GROUP_FOUND_OK(
-            HttpStatus.FOUND,
+            HttpStatus.OK,
             "그룹이 성공적으로 조회되었습니다.",
             "PLACE_GROUP200_1"
     ),

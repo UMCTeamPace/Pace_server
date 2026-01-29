@@ -33,7 +33,7 @@ public class SavedPlaceCommandService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
-        PlaceGroup placeGroup = placeGroupRepository.findById(request.getGroupId())
+        PlaceGroup placeGroup = placeGroupRepository.findByMemberIdAndId(memberId, request.getGroupId())
                 .orElseThrow(() -> new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_NOT_FOUND));
 
         if (savedPlaceRepository.isPlaceSavedInGroup(memberId, request.getPlaceId(), request.getGroupId())) {

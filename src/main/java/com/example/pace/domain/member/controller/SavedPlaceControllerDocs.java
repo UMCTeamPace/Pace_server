@@ -82,7 +82,7 @@ public interface SavedPlaceControllerDocs {
                     )
             ),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                    responseCode = "400",
+                    responseCode = "404",
                     description = "장소를 찾을 수 없거나 삭제 권한 없음",
                     content = @Content(schema = @Schema(implementation = ApiResponse.class),
                             examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 장소를 찾을 수 없습니다.\", \"result\":null}")

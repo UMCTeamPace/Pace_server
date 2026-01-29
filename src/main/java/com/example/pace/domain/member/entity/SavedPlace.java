@@ -21,7 +21,6 @@ import lombok.Setter;
 @Entity
 @Builder
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(
@@ -50,5 +49,6 @@ public class SavedPlace extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_group_id", nullable = false)
+    @Setter(AccessLevel.PROTECTED)
     private PlaceGroup placeGroup;
 }
