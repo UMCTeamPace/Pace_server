@@ -32,9 +32,6 @@ public class ScheduleRouteDeleteService {
         // Schedule - Route 연관관계 끊기
         schedule.setRoute(null);
 
-        // 실제 Route 삭제 (RouteDetail은 cascade+orphanRemoval로 같이 삭제되는 구조가 일반적)
-        routeRepository.delete(route);
-
         //일반 일정으로 진행
         schedule.setIsPathIncluded(false);
 
