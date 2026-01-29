@@ -8,4 +8,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PlaceGroupRepository extends JpaRepository<PlaceGroup, Long> {
     Optional<PlaceGroup> findByMemberIdAndId(Long memberId, Long groupId);
+
+    boolean existsByMemberIdAndGroupName(Long memberId, String groupName);
 }
