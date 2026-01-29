@@ -13,6 +13,7 @@ public class ScheduleResDtoConverter {
                 .scheduleId(schedule.getId())
                 .scheduleInfo(ScheduleInfoDto.builder()
                         .title(schedule.getTitle())
+                        .isAllDay(schedule.getIsAllDay())
                         .startDate(schedule.getStartDate())
                         .endDate(schedule.getEndDate())
                         .startTime(schedule.getStartTime())

@@ -31,4 +31,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
             @Param("lastId") Long lastId,
             @Param("endDate") LocalDate endDate,
             Pageable pageable);
+    Optional<Schedule> findByMemberIdAndId(Long memberId, Long scheduleId);
 }

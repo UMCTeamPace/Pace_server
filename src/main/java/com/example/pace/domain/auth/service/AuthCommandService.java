@@ -13,7 +13,6 @@ import com.example.pace.domain.member.exception.MemberException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.global.auth.JwtUtil;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,7 @@ public class AuthCommandService {
             String refreshToken = jwtUtil.createRefreshToken(member.getId());
             member.updateRefreshToken(refreshToken);
 
-            return AuthConverter.toExistingUserDTO(member, accessToken, refreshToken);
+            return AuthConverter.toExistingMemberDTO(member, accessToken, refreshToken);
         } else {
             // 신규 회원일 경우
             Member newMember = Member.builder()
@@ -68,9 +67,8 @@ public class AuthCommandService {
             // 온보딩용 임시 토큰 발급(10분 유효)
             String tempToken = jwtUtil.createTempToken(newMember.getId());
 
-            return AuthConverter.toNewUserDTO(newMember.getId(), newMember.getEmail(), tempToken);
+            return AuthConverter.toNewMemberDTO(newMember, tempToken);
         }
-
     }
 
     // 리프레쉬 토큰으로 액세스 토큰 재발행 로직
@@ -80,12 +78,17 @@ public class AuthCommandService {
             throw new AuthException(AuthErrorCode.TOKEN_INVALID);
         }
 
-        // 토큰에서 memberId 추출
+        // 토큰에서 클레임 정보 추출
         Claims claims = jwtUtil.getClaimsFromToken(refreshToken);
+        String category = claims.get("category", String.class);
+
+        if (category == null || !category.equals("refresh")) {
+            throw new AuthException(AuthErrorCode.TOKEN_INVALID);
+        }
+
         Long memberId = Long.parseLong(claims.getSubject());
 
-        // 데이터베이스에서 memberId로 회원 조회
-        Member member = memberRepository.findByIdIgnoreStatus(memberId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         // 데이터베이스에 저장된 리프레쉬 토큰과 일치하는지 확인
@@ -100,7 +103,7 @@ public class AuthCommandService {
 
         member.updateRefreshToken(newRefreshToken);
 
-        return AuthConverter.toExistingUserDTO(member, newAccessToken, newRefreshToken);
+        return AuthConverter.toExistingMemberDTO(member, newAccessToken, newRefreshToken);
     }
 
     // 로그아웃 처리

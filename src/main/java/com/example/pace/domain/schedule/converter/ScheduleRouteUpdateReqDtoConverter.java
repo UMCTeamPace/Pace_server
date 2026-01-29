@@ -3,30 +3,26 @@ package com.example.pace.domain.schedule.converter;
 import com.example.pace.domain.schedule.dto.request.ScheduleRouteUpdateReqDto;
 import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.RouteDetail;
-import com.example.pace.domain.schedule.entity.Schedule;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScheduleRouteUpdateReqDtoConverter {
 
     public static Route toRoute(ScheduleRouteUpdateReqDto req) {
         return Route.builder()
                 .originName(req.getOrigin().getOriginName())
-                .originLat(req.getOrigin().getOriginLat() != null
-                        ? BigDecimal.valueOf(req.getOrigin().getOriginLat()) : null)
-                .originLng(req.getOrigin().getOriginLng() != null
-                        ? BigDecimal.valueOf(req.getOrigin().getOriginLng()) : null)
+                .originLat(toBigDecimal(req.getOrigin().getOriginLat()))
+                .originLng(toBigDecimal(req.getOrigin().getOriginLng()))
                 .destName(req.getDest().getDestName())
-                .destLat(req.getDest().getDestLat() != null
-                        ? BigDecimal.valueOf(req.getDest().getDestLat()) : null)
-                .destLng(req.getDest().getDestLng() != null
-                        ? BigDecimal.valueOf(req.getDest().getDestLng()) : null)
+                .destLat(toBigDecimal(req.getDest().getDestLat()))
+                .destLng(toBigDecimal(req.getDest().getDestLng()))
                 .totalTime(req.getTotalTime())
                 .totalDistance(req.getTotalDistance())
                 .isSaved(false)
                 .build();
+    }
+
+    private static BigDecimal toBigDecimal(Double value) {
+        return value != null ? BigDecimal.valueOf(value) : null;
     }
 
     public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailDto dto) {

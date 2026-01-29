@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = "Schedule")
@@ -22,15 +23,22 @@ public interface ScheduleControllerDocs {
 
     @Operation(summary = "일정 상세 조회")
     ResponseEntity<ApiResponse<ScheduleResDto>> getSchedule(
+            CustomUserDetails customUserDetails,
             @Parameter(description = "조회할 일정의 ID")
             @PathVariable Long scheduleId);
 
     @Operation(summary = "일정 목록 조회")
     ResponseEntity<ApiResponse<Slice<ScheduleResDto>>> getScheduleList(
-            CustomUserDetails customUserDetails,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
             LocalDate startDate,
             LocalDate maxSearchDate,
             LocalDate lastDate,
             Long lastId
+    );
+
+    @Operation(summary = "일정 삭제")
+    ResponseEntity<ApiResponse<String>> deleteSchedule(
+            CustomUserDetails customUserDetails,
+            @PathVariable Long scheduleId
     );
 }

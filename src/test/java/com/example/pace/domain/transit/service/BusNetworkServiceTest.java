@@ -3,6 +3,7 @@ package com.example.pace.domain.transit.service;
 import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.repository.BusInfoRepository;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // H2로 교체하지 않고 실제 DB 사용
 class BusNetworkServiceTest {

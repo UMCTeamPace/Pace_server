@@ -9,6 +9,12 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ScheduleSuccessCode implements BaseSuccessCode{
 
+    SCHEDULE_CREATE_OK(HttpStatus.CREATED, "일정이 성공적으로 생성되었습니다.", "SCHEDULE201_1"),
+
+    SCHEDULE_GET_OK(HttpStatus.OK, "일정을 성공적으로 조회하였습니다.", "SCHEDULE200_1"),
+
+    SCHEDULE_DELETE_OK(HttpStatus.OK, "일정이 성공적으로 삭제되었습니다.", "SCHEDULE200_2"),
+
     SCHEDULE_ROUTE_UPDATE_OK(HttpStatus.OK, "일정에 경로 수정 성공", "SCHEDULE200_1"),
 
     SCHEDULE_ROUTE_DELETE_OK(HttpStatus.OK, "일정에 경로 삭제 성공", "SCHEDULE200_2");

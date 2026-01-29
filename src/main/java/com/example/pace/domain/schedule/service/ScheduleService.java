@@ -2,102 +2,73 @@ package com.example.pace.domain.schedule.service;
 
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ScheduleResDtoConverter;
-import com.example.pace.domain.schedule.dto.request.ScheduleReqDto.ReminderDto;
-import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
-import com.example.pace.domain.schedule.entity.Reminder;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
-import com.example.pace.domain.schedule.entity.Route;
-import com.example.pace.domain.schedule.entity.RouteDetail;
+import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
+import com.example.pace.domain.schedule.entity.RepeatRule;
 import com.example.pace.domain.schedule.entity.Schedule;
+import com.example.pace.domain.schedule.exception.ScheduleErrorCode;
+import com.example.pace.domain.schedule.logic.RepeatCalculator;
+import com.example.pace.domain.schedule.logic.ScheduleFactory;
+import com.example.pace.domain.schedule.repository.RepeatRuleRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
-import org.springframework.data.domain.Pageable;
+import com.example.pace.global.apiPayload.code.GeneralErrorCode;
+import com.example.pace.global.apiPayload.exception.GeneralException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true) // 조회 성능 최적화 (쓰기 작업은 메서드에 따로)
-public class  ScheduleService {
+@Transactional(readOnly = true)
+public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
-
+    private final RepeatRuleRepository repeatRuleRepository;
+    private final RepeatCalculator repeatCalculator;
+    private final ScheduleFactory scheduleFactory;
 
     @Transactional
     public ScheduleResDto createSchedule(Long memberId, ScheduleReqDto request) {
-        // 회원 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow();
+        Member member = findMember(memberId);
+        validateCreateRequest(request);
 
-        // 일정 저장
-        Schedule schedule = ScheduleReqDtoConverter.toSchedule(request);
+        // 반복 세팅
+        String groupId = isTrue(request.getIsRepeat()) ? UUID.randomUUID().toString() : null;
+        RepeatRule repeatRule = (groupId != null && request.getRepeatInfo() != null)
+                ? repeatRuleRepository.save(ScheduleReqDtoConverter.toRepeatRule(request.getRepeatInfo()))
+                : null;
 
-        member.addSchedule(schedule);
+        // 생성 날짜 목록
+        List<LocalDate> dates = (groupId != null && request.getRepeatInfo() != null)
+                ? repeatCalculator.calculateDates(request.getRepeatInfo(), request.getStartDate())
+                : List.of(request.getStartDate());
 
+        List<Schedule> schedules = dates.stream()
+                .map(date -> scheduleFactory.create(member, date, request, repeatRule, groupId))
+                .toList();
 
-        // 장소 저장
-        // 조건 - 경로 포함X(False)+장소 정보가 있을 때
-        if (!Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getPlace() != null) {
-            schedule.addPlace(PlaceReqDtoConverter.toPlace(request.getPlace()));
+        List<Schedule> saved = scheduleRepository.saveAll(schedules);
+        if (saved.isEmpty()) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
         }
-
-        // 알림 저장
-        if (request.getReminders() != null && !request.getReminders().isEmpty()) {
-            List<Reminder> reminderList = new ArrayList<>();
-            for(ReminderDto reminderDto: request.getReminders()) {
-                reminderList.add(ReminderReqDtoConverter.toReminder(reminderDto));
-            }
-
-            reminderList.forEach(schedule::addReminder);
-        }
-
-        /* * 경로 저장
-         * if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-         * }
-         */
-         //경로 저장
-        if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-
-            Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
-
-            // 양방향 세팅
-            schedule.addRoute(route);
-
-            // RouteDetail 세팅
-//            if (request.getRoute().getRouteDetails() != null) {
-//                request.getRoute().getRouteDetails().forEach(detailDto -> {
-//                    RouteDetail detail = ScheduleReqDtoConverter.toRouteDetail(detailDto);
-//                    route.addRouteDetail(detail);
-//                });
-//            }
-        }
-
-
-        Schedule savedSchedule = scheduleRepository.save(schedule);
-        return ScheduleResDtoConverter.toScheduleResDto(savedSchedule);
-
-
+        return ScheduleResDtoConverter.toScheduleResDto(saved.get(0));
     }
 
-    // 일정 상세 조회
-    public ScheduleResDto getSchedule(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow();
-
+    public ScheduleResDto getSchedule(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
+                .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
         return ScheduleResDtoConverter.toScheduleResDto(schedule);
     }
 
-    @Transactional(readOnly = true)
     public Slice<ScheduleResDto> getScheduleList(
             Long memberId,
             LocalDate startDate,
@@ -107,9 +78,34 @@ public class  ScheduleService {
     ) {
         LocalDate cursorDate = (lastDate != null) ? lastDate : startDate;
         Long cursorId = (lastId != null) ? lastId : 0L;
+
         Pageable pageable = PageRequest.of(0, 20);
-        Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId,cursorDate, cursorId, maxSearchDate, pageable);
+        Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(
+                memberId, cursorDate, cursorId, maxSearchDate, pageable
+        );
 
         return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
+    }
+
+    @Transactional
+    public void deleteSchedule(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND));
+        scheduleRepository.delete(schedule);
+    }
+
+    private Member findMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND));
+    }
+
+    private void validateCreateRequest(ScheduleReqDto request) {
+        if (isTrue(request.getIsPathIncluded()) && isTrue(request.getIsRepeat())) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_CANNOT_REPEAT_WITH_PATH);
+        }
+    }
+
+    private boolean isTrue(Boolean value) {
+        return Boolean.TRUE.equals(value);
     }
 }
