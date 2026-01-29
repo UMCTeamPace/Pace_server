@@ -74,6 +74,15 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Boolean isActive = true;
 
+    //온보딩
+    @Column(name = "onboarding_complete", nullable = false)
+    @Builder.Default
+    private Boolean onboardingComplete = false;
+
+    public void updateOnboardingCompleted(boolean completed) {
+        this.onboardingComplete = completed;
+    }
+
     // 추후에 매핑 관계 반영 예정
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
