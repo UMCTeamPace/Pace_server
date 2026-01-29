@@ -28,24 +28,18 @@ public class ScheduleRouteUpdateService {
         Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND.getMessage()));
 
-        if (!schedule.getMember().getId().equals(memberId)) {
-            throw new ScheduleException(ScheduleErrorCode.SCHEDULE_FORBIDDEN.getMessage());
-        }
         // 0) 기존 route 제거
         Route oldRoute = schedule.getRoute();
         if (oldRoute != null) {
-            schedule.setRoute(null);          // 연관 끊고
-            routeRepository.delete(oldRoute); // 기존 route 삭제
-            routeRepository.flush();          // 즉시 DB 반영
+            schedule.removeRoute();
+            routeRepository.delete(oldRoute);
+            routeRepository.flush();
         }
 
         // 1) Route 변환
         Route newRoute = ScheduleRouteUpdateReqDtoConverter.toRoute(req);
 
-        // 2) Schedule - Route 연결
-        schedule.addRoute(newRoute);
-
-        // 3) RouteDetail 변환/연결
+        // 2) RouteDetail 변환/연결
         if (req.getRouteDetails() != null) {
             for (ScheduleRouteUpdateReqDto.RouteDetailDto dto : req.getRouteDetails()) {
                 RouteDetail detail =
@@ -53,6 +47,9 @@ public class ScheduleRouteUpdateService {
                 newRoute.addRouteDetail(detail);
             }
         }
+
+        // 3) Schedule - Route 연결
+        schedule.addRoute(newRoute);
 
         scheduleRepository.save(schedule);
 

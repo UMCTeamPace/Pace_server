@@ -37,10 +37,10 @@ public class ScheduleRouteUpdateReqDtoConverter {
                 .stopCount(dto.getStopCount())
                 .departureStop(dto.getDepartureStop())
                 .arrivalStop(dto.getArrivalStop())
-                .startLat(dto.getStartLat() != null ? BigDecimal.valueOf(dto.getStartLat()) : null)
-                .startLng(dto.getStartLng() != null ? BigDecimal.valueOf(dto.getStartLng()) : null)
-                .endLat(dto.getEndLat() != null ? BigDecimal.valueOf(dto.getEndLat()) : null)
-                .endLng(dto.getEndLng() != null ? BigDecimal.valueOf(dto.getEndLng()) : null)
+                .startLat(toBigDecimal(dto.getStartLat()))
+                .startLng(toBigDecimal(dto.getStartLng()))
+                .endLat(toBigDecimal(dto.getEndLat()))
+                .endLng(toBigDecimal(dto.getEndLng()))
                 .build();
     }
 }

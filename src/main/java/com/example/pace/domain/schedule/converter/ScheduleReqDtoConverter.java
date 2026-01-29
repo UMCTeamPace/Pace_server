@@ -3,7 +3,9 @@ package com.example.pace.domain.schedule.converter;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.RepeatRule;
+import com.example.pace.domain.schedule.entity.RouteDetail;
 import com.example.pace.domain.schedule.entity.Schedule;
+import java.math.BigDecimal;
 
 public class ScheduleReqDtoConverter {
     // 요청 dto -> Schedule 엔티티 객체
@@ -47,6 +49,29 @@ public class ScheduleReqDtoConverter {
                 .totalDistance(dto.getTotalDistance())
                 .isSaved(false)
                 .build();
+    }
+
+    public static RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailDto dto) {
+        return RouteDetail.builder()
+                .sequence(dto.getSequence())
+                .duration(dto.getDuration())
+                .distance(dto.getDistance())
+                .description(dto.getDescription())
+                .transitType(dto.getTransitType())
+                .lineName(dto.getLineName())
+                .lineColor(dto.getLineColor())
+                .stopCount(dto.getStopCount())
+                .departureStop(dto.getDepartureStop())
+                .arrivalStop(dto.getArrivalStop())
+                .startLat(toBigDecimal(dto.getStartLat()))
+                .startLng(toBigDecimal(dto.getStartLng()))
+                .endLat(toBigDecimal(dto.getEndLat()))
+                .endLng(toBigDecimal(dto.getEndLng()))
+                .build();
+    }
+
+    private static BigDecimal toBigDecimal(Double value) {
+        return value != null ? BigDecimal.valueOf(value) : null;
     }
 
 }

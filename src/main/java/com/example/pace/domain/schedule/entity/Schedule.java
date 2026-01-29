@@ -88,4 +88,11 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         route.setSchedule(this);
     }
 
+    public void removeRoute() {
+        if (this.route != null) {
+            this.route.setSchedule(null);
+            this.route = null;
+        }
+    }
+
 }
