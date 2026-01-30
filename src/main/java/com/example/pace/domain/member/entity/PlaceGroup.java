@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
@@ -57,5 +58,13 @@ public class PlaceGroup extends BaseEntity {
     public void addSavedPlace(SavedPlace savedPlace) {
         savedPlaceList.add(savedPlace);
         savedPlace.setPlaceGroup(this);
+    }
+
+    public void updateGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public void updateGroupColor(String groupColor) {
+        this.groupColor = groupColor;
     }
 }
