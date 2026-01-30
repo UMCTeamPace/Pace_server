@@ -11,11 +11,11 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Place Group API", description = "장소 그룹 관련 API")
 public interface PlaceGroupControllerDocs {
+
     @Operation(summary = "장소 그룹 생성 API", description = "새로운 장소 그룹(예: 맛집, 집 등)을 생성합니다. 사용자별로 그룹 이름은 중복될 수 없습니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
@@ -43,5 +43,19 @@ public interface PlaceGroupControllerDocs {
     ApiResponse<PlaceGroupResDTO.PlaceGroupDTO> createPlaceGroup(
             @Parameter(hidden = true) CustomUserDetails userDetails,
             @RequestBody PlaceGroupReqDTO.SaveGroupReqDTO request
+    );
+
+    @Operation(summary = "장소 그룹 목록 조회 API", description = "사용자의 모든 장소 그룹 목록을 조회합니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "그룹 목록 조회 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\": true, \"code\": \"PLACE_GROUP_200_1\", \"message\": \"그룹 목록 조회 성공\", \"result\": { \"placeGroupList\": [ { \"groupId\": 1, \"groupName\": \"맛집\", \"groupColor\": \"#FF5733\", \"createdAt\": \"2024-01-29 22:00\" }, { \"groupId\": 2, \"groupName\": \"집\", \"groupColor\": \"#0000FF\", \"createdAt\": \"2024-01-29 23:00\" } ], \"listSize\": 2 }}")
+                    )
+            )
+    })
+    ApiResponse<PlaceGroupResDTO.PlaceGroupListDTO> getPlaceGroupList(
+            @Parameter(hidden = true) CustomUserDetails userDetails
     );
 }
