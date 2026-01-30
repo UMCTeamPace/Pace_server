@@ -57,7 +57,7 @@ public class PlaceGroupController implements PlaceGroupControllerDocs {
     public ApiResponse<PlaceGroupResDTO.PlaceGroupDTO> updatePlaceGroup(
             @AuthenticationPrincipal CustomUserDetails userDetails,
             @PathVariable Long groupId,
-            @RequestBody @Valid PlaceGroupReqDTO.UpdateGroupReqDTO request
+            @RequestBody PlaceGroupReqDTO.UpdateGroupReqDTO request
     ) {
         Long memberId = userDetails.member().getId();
 

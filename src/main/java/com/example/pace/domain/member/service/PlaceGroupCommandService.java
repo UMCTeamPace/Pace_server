@@ -61,6 +61,6 @@ public class PlaceGroupCommandService {
             placeGroup.updateGroupColor(newColor);
         }
 
-        return PlaceGroupConverter.toPlaceGroupDTO(placeGroupRepository.save(placeGroup));
+        return PlaceGroupConverter.toPlaceGroupDTO(placeGroup);
     }
 }
