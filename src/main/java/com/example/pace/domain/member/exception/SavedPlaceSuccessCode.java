@@ -17,7 +17,13 @@ public enum SavedPlaceSuccessCode implements BaseSuccessCode {
             HttpStatus.OK,
             "장소가 성공적으로 조회되었습니다.",
             "PLACE200_1"
-    );
+    ),
+    SAVED_PLACE_DELETE_OK(
+            HttpStatus.OK,
+            "장소가 성공적으로 삭제되었습니다.",
+            "PLACE200_2"
+    ),
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;
