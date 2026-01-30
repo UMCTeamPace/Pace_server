@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Place Group API", description = "장소 그룹 관련 API")
@@ -57,5 +59,35 @@ public interface PlaceGroupControllerDocs {
     })
     ApiResponse<PlaceGroupResDTO.PlaceGroupListDTO> getPlaceGroupList(
             @Parameter(hidden = true) CustomUserDetails userDetails
+    );
+
+    @Operation(summary = "장소 그룹 수정 API", description = "장소 그룹의 이름이나 색상을 수정합니다. 변경할 필드만 보내면 되며, 이름 변경 시 중복 체크가 수행됩니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "그룹 수정 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\": true, \"code\": \"PLACE_GROUP_200_2\", \"message\": \"그룹 수정 성공\", \"result\": { \"groupId\": 1, \"groupName\": \"변경된 맛집\", \"groupColor\": \"#00FF00\", \"createdAt\": \"2024-01-29 22:00\" }}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "그룹 수정 실패 (중복된 이름)",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "이름 중복 예시", value = "{\"isSuccess\":false, \"code\":\"PLACE_GROUP_400_1\", \"message\":\"이미 존재하는 그룹 이름입니다.\", \"result\":null}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "그룹을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "Not Found 예시", value = "{\"isSuccess\":false, \"code\":\"PLACE_GROUP_404_1\", \"message\":\"존재하지 않는 그룹입니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<PlaceGroupResDTO.PlaceGroupDTO> updatePlaceGroup(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @Parameter(description = "수정할 그룹 ID", required = true) @PathVariable Long groupId,
+            @RequestBody PlaceGroupReqDTO.UpdateGroupReqDTO request
     );
 }

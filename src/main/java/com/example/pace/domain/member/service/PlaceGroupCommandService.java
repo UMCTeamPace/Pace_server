@@ -22,6 +22,7 @@ public class PlaceGroupCommandService {
     private final PlaceGroupRepository placeGroupRepository;
     private final MemberRepository memberRepository;
 
+    // 그룹 저장
     public PlaceGroupResDTO.PlaceGroupDTO createGroup(Long memberId, PlaceGroupReqDTO.SaveGroupReqDTO request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -32,6 +33,33 @@ public class PlaceGroupCommandService {
         }
 
         PlaceGroup placeGroup = PlaceGroupConverter.toEntity(request, member);
+
+        return PlaceGroupConverter.toPlaceGroupDTO(placeGroupRepository.save(placeGroup));
+    }
+
+    // 그룹 업데이트
+    public PlaceGroupResDTO.PlaceGroupDTO updateGroup(Long memberId, Long groupId,
+                                                      PlaceGroupReqDTO.UpdateGroupReqDTO request) {
+        PlaceGroup placeGroup = placeGroupRepository.findByMemberIdAndId(memberId, groupId)
+                .orElseThrow(() -> new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_NOT_FOUND));
+
+        String newName = request.getGroupName();
+
+        // 그룹 이름 수정 시 예외 케이스에 맞추어 업데이트 하는 로직
+        if (newName != null && !newName.isBlank() && !newName.equals(placeGroup.getGroupName())) {
+            // 중복 체크
+            if (placeGroupRepository.existsByMemberIdAndGroupName(memberId, newName)) {
+                throw new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_DUPLICATE_GROUP_NAME);
+            }
+            placeGroup.updateGroupName(newName);
+        }
+
+        // 그룹 컬러 수정 로직
+        String newColor = request.getGroupColor();
+
+        if (newColor != null && !newColor.isBlank() && !newColor.equals(placeGroup.getGroupColor())) {
+            placeGroup.updateGroupColor(newColor);
+        }
 
         return PlaceGroupConverter.toPlaceGroupDTO(placeGroupRepository.save(placeGroup));
     }

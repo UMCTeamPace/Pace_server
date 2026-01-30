@@ -10,9 +10,10 @@ import com.example.pace.global.auth.CustomUserDetails;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +50,20 @@ public class PlaceGroupController implements PlaceGroupControllerDocs {
         return ApiResponse.onSuccess(
                 PlaceGroupSuccessCode.PLACE_GROUP_FOUND_OK,
                 placeGroupQueryService.getPlaceGroupList(memberId)
+        );
+    }
+
+    @PatchMapping("/{groupId}")
+    public ApiResponse<PlaceGroupResDTO.PlaceGroupDTO> updatePlaceGroup(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable Long groupId,
+            @RequestBody @Valid PlaceGroupReqDTO.UpdateGroupReqDTO request
+    ) {
+        Long memberId = userDetails.member().getId();
+
+        return ApiResponse.onSuccess(
+                PlaceGroupSuccessCode.PLACE_GROUP_UPDATE_OK,
+                placeGroupCommandService.updateGroup(memberId, groupId, request)
         );
     }
 }
