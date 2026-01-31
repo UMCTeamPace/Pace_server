@@ -73,9 +73,12 @@ public class SavedPlaceCommandService {
             throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_UNAUTHORIZED);
         }
 
+        List<String> targetPlaceIdList = targetGroup.getSavedPlaceList().stream()
+                .map(SavedPlace::getPlaceId).toList();
+
         for (SavedPlace place : placesToMove) {
             // 이동할 그룹에 이미 이 장소가 있는지 체크
-            if (savedPlaceRepository.isPlaceSavedInGroup(memberId, place.getPlaceId(), targetGroupId)) {
+            if (targetPlaceIdList.contains(place.getPlaceId())) {
                 throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_ALREADY_EXISTS);
             }
 

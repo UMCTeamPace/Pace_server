@@ -23,7 +23,7 @@ public enum SavedPlaceErrorCode implements BaseErrorCode {
     ),
     SAVED_PLACE_UNAUTHORIZED(
             HttpStatus.UNAUTHORIZED,
-            "삭제할 권한이 없거나 존재하지 않는 장소입니다.",
+            "권한이 없거나 존재하지 않는 장소입니다.",
             "SAVED_PLACE401_1"
     );
 
