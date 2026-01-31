@@ -13,6 +13,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -62,6 +64,12 @@ public class Route extends BaseEntity {
 
     @Column(name = "is_saved")
     private Boolean isSaved; //저장 여부
+
+    @Column(name = "arrival_time")
+    private LocalDateTime arrivalTime; //도착 예정 시간
+
+    @Column(name = "departure_time")
+    private LocalDateTime departureTime; //출발 예정 시간
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")

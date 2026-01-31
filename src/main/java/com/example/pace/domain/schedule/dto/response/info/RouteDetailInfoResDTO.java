@@ -1,20 +1,31 @@
 package com.example.pace.domain.schedule.dto.response.info;
 
+import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse.Distance;
+import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse.Duration;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.apache.poi.hpsf.Decimal;
+
+@Getter
+@Builder
+@AllArgsConstructor
 
 public class RouteDetailInfoResDTO {
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static class RouteDetailInfoRes {
-        private Integer sequence;
-        private Integer duration;
-        private Integer distance;
 
-        // 교통수단일 경우만 채워짐 (service)
-        private TransitRouteDetailInfoResDTO transitDetail;
-    }
+    private BigDecimal startLat;
+    private BigDecimal startLng;
+    private BigDecimal endLat;
+    private BigDecimal endLng;
+
+    private Integer sequence;
+    private Integer duration;
+    private Integer distance;
+
+    private String description;
+
+    // 교통수단일 경우만 채워짐 (service)
+    private TransitRouteDetailInfoResDTO transitDetail;
 }

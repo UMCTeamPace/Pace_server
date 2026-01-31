@@ -1,6 +1,7 @@
 package com.example.pace.domain.schedule.dto.response;
 
 import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,5 +12,13 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 public class RouteApiResDto {
-    private List<RouteDetailInfoResDTO> routeDetailInfoDTOList;
+    private Integer totalDistance;
+    private Integer totalTime;
+
+    //도착시간
+    private LocalDateTime arrivalTime;
+    //출발시간
+    private LocalDateTime departureTime;
+
+    private List<RouteDetailInfoResDTO> routeDetailInfoResDTOList;
 }

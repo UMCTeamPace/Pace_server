@@ -10,15 +10,14 @@ public class RouteSaveReqDto {
 
     //유저->API (프론트 위/경도 반환)
     public record CreateRouteDTO(
-            // !근데 이거 유저->api형태면
-
             //프론트에서 받아올 정보
             BigDecimal originLat,
             BigDecimal originLng,
             BigDecimal destLat,
             BigDecimal destLng,
-
-            //도착시간 지정
+            //도착시간
+            LocalDateTime arrivalTime,
+            //출발시간 지정
             LocalDateTime departureTime,
             //교통정보 지정
             TransitType transitType,
