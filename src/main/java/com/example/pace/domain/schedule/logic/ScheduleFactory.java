@@ -49,11 +49,10 @@ public class ScheduleFactory {
             schedule.addRoute(route);
 
             if (request.getRoute().getRouteDetails() != null) {
-                request.getRoute().getRouteDetails().forEach(dto -> {
-                    route.addRouteDetail(
-                            ScheduleReqDtoConverter.toRouteDetail(dto)
-                    );
-                });
+                request.getRoute().getRouteDetails().stream()
+                        .filter(java.util.Objects::nonNull)
+                        .map(ScheduleReqDtoConverter::toRouteDetail)
+                        .forEach(route::addRouteDetail);
             }
         }
 
