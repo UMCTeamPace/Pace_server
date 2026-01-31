@@ -27,4 +27,14 @@ public class SavedPlaceReqDTO {
         @NotEmpty(message = "삭제할 장소id 리스트는 필수입니다.")
         private List<Long> placeIdList;
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class MovePlaceListDTO {
+        @NotEmpty(message = "이동할 장소id 리스트는 필수입니다.")
+        private List<Long> placeIdList;
+
+        @NotNull(message = "이동할 대상 그룹id 리스트는 필수입니다.")
+        private Long targetGroupId;
+    }
 }

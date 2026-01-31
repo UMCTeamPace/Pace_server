@@ -20,6 +20,11 @@ public enum SavedPlaceErrorCode implements BaseErrorCode {
             HttpStatus.NOT_FOUND,
             "조회된 장소가 없습니다.",
             "PLACE404_1"
+    ),
+    SAVED_PLACE_UNAUTHORIZED(
+            HttpStatus.UNAUTHORIZED,
+            "삭제할 권한이 없거나 존재하지 않는 장소입니다.",
+            "SAVED_PLACE401_1"
     );
 
     private final HttpStatus httpStatus;
