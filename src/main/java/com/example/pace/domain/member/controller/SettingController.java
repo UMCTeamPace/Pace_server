@@ -6,6 +6,7 @@ import com.example.pace.domain.member.service.SettingService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public class SettingController implements SettingControllerDocs{
     @PatchMapping
     public ApiResponse<SettingResponseDTO> updateMySetting(
             @RequestParam Long memberId,
-            @RequestBody SettingUpdateRequestDTO request
+            @Valid @RequestBody SettingUpdateRequestDTO request
     ) {
         return ApiResponse.onSuccess(
             SettingSuccessCode.SETTING_UPDATE_OK,

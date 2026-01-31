@@ -17,7 +17,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class OnboardingService {
     );
 
     private final MemberRepository memberRepository;
-    private final SettingRepository settingRepository;
+    private final SettingServiceImpl settingService;
 
     @Transactional
     public OnboardingResDTO upsertOnboarding(Long memberId, OnboardingReqDTO request) {
@@ -51,8 +50,7 @@ public class OnboardingService {
                 .orElseThrow(() -> new OnboardingException(OnboardingErrorCode.MEMBER_NOT_FOUND));
 
         // Setting upsert (member 1:1)
-        Setting setting = settingRepository.findByMember(member)
-                .orElseGet(() -> settingRepository.save(createDefaultSetting(member)));
+        Setting setting = settingService.getOrCreateSetting(member);
 
         // earlyArrivalTime 검증 (0~60)
         Integer earlyArrivalTime = request.earlyArrivalTime();
@@ -74,28 +72,14 @@ public class OnboardingService {
 
         // 알림 시간 갱신 (타입별 교체)(빈 리스트면 해당 타입 전부 삭제)
         for (AlarmType type : REQUIRED_TYPES) {
-            List<ReminderTime> reminderTimes =
-                    buildReminderTimes(setting, type, alarmMap.get(type));
-
-            setting.replaceReminderTimes(type, reminderTimes);
-            // replaceReminderTimes에서 empty => delete 처리
+            List<Integer> minutes = alarmMap.getOrDefault(type, Collections.emptyList());
+            settingService.replaceReminderTimesFromMinutes(setting, type, minutes);
         }
 
         //온보딩 완료 처리
         member.updateOnboardingCompleted(true);
 
         return new OnboardingResDTO(true);
-    }
-
-    private Setting createDefaultSetting(Member member) {
-        return Setting.builder()
-                .member(member)
-                .isNotiEnabled(false)
-                .isLocEnabled(false)
-                .earlyArrivalTime(20)
-                .isReminderActive(true)
-                .calendarType(CalendarType.GOOGLE)
-                .build();
     }
 
     /**
@@ -150,23 +134,6 @@ public class OnboardingService {
                 throw new OnboardingException(OnboardingErrorCode.INVALID_ALARM_MINUTES);
             }
         }
-    }
-
-    private List<ReminderTime> buildReminderTimes(
-            Setting setting,
-            AlarmType alarmType,
-            List<Integer> minutesList
-    ) {
-        if (minutesList == null) {
-            return List.of();
-        }
-
-        return minutesList.stream()
-                .filter(Objects::nonNull)
-                .filter(m -> m > 0)
-                .distinct()
-                .map(m -> SettingConverter.toEntity(setting, alarmType, m))
-                .toList();
     }
 
 }

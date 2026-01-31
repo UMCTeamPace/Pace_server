@@ -24,15 +24,14 @@ public class SettingConverter {
 
     public static SettingResponseDTO toResponse(Setting setting) {
 
-        List<Integer> scheduleTimes = setting.getReminderTimes().stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.SCHEDULE)
-                .map(ReminderTime::getMinutes)
-                .toList();
+        java.util.Map<com.example.pace.domain.member.enums.AlarmType, java.util.List<Integer>> timesByType = setting.getReminderTimes().stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        com.example.pace.domain.member.entity.ReminderTime::getAlarmType,
+                        java.util.stream.Collectors.mapping(com.example.pace.domain.member.entity.ReminderTime::getMinutes, java.util.stream.Collectors.toList())
+                ));
 
-        List<Integer> departureTimes = setting.getReminderTimes().stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.DEPARTURE)
-                .map(ReminderTime::getMinutes)
-                .toList();
+        java.util.List<Integer> scheduleTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.SCHEDULE, java.util.List.of());
+        java.util.List<Integer> departureTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.DEPARTURE, java.util.List.of());
 
         return SettingResponseDTO.builder()
                 .isNotiEnabled(setting.isNotiEnabled())
