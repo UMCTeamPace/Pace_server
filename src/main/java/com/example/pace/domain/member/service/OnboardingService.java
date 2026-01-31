@@ -1,10 +1,13 @@
 package com.example.pace.domain.member.service;
 
+import com.example.pace.domain.member.converter.SettingConverter;
 import com.example.pace.domain.member.dto.request.OnboardingReqDTO;
 import com.example.pace.domain.member.dto.response.OnboardingResDTO;
 import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
+import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.exception.OnboardingErrorCode;
 import com.example.pace.domain.member.exception.OnboardingException;
 import com.example.pace.domain.member.repository.MemberRepository;
@@ -49,7 +52,7 @@ public class OnboardingService {
 
         // Setting upsert (member 1:1)
         Setting setting = settingRepository.findByMember(member)
-                .orElseGet(() -> settingRepository.save(Setting.defaultOf(member)));
+                .orElseGet(() -> settingRepository.save(createDefaultSetting(member)));
 
         // earlyArrivalTime 검증 (0~60)
         Integer earlyArrivalTime = request.earlyArrivalTime();
@@ -71,7 +74,11 @@ public class OnboardingService {
 
         // 알림 시간 갱신 (타입별 교체)(빈 리스트면 해당 타입 전부 삭제)
         for (AlarmType type : REQUIRED_TYPES) {
-            setting.replaceReminderTimes(type, alarmMap.get(type)); // replaceReminderTimes에서 empty => delete 처리
+            List<ReminderTime> reminderTimes =
+                    buildReminderTimes(setting, type, alarmMap.get(type));
+
+            setting.replaceReminderTimes(type, reminderTimes);
+            // replaceReminderTimes에서 empty => delete 처리
         }
 
         //온보딩 완료 처리
@@ -80,8 +87,19 @@ public class OnboardingService {
         return new OnboardingResDTO(true);
     }
 
+    private Setting createDefaultSetting(Member member) {
+        return Setting.builder()
+                .member(member)
+                .isNotiEnabled(false)
+                .isLocEnabled(false)
+                .earlyArrivalTime(20)
+                .isReminderActive(true)
+                .calendarType(CalendarType.GOOGLE)
+                .build();
+    }
+
     /**
-     * ✅ 타입별:
+     * 타입별:
      * - distinct 후에도 size<=5
      * - 값 범위/화이트리스트 검증(옵션)
      * - null minutes는 빈 리스트로
@@ -133,4 +151,22 @@ public class OnboardingService {
             }
         }
     }
+
+    private List<ReminderTime> buildReminderTimes(
+            Setting setting,
+            AlarmType alarmType,
+            List<Integer> minutesList
+    ) {
+        if (minutesList == null) {
+            return List.of();
+        }
+
+        return minutesList.stream()
+                .filter(Objects::nonNull)
+                .filter(m -> m > 0)
+                .distinct()
+                .map(m -> SettingConverter.toEntity(setting, alarmType, m))
+                .toList();
+    }
+
 }

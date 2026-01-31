@@ -54,21 +54,43 @@ public class SettingServiceImpl implements SettingService {
                 request.getCalendarType()
         );
 
-        if (request.getScheduleReminderTimes() != null) {
-            setting.replaceReminderTimes(
-                    AlarmType.SCHEDULE,
-                    buildReminderTimes(setting, AlarmType.SCHEDULE, request.getScheduleReminderTimes())
-            );
-        }
+        if (request.getAlarms() != null) {
+            applyAlarms(setting, request.getAlarms());
+        } else {
+            // ✅ 2) alarms가 없으면 기존 방식 유지 (호환)
+            if (request.getScheduleReminderTimes() != null) {
+                setting.replaceReminderTimes(
+                        AlarmType.SCHEDULE,
+                        buildReminderTimes(setting, AlarmType.SCHEDULE, request.getScheduleReminderTimes())
+                );
+            }
 
-        if (request.getDepartureReminderTimes() != null) {
-            setting.replaceReminderTimes(
-                    AlarmType.DEPARTURE,
-                    buildReminderTimes(setting, AlarmType.DEPARTURE, request.getDepartureReminderTimes())
-            );
+            if (request.getDepartureReminderTimes() != null) {
+                setting.replaceReminderTimes(
+                        AlarmType.DEPARTURE,
+                        buildReminderTimes(setting, AlarmType.DEPARTURE, request.getDepartureReminderTimes())
+                );
+            }
         }
 
         return SettingConverter.toResponse(setting);
+    }
+
+    private void applyAlarms(Setting setting, List<SettingUpdateRequestDTO.Alarm> alarms) {
+        for (SettingUpdateRequestDTO.Alarm alarm : alarms) {
+            if (alarm == null || alarm.getType() == null) continue;
+
+            List<Integer> minutes = alarm.getMinutes();
+
+            // minutes == null 이면 "이 타입은 변경하지 않음"
+            if (minutes == null) continue;
+
+            // minutes == [] 이면 buildReminderTimes -> [] 이고 replaceReminderTimes가 삭제만 수행
+            setting.replaceReminderTimes(
+                    alarm.getType(),
+                    buildReminderTimes(setting, alarm.getType(), minutes)
+            );
+        }
     }
 
     // ReminderTime 생성

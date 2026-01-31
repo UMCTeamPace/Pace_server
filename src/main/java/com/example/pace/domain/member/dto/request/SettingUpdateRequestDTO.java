@@ -1,5 +1,6 @@
 package com.example.pace.domain.member.dto.request;
 
+import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.enums.CalendarType;
 import java.util.List;
 import lombok.Getter;
@@ -31,4 +32,14 @@ public class SettingUpdateRequestDTO {
 
     //출발 알림
     private List<Integer> departureReminderTimes;
+
+    //alarms로 받기 위해
+    private List<Alarm> alarms;
+
+    @Getter
+    @NoArgsConstructor
+    public static class Alarm {
+        private AlarmType type;        // "SCHEDULE", "DEPARTURE"
+        private List<Integer> minutes; // [10,60] 또는 []
+    }
 }
