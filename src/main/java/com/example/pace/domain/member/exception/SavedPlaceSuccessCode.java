@@ -23,6 +23,11 @@ public enum SavedPlaceSuccessCode implements BaseSuccessCode {
             "장소가 성공적으로 삭제되었습니다.",
             "PLACE200_2"
     ),
+    SAVED_PLACE_MOVE_OK(
+            HttpStatus.OK,
+            "장소들이 성공적으로 이동되었습니다.",
+            "PLACE200_3"
+    ),
     ;
 
     private final HttpStatus httpStatus;

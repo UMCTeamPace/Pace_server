@@ -93,4 +93,33 @@ public interface SavedPlaceControllerDocs {
             @Parameter(hidden = true) CustomUserDetails userDetails,
             @RequestBody SavedPlaceReqDTO.DeletePlaceListDTO request
     );
+
+    @Operation(summary = "장소 그룹 이동 API", description = "하나 이상의 장소를 다른 그룹으로 이동시킵니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "장소 이동 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "성공 예시", value = "{\"isSuccess\":true, \"code\":\"SAVED_PLACE_200_3\", \"message\":\"장소들이 성공적으로 이동되었습니다.\", \"result\":\"장소들이 성공적으로 이동되었습니다.\"}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "이동 실패 (중복된 장소 존재)",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "중복 에러 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_400_1\", \"message\":\"이동하려는 그룹에 이미 해당 장소가 존재합니다.\", \"result\":null}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "장소 또는 그룹을 찾을 수 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "Not Found 예시", value = "{\"isSuccess\":false, \"code\":\"SAVED_PLACE_404_1\", \"message\":\"해당 장소나 대상 그룹을 찾을 수 없습니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<String> movePlaces(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @RequestBody SavedPlaceReqDTO.MovePlaceListDTO request
+    );
 }

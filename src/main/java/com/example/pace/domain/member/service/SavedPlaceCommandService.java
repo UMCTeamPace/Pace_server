@@ -57,4 +57,32 @@ public class SavedPlaceCommandService {
 
         savedPlaceRepository.deleteAllInBatch(myPlaceList);
     }
+
+    // 장소들 이동
+    public void movePlaces(Long memberId, SavedPlaceReqDTO.MovePlaceListDTO request) {
+        List<Long> placeIdList = request.getPlaceIdList();
+        Long targetGroupId = request.getTargetGroupId();
+
+        PlaceGroup targetGroup = placeGroupRepository.findByMemberIdAndId(memberId, targetGroupId)
+                .orElseThrow(() -> new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_NOT_FOUND));
+
+        // 이동할 장소들 조회
+        List<SavedPlace> placesToMove = savedPlaceRepository.findAllByIdInAndMemberId(placeIdList, memberId);
+
+        if (placesToMove.size() != placeIdList.size()) {
+            throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_UNAUTHORIZED);
+        }
+
+        List<String> targetPlaceIdList = targetGroup.getSavedPlaceList().stream()
+                .map(SavedPlace::getPlaceId).toList();
+
+        for (SavedPlace place : placesToMove) {
+            // 이동할 그룹에 이미 이 장소가 있는지 체크
+            if (targetPlaceIdList.contains(place.getPlaceId())) {
+                throw new SavedPlaceException(SavedPlaceErrorCode.SAVED_PLACE_ALREADY_EXISTS);
+            }
+
+            targetGroup.addSavedPlace(place);
+        }
+    }
 }
