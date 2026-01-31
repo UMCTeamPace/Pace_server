@@ -48,13 +48,12 @@ public class ScheduleFactory {
             Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
             schedule.addRoute(route);
 
-//            if (request.getRoute().getRouteDetails() != null) {
-//                request.getRoute().getRouteDetails().forEach(dto -> {
-//                    route.addRouteDetail(
-//                            ScheduleReqDtoConverter.toRouteDetail(dto)
-//                    );
-//                });
-//            }
+            if (request.getRoute().getRouteDetails() != null) {
+                request.getRoute().getRouteDetails().stream()
+                        .filter(java.util.Objects::nonNull)
+                        .map(ScheduleReqDtoConverter::toRouteDetail)
+                        .forEach(route::addRouteDetail);
+            }
         }
 
         if (request.getReminders() != null) {
