@@ -18,6 +18,11 @@ public enum PlaceGroupErrorCode implements BaseErrorCode {
             "중복된 그룹 이름입니다.",
             "PLACE_GROUP400_1"
     ),
+    PLACE_GROUP_UNAUTHORIZED(
+            HttpStatus.UNAUTHORIZED,
+            "삭제할 권한이 없거나 존재하지 않는 그룹입니다.",
+            "PLACE_GROUP401_1"
+    ),
     ;
 
     private final HttpStatus httpStatus;

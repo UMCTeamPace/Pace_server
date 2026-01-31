@@ -11,6 +11,7 @@ import com.example.pace.domain.member.exception.PlaceGroupErrorCode;
 import com.example.pace.domain.member.exception.PlaceGroupException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.member.repository.PlaceGroupRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,5 +63,16 @@ public class PlaceGroupCommandService {
         }
 
         return PlaceGroupConverter.toPlaceGroupDTO(placeGroup);
+    }
+
+    // 그룹 삭제
+    public void deleteGroups(Long memberId, List<Long> groupIdList) {
+        List<PlaceGroup> groupList = placeGroupRepository.findAllByIdInAndMemberId(groupIdList, memberId);
+
+        if (groupList.size() != groupIdList.size()) {
+            throw new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_UNAUTHORIZED);
+        }
+
+        placeGroupRepository.deleteAll(groupList);
     }
 }

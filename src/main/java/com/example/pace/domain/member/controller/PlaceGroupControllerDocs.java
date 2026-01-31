@@ -90,4 +90,26 @@ public interface PlaceGroupControllerDocs {
             @Parameter(description = "수정할 그룹 ID", required = true) @PathVariable Long groupId,
             @RequestBody PlaceGroupReqDTO.UpdateGroupReqDTO request
     );
+
+    @Operation(summary = "장소 그룹 다중 삭제 API", description = "장소 그룹들을 ID 리스트를 통해 한 번에 삭제합니다. 그룹 삭제 시 내부에 저장된 장소들도 함께 삭제됩니다.")
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "그룹 삭제 성공",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "삭제 성공 예시", value = "{\"isSuccess\":true, \"code\":\"PLACE_GROUP_200_3\", \"message\":\"그룹들이 성공적으로 삭제되었습니다.\", \"result\":\"그룹들이 성공적으로 삭제되었습니다.\"}")
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "그룹을 찾을 수 없거나 삭제 권한 없음",
+                    content = @Content(schema = @Schema(implementation = ApiResponse.class),
+                            examples = @ExampleObject(name = "에러 예시", value = "{\"isSuccess\":false, \"code\":\"PLACE_GROUP_401_1\", \"message\":\"삭제할 권한이 없거나 존재하지 않는 그룹입니다.\", \"result\":null}")
+                    )
+            )
+    })
+    ApiResponse<String> deleteGroups(
+            @Parameter(hidden = true) CustomUserDetails userDetails,
+            @RequestBody PlaceGroupReqDTO.DeleteGroupListReqDTO request
+    );
 }

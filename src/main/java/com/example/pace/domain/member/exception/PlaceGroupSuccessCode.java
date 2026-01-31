@@ -23,6 +23,11 @@ public enum PlaceGroupSuccessCode implements BaseSuccessCode {
             "그룹이 성공적으로 수정되었습니다.",
             "PLACE_GROUP200_2"
     ),
+    PLACE_GROUP_DELETE_OK(
+            HttpStatus.OK,
+            "그룹들이 성공적으로 삭제되었습니다.",
+            "PLACE_GROUP200_3"
+    ),
     ;
     private final HttpStatus httpStatus;
     private final String message;
