@@ -24,8 +24,14 @@ public class SettingConverter {
 
     public static SettingResponseDTO toResponse(Setting setting) {
 
-        List<Integer> scheduleTimes = setting.getScheduleReminderTimes();
-        List<Integer> departureTimes = setting.getDepartureReminderTimes();
+        java.util.Map<com.example.pace.domain.member.enums.AlarmType, java.util.List<Integer>> timesByType = setting.getReminderTimes().stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        com.example.pace.domain.member.entity.ReminderTime::getAlarmType,
+                        java.util.stream.Collectors.mapping(com.example.pace.domain.member.entity.ReminderTime::getMinutes, java.util.stream.Collectors.toList())
+                ));
+
+        java.util.List<Integer> scheduleTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.SCHEDULE, java.util.List.of());
+        java.util.List<Integer> departureTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.DEPARTURE, java.util.List.of());
 
         return SettingResponseDTO.builder()
                 .isNotiEnabled(setting.isNotiEnabled())
@@ -33,8 +39,9 @@ public class SettingConverter {
                 .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isReminderActive(setting.isReminderActive())
                 .calendarType(setting.getCalendarType())
-                .scheduleReminderTimes(setting.getScheduleReminderTimes())
-                .departureReminderTimes(setting.getDepartureReminderTimes())
+                .scheduleReminderTimes(scheduleTimes)
+                .departureReminderTimes(departureTimes)
                 .build();
     }
+
 }

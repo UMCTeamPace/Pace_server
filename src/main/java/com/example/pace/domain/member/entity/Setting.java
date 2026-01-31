@@ -1,31 +1,12 @@
 package com.example.pace.domain.member.entity;
 
+import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.global.entity.BaseEntity;
-import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.converter.SettingConverter;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(
@@ -75,48 +56,11 @@ public class Setting extends BaseEntity {
     @Builder.Default
     private List<ReminderTime> reminderTimes = new ArrayList<>();
 
-
-    public static com.example.pace.domain.member.entity.Setting defaultOf(Member member) {
-        return com.example.pace.domain.member.entity.Setting.builder()
-                .member(member)
-                .isNotiEnabled(false)      // 권한 허용(또는 허용 유무)
-                .isLocEnabled(false)
-                .earlyArrivalTime(20)
-                .isReminderActive(true)
-                .calendarType(CalendarType.GOOGLE) // 프로젝트 기본값에 따라 달라짐
-                .build();
-    }
-
-    public void replaceReminderTimes(AlarmType alarmType, List<Integer> minutesList) {
+    //알림 교체
+    public void replaceReminderTimes(AlarmType alarmType, List<ReminderTime> newTimes) {
         this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
-
-        if (minutesList.isEmpty()) { return; }
-
-        minutesList.stream()
-                .filter(Objects::nonNull)
-                .filter(m -> m > 0)
-                .distinct()
-                .forEach(minutes ->
-                        this.reminderTimes.add(
-                                SettingConverter.toEntity(this, alarmType, minutes)
-                        )
-                );
+        this.reminderTimes.addAll(newTimes);
     }
-
-    public List<Integer> getScheduleReminderTimes() {
-        return reminderTimes.stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.SCHEDULE)
-                .map(ReminderTime::getMinutes)
-                .toList();
-    }
-    // 명시적 getter Converter때문에 사용(Lombok 우회)
-    public List<Integer> getDepartureReminderTimes() {
-        return reminderTimes.stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.DEPARTURE)
-                .map(ReminderTime::getMinutes)
-                .toList();
-    }
-
 
     public void update(
             Integer earlyArrivalTime,
@@ -132,8 +76,7 @@ public class Setting extends BaseEntity {
         if (calendarType != null) this.calendarType = calendarType;
     }
 
-    // 명시적 getter Converter때문에 사용(Lombok 우회)
-
+    // Lombok Boolean Getter 우회
     public boolean isNotiEnabled() {
         return this.isNotiEnabled;
     }

@@ -1,10 +1,13 @@
 package com.example.pace.domain.member.service;
 
+import com.example.pace.domain.member.converter.SettingConverter;
 import com.example.pace.domain.member.dto.request.OnboardingReqDTO;
 import com.example.pace.domain.member.dto.response.OnboardingResDTO;
 import com.example.pace.domain.member.entity.Member;
+import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
+import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.exception.OnboardingErrorCode;
 import com.example.pace.domain.member.exception.OnboardingException;
 import com.example.pace.domain.member.repository.MemberRepository;
@@ -14,7 +17,6 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +40,7 @@ public class OnboardingService {
     );
 
     private final MemberRepository memberRepository;
-    private final SettingRepository settingRepository;
+    private final SettingServiceImpl settingService;
 
     @Transactional
     public OnboardingResDTO upsertOnboarding(Long memberId, OnboardingReqDTO request) {
@@ -48,8 +50,7 @@ public class OnboardingService {
                 .orElseThrow(() -> new OnboardingException(OnboardingErrorCode.MEMBER_NOT_FOUND));
 
         // Setting upsert (member 1:1)
-        Setting setting = settingRepository.findByMember(member)
-                .orElseGet(() -> settingRepository.save(Setting.defaultOf(member)));
+        Setting setting = settingService.getOrCreateSetting(member);
 
         // earlyArrivalTime 검증 (0~60)
         Integer earlyArrivalTime = request.earlyArrivalTime();
@@ -71,7 +72,8 @@ public class OnboardingService {
 
         // 알림 시간 갱신 (타입별 교체)(빈 리스트면 해당 타입 전부 삭제)
         for (AlarmType type : REQUIRED_TYPES) {
-            setting.replaceReminderTimes(type, alarmMap.get(type)); // replaceReminderTimes에서 empty => delete 처리
+            List<Integer> minutes = alarmMap.getOrDefault(type, Collections.emptyList());
+            settingService.replaceReminderTimesFromMinutes(setting, type, minutes);
         }
 
         //온보딩 완료 처리
@@ -81,7 +83,7 @@ public class OnboardingService {
     }
 
     /**
-     * ✅ 타입별:
+     * 타입별:
      * - distinct 후에도 size<=5
      * - 값 범위/화이트리스트 검증(옵션)
      * - null minutes는 빈 리스트로
@@ -133,4 +135,5 @@ public class OnboardingService {
             }
         }
     }
+
 }
