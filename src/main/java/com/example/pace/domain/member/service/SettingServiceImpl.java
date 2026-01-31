@@ -57,7 +57,7 @@ public class SettingServiceImpl implements SettingService {
         if (request.getAlarms() != null) {
             applyAlarms(setting, request.getAlarms());
         } else {
-            // ✅ 2) alarms가 없으면 기존 방식 유지 (호환)
+            // 2) alarms가 없으면 기존 방식 유지
             if (request.getScheduleReminderTimes() != null) {
                 setting.replaceReminderTimes(
                         AlarmType.SCHEDULE,
