@@ -85,7 +85,9 @@ public class GoogleDirectionApiResponse {
 
     @Getter
     public static class DepartureStop {
+        @JsonProperty("location")
         private EncodedLocation encodedLocation;
+        @JsonProperty("name")
         private String encodedName;
     }
 

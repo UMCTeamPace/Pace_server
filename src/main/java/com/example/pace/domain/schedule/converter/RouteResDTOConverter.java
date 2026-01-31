@@ -41,8 +41,8 @@ public class RouteResDTOConverter {
         }
 
         return RouteApiResDto.builder()
-                .totalDistance(safeInt(firstLeg.getDistance().getValue()))
-                .totalTime(safeInt(firstLeg.getDuration().getValue()))
+                .totalDistance(firstLeg.getDistance() != null ? safeInt(firstLeg.getDistance().getValue()) : 0)
+                .totalTime(firstLeg.getDuration() != null ? safeInt(firstLeg.getDuration().getValue()) : 0)
                 .departureTime(epochToLocalDateTime(
                         firstLeg.getDepartureTime() != null ? firstLeg.getDepartureTime().getValue() : null))
                 .arrivalTime(epochToLocalDateTime(
@@ -54,12 +54,16 @@ public class RouteResDTOConverter {
     private static RouteDetailInfoResDTO toRouteDetailInfoResDTO(GoogleDirectionApiResponse.Step step, int sequence) {
         RouteDetailInfoResDTO.RouteDetailInfoResDTOBuilder builder = RouteDetailInfoResDTO.builder()
                 .sequence(sequence) // 순서 주입
-                .startLat(BigDecimal.valueOf(step.getStartLocation().getLat()))
-                .startLng(BigDecimal.valueOf(step.getStartLocation().getLng()))
-                .endLat(BigDecimal.valueOf(step.getEndLocation().getLat()))
-                .endLng(BigDecimal.valueOf(step.getEndLocation().getLng()))
-                .duration(safeInt(step.getDuration().getValue()))
-                .distance(safeInt(step.getDistance().getValue()))
+                .startLat(step.getStartLocation() != null && step.getStartLocation().getLat() != null
+                        ? BigDecimal.valueOf(step.getStartLocation().getLat()) : null)
+                .startLng(step.getStartLocation() != null && step.getStartLocation().getLng() != null
+                        ? BigDecimal.valueOf(step.getStartLocation().getLng()) : null)
+                .endLat(step.getEndLocation() != null && step.getEndLocation().getLat() != null ? BigDecimal.valueOf(
+                        step.getEndLocation().getLat()) : null)
+                .endLng(step.getEndLocation() != null && step.getEndLocation().getLng() != null ? BigDecimal.valueOf(
+                        step.getEndLocation().getLng()) : null)
+                .duration(step.getDuration() != null ? safeInt(step.getDuration().getValue()) : 0)
+                .distance(step.getDistance() != null ? safeInt(step.getDistance().getValue()) : 0)
                 .description(step.getHtmlInstructions());
 
         // TRANSIT 모드일 때만 상세 정보 매핑
@@ -124,25 +128,17 @@ public class RouteResDTOConverter {
     }
 
 
-    // 교통정보 매핑
+    // 교통정보 매핑/서울 내 지역 한정-> 타 대중교통 없다고 가정함
     private static TransitType mapTransitType(String vehicleType) {
         if (vehicleType == null) {
             return TransitType.WALK;
         }
         // 구글 API 응답값에 맞춰 케이스 추가 필요
-        switch (vehicleType.toUpperCase()) {
-            case "BUS":
-            case "INTERCITY_BUS":
-            case "TROLLEYBUS":
-                return TransitType.BUS;
-            case "SUBWAY":
-            case "METRO":
-            case "RAIL":
-            case "TRAM":
-            case "HEAVY_RAIL":
-                return TransitType.SUBWAY;
-            default:
-                return TransitType.WALK; // 혹은 TransitType.OTHER
-        }
+        return switch (vehicleType.toUpperCase()) {
+            case "BUS" -> TransitType.BUS;
+            case "SUBWAY" -> TransitType.SUBWAY;
+            default -> TransitType.WALK;
+        };
+
     }
 }
