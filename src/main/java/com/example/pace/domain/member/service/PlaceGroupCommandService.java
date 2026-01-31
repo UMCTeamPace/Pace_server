@@ -73,6 +73,6 @@ public class PlaceGroupCommandService {
             throw new PlaceGroupException(PlaceGroupErrorCode.PLACE_GROUP_UNAUTHORIZED);
         }
 
-        placeGroupRepository.deleteAllInBatch(groupList);
+        placeGroupRepository.deleteAll(groupList);
     }
 }

@@ -74,10 +74,10 @@ public class PlaceGroupController implements PlaceGroupControllerDocs {
             @RequestBody @Valid PlaceGroupReqDTO.DeleteGroupListReqDTO request
     ) {
         placeGroupCommandService.deleteGroups(userDetails.member().getId(), request.getGroupIdList());
-        
+
         return ApiResponse.onSuccess(
                 PlaceGroupSuccessCode.PLACE_GROUP_DELETE_OK,
-                "그룹들이 성공적으로 삭제되었습니다."
+                PlaceGroupSuccessCode.PLACE_GROUP_DELETE_OK.getMessage()
         );
     }
 }

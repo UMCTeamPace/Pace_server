@@ -20,7 +20,7 @@ public enum PlaceGroupErrorCode implements BaseErrorCode {
     ),
     PLACE_GROUP_UNAUTHORIZED(
             HttpStatus.UNAUTHORIZED,
-            "소유하지 않은 그룹에 접근하려 했습니다.",
+            "삭제할 권한이 없거나 존재하지 않는 그룹입니다.",
             "PLACE_GROUP401_1"
     ),
     ;
