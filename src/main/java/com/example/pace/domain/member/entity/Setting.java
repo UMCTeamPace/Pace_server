@@ -30,18 +30,24 @@ public class Setting extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    // 알림 권한 허용 여부
     @Column(name = "is_noti_enabled", nullable = false)
     private Boolean isNotiEnabled;
 
+    // 위치 권한 허용 여부
     @Column(name = "is_loc_enabled", nullable = false)
     private Boolean isLocEnabled;
 
+    // 미리 도착(분)
     @Column(name = "early_arrival_time", nullable = false)
     private Integer earlyArrivalTime;
 
+    // (추가) UI/온보딩에서 설정
+    // 리마인더(일정 알림) 사용 여부
     @Column(name = "is_reminder_active", nullable = false)
     private Boolean isReminderActive;
 
+    // 캘린더 선택
     @Enumerated(EnumType.STRING)
     @Column(name = "calendar_type", nullable = false, length = 30)
     private CalendarType calendarType;
@@ -82,4 +88,5 @@ public class Setting extends BaseEntity {
     public boolean isReminderActive() {
         return this.isReminderActive;
     }
+
 }

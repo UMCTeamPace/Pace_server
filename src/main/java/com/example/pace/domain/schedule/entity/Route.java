@@ -71,4 +71,12 @@ public class Route extends BaseEntity {
     @Builder.Default
     private List<RouteDetail> routeDetails = new ArrayList<>();
 
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
+    public void addRouteDetail(RouteDetail detail) {
+        this.routeDetails.add(detail);
+        detail.setRoute(this);
+    }
 }

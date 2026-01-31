@@ -6,25 +6,24 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class SavedPlaceResDTO {
+public class PlaceGroupResDTO {
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PlaceDTO {
-        private Long savedPlaceId;
+    @NoArgsConstructor
+    public static class PlaceGroupDTO {
         private Long groupId;
-        private String placeName;
-        private String placeId;
+        private String groupName;
+        private String groupColor;
         private String createdAt;
     }
 
     @Getter
-    @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class PlaceListDTO {
-        private List<PlaceDTO> placeDTOList;
-        private Integer count;
+    @NoArgsConstructor
+    public static class PlaceGroupListDTO {
+        private List<PlaceGroupDTO> placeGroupList;
+        private Integer listSize;
     }
 }

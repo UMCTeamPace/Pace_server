@@ -24,15 +24,8 @@ public class SettingConverter {
 
     public static SettingResponseDTO toResponse(Setting setting) {
 
-        List<Integer> scheduleTimes = setting.getReminderTimes().stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.SCHEDULE)
-                .map(ReminderTime::getMinutes)
-                .toList();
-
-        List<Integer> departureTimes = setting.getReminderTimes().stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.DEPARTURE)
-                .map(ReminderTime::getMinutes)
-                .toList();
+        List<Integer> scheduleTimes = setting.getScheduleReminderTimes();
+        List<Integer> departureTimes = setting.getDepartureReminderTimes();
 
         return SettingResponseDTO.builder()
                 .isNotiEnabled(setting.isNotiEnabled())

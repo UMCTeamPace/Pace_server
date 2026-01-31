@@ -12,14 +12,14 @@ public class SavedPlaceRepositoryImpl implements SavedPlaceRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public boolean isPlaceSavedInGroup(Long memberId, String placeId, String groupName) {
+    public boolean isPlaceSavedInGroup(Long memberId, String placeId, Long groupId) {
         Integer fetchOne = queryFactory
                 .selectOne()
                 .from(savedPlace)
                 .where(
                         savedPlace.member.id.eq(memberId),
                         savedPlace.placeId.eq(placeId),
-                        savedPlace.groupName.eq(groupName)
+                        savedPlace.placeGroup.id.eq(groupId)
                 )
                 .fetchFirst(); // limit 1과 동일(결과가 없으면 null 반환)
 
@@ -27,12 +27,12 @@ public class SavedPlaceRepositoryImpl implements SavedPlaceRepositoryCustom {
     }
 
     @Override
-    public List<SavedPlace> findAllPlaceByMemberAndGroupName(Long memberId, String groupName) {
+    public List<SavedPlace> findAllPlaceByMemberAndGroupId(Long memberId, Long groupId) {
         return queryFactory
                 .selectFrom(savedPlace)
                 .where(
                         savedPlace.member.id.eq(memberId),
-                        savedPlace.groupName.eq(groupName)
+                        savedPlace.placeGroup.id.eq(groupId)
                 )
                 .orderBy(savedPlace.createdAt.desc()) // 최신순 정렬
                 .fetch();
