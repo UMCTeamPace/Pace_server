@@ -21,11 +21,11 @@ public class ScheduleConversionServiceImpl implements ScheduleConversionService 
     private final RouteRepository routeRepository;
 
     @Override
-    public ScheduleConversionResDto convertPathScheduleToNormal(Long scheduleId) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
+    public ScheduleConversionResDto convertPathScheduleToNormal(Long memberId, Long scheduleId) {
+        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        if (!schedule.getIsPathIncluded()) {
+        if (!Boolean.TRUE.equals(schedule.getIsPathIncluded())) {
             throw new ScheduleException(ScheduleErrorCode.NOT_PATH_SCHEDULE);
         }
 
@@ -39,6 +39,6 @@ public class ScheduleConversionServiceImpl implements ScheduleConversionService 
         // route hard delete
         routeRepository.delete(route);
 
-        return new ScheduleConversionResDto(schedule.getId(), schedule.getIsPathIncluded());
+        return ScheduleConversionConverter.toConversionResponse(schedule);
     }
 }
