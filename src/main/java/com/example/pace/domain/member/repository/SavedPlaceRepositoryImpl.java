@@ -3,6 +3,8 @@ package com.example.pace.domain.member.repository;
 import static com.example.pace.domain.member.entity.QSavedPlace.savedPlace;
 
 import com.example.pace.domain.member.entity.SavedPlace;
+import com.example.pace.domain.member.enums.SavedPlaceSortType;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +29,26 @@ public class SavedPlaceRepositoryImpl implements SavedPlaceRepositoryCustom {
     }
 
     @Override
-    public List<SavedPlace> findAllPlaceByMemberAndGroupId(Long memberId, Long groupId) {
+    public List<SavedPlace> findAllPlaceByMemberAndGroupId(Long memberId, Long groupId, SavedPlaceSortType sortType) {
         return queryFactory
                 .selectFrom(savedPlace)
                 .where(
                         savedPlace.member.id.eq(memberId),
                         savedPlace.placeGroup.id.eq(groupId)
                 )
-                .orderBy(savedPlace.createdAt.desc()) // 최신순 정렬
+                .orderBy(getOderSpecifier(sortType)) // 최신순 정렬
                 .fetch();
+    }
+
+    private OrderSpecifier<?> getOderSpecifier(SavedPlaceSortType sortType) {
+        if (sortType == null) {
+            return savedPlace.createdAt.desc();
+        }
+
+        return switch (sortType) {
+            case LATEST -> savedPlace.createdAt.desc();
+            case OLDEST -> savedPlace.createdAt.asc();
+            case NAME -> savedPlace.placeName.asc();
+        };
     }
 }
