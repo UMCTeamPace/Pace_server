@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -60,7 +61,7 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    @Column(name = "is_path_included")
+    @Column(name = "is_path_included", nullable = false)
     private Boolean isPathIncluded; // 경로 포함 여부
 
 
@@ -113,7 +114,6 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         }
     }
 
-
     //schedule에 route 붙이기
     public void addRoute(Route route) {
         this.route = route;
@@ -125,6 +125,15 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
             this.route.setSchedule(null);
             this.route = null;
         }
+    }
+
+    public void updateScheduleRoute(boolean isPathIncluded) {
+        this.isPathIncluded = isPathIncluded;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (isPathIncluded == null) isPathIncluded = false;
     }
 
 }

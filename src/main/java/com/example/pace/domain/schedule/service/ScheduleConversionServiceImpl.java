@@ -1,11 +1,12 @@
 package com.example.pace.domain.schedule.service;
 
-import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
 import com.example.pace.domain.schedule.entity.Route;
+import com.example.pace.domain.schedule.repository.RouteRepository;
+import com.example.pace.domain.schedule.converter.ScheduleConversionConverter;
+import com.example.pace.domain.schedule.dto.response.ScheduleConversionResDto;
 import com.example.pace.domain.schedule.entity.Schedule;
 import com.example.pace.domain.schedule.exception.ScheduleErrorCode;
 import com.example.pace.domain.schedule.exception.ScheduleException;
-import com.example.pace.domain.schedule.repository.RouteRepository;
 import com.example.pace.domain.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,31 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class ScheduleRouteDeleteService {
+public class ScheduleConversionServiceImpl implements ScheduleConversionService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
 
-    public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
-
-        // 내 일정인지(scheduleId + memberId)로 조회
+    @Override
+    public ScheduleConversionResDto convertPathScheduleToNormal(Long memberId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        // 일정에 연결된 Route 조회
+        if (!Boolean.TRUE.equals(schedule.getIsPathIncluded())) {
+            throw new ScheduleException(ScheduleErrorCode.NOT_PATH_SCHEDULE);
+        }
+
+        // 연결된 route 조회 + hard delete
         Route route = routeRepository.findByScheduleId(scheduleId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.ROUTE_NOT_FOUND));
 
-        // Schedule - Route 연관관계 끊기
-        schedule.setRoute(null);
+        // 일정 상태 전환
+        schedule.updateScheduleRoute(false);
 
-        // 실제 Route 삭제 (RouteDetail은 cascade+orphanRemoval로 같이 삭제되는 구조가 일반적)
+        // route hard delete
         routeRepository.delete(route);
 
-        //일반 일정으로 진행
-        schedule.setIsPathIncluded(false);
-
-        // 응답용 (updatedAt은 auditing으로 갱신되거나, 필요시 scheduleRepository.save(schedule) 해도 됨)
-        return ScheduleRouteDeleteResDto.of(schedule.getId(), schedule.getUpdatedAt());
+        return ScheduleConversionConverter.toConversionResponse(schedule);
     }
 }

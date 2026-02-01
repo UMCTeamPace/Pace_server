@@ -37,6 +37,7 @@ public class ScheduleFactory {
                 .repeatGroupId(groupId)
                 .repeatRule(repeatRule)
                 .member(member)
+                .isPathIncluded(Boolean.TRUE.equals(request.getIsPathIncluded()))
                 .build();
 
         if (!Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getPlace() != null) {
