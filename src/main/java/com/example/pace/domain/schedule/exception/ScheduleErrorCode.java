@@ -16,9 +16,11 @@ public enum ScheduleErrorCode implements BaseErrorCode {
 
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404_1", "해당 일정을 찾을 수 없습니다."),
 
-    SCHEDULE_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 일정에 대한 권한이 없습니다.","SCHEDULE403_1"),
+    SCHEDULE_FORBIDDEN(HttpStatus.FORBIDDEN, "SCHEDULE403_1", "해당 일정에 대한 권한이 없습니다."),
 
-    ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 일정에 등록된 경로가 없습니다.","SCHEDULE404_2");
+    ROUTE_NOT_FOUND(HttpStatus.NOT_FOUND,"SCHEDULE404_2", "해당 일정에 등록된 경로가 없습니다."),
+
+    NOT_PATH_SCHEDULE(HttpStatus.BAD_REQUEST, "SCHEDULE400_3", "경로 일정이 아닙니다.");
 
 
     private final HttpStatus httpStatus;

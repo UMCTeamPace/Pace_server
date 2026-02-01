@@ -8,4 +8,5 @@ public interface RouteRepository extends JpaRepository<Route, Long> {
 
     //schedule로 route찾기 위해
     Optional<Route> findByScheduleId(Long scheduleId);
+    void deleteByScheduleId(Long scheduleId);
 }
