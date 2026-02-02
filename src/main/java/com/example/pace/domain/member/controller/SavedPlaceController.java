@@ -2,6 +2,7 @@ package com.example.pace.domain.member.controller;
 
 import com.example.pace.domain.member.dto.request.SavedPlaceReqDTO;
 import com.example.pace.domain.member.dto.response.SavedPlaceResDTO;
+import com.example.pace.domain.member.enums.SavedPlaceSortType;
 import com.example.pace.domain.member.exception.SavedPlaceSuccessCode;
 import com.example.pace.domain.member.service.SavedPlaceCommandService;
 import com.example.pace.domain.member.service.SavedPlaceQueryService;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -47,12 +49,13 @@ public class SavedPlaceController implements SavedPlaceControllerDocs {
     @GetMapping("/saved/{groupId}")
     public ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @PathVariable Long groupId
+            @PathVariable Long groupId,
+            @RequestParam(defaultValue = "LATEST") SavedPlaceSortType sortType
     ) {
         Long memberId = userDetails.member().getId();
         return ApiResponse.onSuccess(
                 SavedPlaceSuccessCode.SAVED_PLACE_FOUND_OK,
-                savedPlaceQueryService.getSavedPlaceList(memberId, groupId)
+                savedPlaceQueryService.getSavedPlaceList(memberId, groupId, sortType)
         );
     }
 

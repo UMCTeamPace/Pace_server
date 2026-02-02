@@ -2,6 +2,7 @@ package com.example.pace.domain.member.controller;
 
 import com.example.pace.domain.member.dto.request.SavedPlaceReqDTO;
 import com.example.pace.domain.member.dto.response.SavedPlaceResDTO;
+import com.example.pace.domain.member.enums.SavedPlaceSortType;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Saved Place API", description = "장소 저장(즐겨찾기) 관련 API")
 public interface SavedPlaceControllerDocs {
@@ -50,7 +52,7 @@ public interface SavedPlaceControllerDocs {
             @RequestBody SavedPlaceReqDTO.SavedPlaceDTO request
     );
 
-    @Operation(summary = "저장된 장소 조회 API", description = "사용자가 저장한 장소 목록을 특정 그룹별로 조회합니다.")
+    @Operation(summary = "저장된 장소 조회 API", description = "사용자가 저장한 장소 목록을 특정 그룹별로 조회하며, 정렬 기능을 지원합니다.")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "200",
@@ -69,7 +71,8 @@ public interface SavedPlaceControllerDocs {
     })
     ApiResponse<SavedPlaceResDTO.PlaceListDTO> getSavedPlaceList(
             @Parameter(hidden = true) CustomUserDetails userDetails,
-            @Parameter(description = "조회할 그룹 ID (Path Variable)", required = true) @PathVariable Long groupId
+            @Parameter(description = "조회할 그룹 ID", required = true) @PathVariable Long groupId,
+            @Parameter(description = "정렬 기준 (LATEST, OLDEST, NAME)", required = false) @RequestParam SavedPlaceSortType sortType
     );
 
     @Operation(summary = "저장된 장소 다중 삭제 API", description = "저장된 장소들을 ID 리스트를 통해 한 번에 삭제합니다.")
