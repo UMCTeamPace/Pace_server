@@ -8,15 +8,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "Onboarding", description = "온보딩 API")
 public interface OnboardingControllerDocs {
 
-    @Operation(summary = "온보딩 설정 저장", description = "온보딩에서 입력한 값을 사용자 설정으로 저장합니다.")
+    @Operation(summary = "온보딩 설정 저장 및 완료", description = "온보딩 정보를 저장하고, 회원을 정회원(ROLE_USER)으로 승격시킨 후 정식 토큰을 발급합니다.")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(
             responseCode = "200",
             description = "온보딩 설정 저장 성공",
@@ -31,7 +32,12 @@ public interface OnboardingControllerDocs {
                                       "code": "ONBOARDING200_1",
                                       "message": "온보딩 설정 저장 성공",
                                       "result": {
-                                        "onboardingCompleted": true
+                                        "onboarding_completed": true,
+                                        "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJ...",
+                                        "refresh_token": "eyJhbGciOiJIUzI1NiJ9.eyJ...",
+                                        "early_arrival_time": 10,
+                                        "is_reminder_active": true,
+                                        "role": "ROLE_USER"
                                       }
                                     }
                                     """
@@ -40,6 +46,6 @@ public interface OnboardingControllerDocs {
     )
     ApiResponse<OnboardingResDTO> upsertOnboarding(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestBody OnboardingReqDTO request
+            @Valid @RequestBody OnboardingReqDTO request
     );
 }

@@ -1,5 +1,6 @@
 package com.example.pace.domain.auth.dto.response;
 
+import com.example.pace.domain.member.enums.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class AuthResDTO {
         private String accessToken;
         private String refreshToken;
         private String tempToken;
+        private Role role;
         private Boolean isNewUser;
     }
 }

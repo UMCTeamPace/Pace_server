@@ -41,6 +41,14 @@ public class AuthCommandService {
         if (memberOptional.isPresent()) {
             Member member = memberOptional.get();
 
+            // 온보딩 미완료 체크
+            if (member.getRole() == Role.ROLE_INCOMPLETE_USER) {
+                String tempToken = jwtUtil.createTempToken(member.getId());
+
+                // isNewUser 값을 true인 채로 반환
+                return AuthConverter.toNewMemberDTO(member, tempToken);
+            }
+
             // 조회된 회원이 탈퇴한 상태인지 확인
             if (!member.getIsActive()) {
                 throw new MemberException(MemberErrorCode.MEMBER_NOT_ACTIVE);

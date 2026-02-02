@@ -8,10 +8,12 @@ import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.enums.CalendarType;
+import com.example.pace.domain.member.enums.Role;
 import com.example.pace.domain.member.exception.OnboardingErrorCode;
 import com.example.pace.domain.member.exception.OnboardingException;
 import com.example.pace.domain.member.repository.MemberRepository;
 import com.example.pace.domain.member.repository.SettingRepository;
+import com.example.pace.global.auth.JwtUtil;
 import java.util.EnumSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -41,10 +43,10 @@ public class OnboardingService {
 
     private final MemberRepository memberRepository;
     private final SettingServiceImpl settingService;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public OnboardingResDTO upsertOnboarding(Long memberId, OnboardingReqDTO request) {
-
         // member 검증
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new OnboardingException(OnboardingErrorCode.MEMBER_NOT_FOUND));
@@ -77,16 +79,24 @@ public class OnboardingService {
         }
 
         //온보딩 완료 처리
-        member.updateOnboardingCompleted(true);
+        member.updateOnboardingCompleted();
 
-        return new OnboardingResDTO(true);
+        String accessToken = jwtUtil.createAccessToken(member.getId(), Role.ROLE_USER);
+        String refreshToken = jwtUtil.createRefreshToken(member.getId());
+        member.updateRefreshToken(refreshToken);
+
+        return OnboardingResDTO.builder()
+                .onboardingCompleted(true)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .earlyArrivalTime(setting.getEarlyArrivalTime())
+                .isReminderActive(setting.getIsReminderActive())
+                .role(Role.ROLE_USER)
+                .build();
     }
 
     /**
-     * 타입별:
-     * - distinct 후에도 size<=5
-     * - 값 범위/화이트리스트 검증(옵션)
-     * - null minutes는 빈 리스트로
+     * 타입별: - distinct 후에도 size<=5 - 값 범위/화이트리스트 검증(옵션) - null minutes는 빈 리스트로
      */
     private Map<AlarmType, List<Integer>> toValidatedAlarmMap(List<OnboardingReqDTO.AlarmConfig> alarms) {
         Map<AlarmType, List<Integer>> out = new EnumMap<>(AlarmType.class);
@@ -94,7 +104,9 @@ public class OnboardingService {
         // 1) 우선 request 값 모으기 (혹시 중복 type이 와도 합쳐서 distinct 처리)
         if (alarms != null) {
             for (OnboardingReqDTO.AlarmConfig alarm : alarms) {
-                if (alarm == null || alarm.type() == null) continue;
+                if (alarm == null || alarm.type() == null) {
+                    continue;
+                }
 
                 AlarmType type = alarm.type();
                 List<Integer> minutes = alarm.minutes() == null ? Collections.emptyList() : alarm.minutes();
