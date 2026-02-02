@@ -19,6 +19,7 @@ import com.example.pace.global.apiPayload.code.GeneralErrorCode;
 import com.example.pace.global.apiPayload.exception.GeneralException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.Objects;
 import org.springframework.data.domain.Pageable;
@@ -108,17 +109,21 @@ public class  ScheduleService {
         return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
     }
 
+    // 일정 삭제
     @Transactional
     public void deleteSchedules(Long memberId, List<Long> scheduleIds) {
-        List<Schedule> schedules = scheduleRepository.findAllById(scheduleIds);
+        if (scheduleIds == null || scheduleIds.isEmpty()) return;
+        List<Schedule> schedules = scheduleRepository.findAllWithMemberByIdIn(scheduleIds);
 
-        boolean isAllOwnedByMember = schedules.stream()
-                .allMatch(s -> s.getMember().getId().equals(memberId));
-
-        if (!isAllOwnedByMember) {
-            throw new GeneralException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        if (schedules.size() != new HashSet<>(scheduleIds).size()) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
         }
-        
+        for (Schedule schedule : schedules) {
+            if (!schedule.getMember().getId().equals(memberId)) {
+                throw new GeneralException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+            }
+        }
+
         scheduleRepository.deleteAll(schedules);
     }
 
