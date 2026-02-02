@@ -5,11 +5,14 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class GoogleDirectionApiClient {
@@ -31,6 +34,7 @@ public class GoogleDirectionApiClient {
                     uriBuilder
                             .path("/maps/api/directions/json")
                             .queryParam("origin", origin)
+                            .queryParam("language", "ko") // 설명 한국어로 설정
                             .queryParam("destination", destination)
                             .queryParam("mode", TRANSIT_MODE);//final 변수 사용해서 대중교통 모드 지정
 
