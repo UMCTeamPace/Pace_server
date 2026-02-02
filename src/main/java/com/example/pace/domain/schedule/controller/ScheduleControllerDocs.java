@@ -1,5 +1,6 @@
 package com.example.pace.domain.schedule.controller;
 
+import com.example.pace.domain.schedule.dto.request.ScheduleDeleteReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Schedule")
@@ -40,9 +42,9 @@ public interface ScheduleControllerDocs {
     );
 
     @Operation(summary = "일정 삭제")
-    ResponseEntity<ApiResponse<String>> deleteSchedule(
-            CustomUserDetails customUserDetails,
-            @PathVariable Long scheduleId
+    ResponseEntity<ApiResponse<String>> deleteSchedules(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestBody ScheduleDeleteReqDto request
     );
 
     @Operation(summary = "일정 수정")

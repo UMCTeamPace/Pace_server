@@ -109,10 +109,17 @@ public class  ScheduleService {
     }
 
     @Transactional
-    public void deleteSchedule(Long memberId, Long scheduleId) {
-        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
-                .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
-        scheduleRepository.deleteById(scheduleId);
+    public void deleteSchedules(Long memberId, List<Long> scheduleIds) {
+        List<Schedule> schedules = scheduleRepository.findAllById(scheduleIds);
+
+        boolean isAllOwnedByMember = schedules.stream()
+                .allMatch(s -> s.getMember().getId().equals(memberId));
+
+        if (!isAllOwnedByMember) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
+        }
+        
+        scheduleRepository.deleteAll(schedules);
     }
 
     // 일정 수정

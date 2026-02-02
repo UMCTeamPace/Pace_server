@@ -1,5 +1,6 @@
 package com.example.pace.domain.schedule.controller;
 
+import com.example.pace.domain.schedule.dto.request.ScheduleDeleteReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
@@ -72,13 +73,13 @@ public class ScheduleController implements ScheduleControllerDocs {
 
     //일정 삭제 API
     @Override
-    @DeleteMapping("/{scheduleId}")
-    public ResponseEntity<ApiResponse<String>> deleteSchedule(
+    @DeleteMapping("")
+    public ResponseEntity<ApiResponse<String>> deleteSchedules(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @PathVariable Long scheduleId
+            @RequestBody ScheduleDeleteReqDto request
     ){
         Long memberId = customUserDetails.member().getId();
-        scheduleService.deleteSchedule(memberId, scheduleId);
+        scheduleService.deleteSchedules(memberId, request.scheduleIds());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_DELETE_OK,null));
