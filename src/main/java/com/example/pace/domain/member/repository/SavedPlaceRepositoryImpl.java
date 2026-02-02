@@ -36,19 +36,19 @@ public class SavedPlaceRepositoryImpl implements SavedPlaceRepositoryCustom {
                         savedPlace.member.id.eq(memberId),
                         savedPlace.placeGroup.id.eq(groupId)
                 )
-                .orderBy(getOderSpecifier(sortType)) // 최신순 정렬
+                .orderBy(getOrderSpecifier(sortType))
                 .fetch();
     }
 
-    private OrderSpecifier<?> getOderSpecifier(SavedPlaceSortType sortType) {
+    private OrderSpecifier<?> getOrderSpecifier(SavedPlaceSortType sortType) {
         if (sortType == null) {
             return savedPlace.createdAt.desc();
         }
 
         return switch (sortType) {
-            case LATEST -> savedPlace.createdAt.desc();
-            case OLDEST -> savedPlace.createdAt.asc();
-            case NAME -> savedPlace.placeName.asc();
+            case LATEST -> savedPlace.createdAt.desc(); // 최신순 정렬
+            case OLDEST -> savedPlace.createdAt.asc(); // 오래된순 정렬
+            case NAME -> savedPlace.placeName.asc(); // 이름순 정렬
         };
     }
 }
