@@ -99,6 +99,11 @@ public class AuthCommandService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
+        // 온보딩 미완료 회원은 토큰 재발행 불가
+        if (member.getRole() == Role.ROLE_INCOMPLETE_USER) {
+            throw new MemberException(MemberErrorCode.MEMBER_UNAUTHORIZED);
+        }
+
         // 데이터베이스에 저장된 리프레쉬 토큰과 일치하는지 확인
         if (!refreshToken.equals(member.getRefreshToken())) {
             // 토큰이 일치하지 않다면 다른 곳에서 이미 재발급에 사용되어 탈취 가능성 의심
@@ -106,7 +111,7 @@ public class AuthCommandService {
         }
 
         // 새로운 액세스 토큰과 리프레쉬 토큰 생성
-        String newAccessToken = jwtUtil.createAccessToken(member.getId(), Role.ROLE_USER);
+        String newAccessToken = jwtUtil.createAccessToken(member.getId(), member.getRole());
         String newRefreshToken = jwtUtil.createRefreshToken(member.getId());
 
         member.updateRefreshToken(newRefreshToken);
