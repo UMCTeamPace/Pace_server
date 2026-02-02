@@ -37,5 +37,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     void deleteAllByRepeatGroupId(@Param("repeatGroupId") String repeatGroupId);
 
     @Query("select s from Schedule s join fetch s.member where s.id in :ids")
-    List<Schedule> findAllWithMemberByIdIn(@Param("ids") List<Long> ids);
+    List<Schedule> findAllWithMemberByIdIn(@Param("ids") List<Long> ids, @Param("memberId") Long memberId);
 }

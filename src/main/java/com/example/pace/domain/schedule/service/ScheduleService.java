@@ -113,15 +113,10 @@ public class  ScheduleService {
     @Transactional
     public void deleteSchedules(Long memberId, List<Long> scheduleIds) {
         if (scheduleIds == null || scheduleIds.isEmpty()) return;
-        List<Schedule> schedules = scheduleRepository.findAllWithMemberByIdIn(scheduleIds);
+        List<Schedule> schedules = scheduleRepository.findAllWithMemberByIdIn(scheduleIds, memberId);
 
-        if (schedules.size() != new HashSet<>(scheduleIds).size()) {
+        if (schedules.size() != scheduleIds.size()) {
             throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
-        }
-        for (Schedule schedule : schedules) {
-            if (!schedule.getMember().getId().equals(memberId)) {
-                throw new GeneralException(ScheduleErrorCode.SCHEDULE_FORBIDDEN);
-            }
         }
 
         scheduleRepository.deleteAll(schedules);
