@@ -19,6 +19,7 @@ import com.example.pace.global.apiPayload.code.GeneralErrorCode;
 import com.example.pace.global.apiPayload.exception.GeneralException;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.Objects;
 import org.springframework.data.domain.Pageable;
@@ -108,11 +109,17 @@ public class  ScheduleService {
         return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
     }
 
+    // 일정 삭제
     @Transactional
-    public void deleteSchedule(Long memberId, Long scheduleId) {
-        Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
-                .orElseThrow(()-> new GeneralException(GeneralErrorCode.NOT_FOUND));
-        scheduleRepository.deleteById(scheduleId);
+    public void deleteSchedules(Long memberId, List<Long> scheduleIds) {
+        if (scheduleIds == null || scheduleIds.isEmpty()) return;
+        List<Schedule> schedules = scheduleRepository.findAllWithMemberByIdIn(scheduleIds, memberId);
+
+        if (schedules.size() != scheduleIds.size()) {
+            throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
+        }
+
+        scheduleRepository.deleteAll(schedules);
     }
 
     // 일정 수정
