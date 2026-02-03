@@ -79,8 +79,9 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Boolean onboardingComplete = false;
 
-    public void updateOnboardingCompleted(boolean completed) {
-        this.onboardingComplete = completed;
+    public void updateOnboardingCompleted() {
+        this.role = Role.ROLE_USER;
+        this.onboardingComplete = true;
     }
 
     // 추후에 매핑 관계 반영 예정
