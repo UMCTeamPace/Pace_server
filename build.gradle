@@ -69,6 +69,9 @@ dependencies {
 
     // idk
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 }
 
 
