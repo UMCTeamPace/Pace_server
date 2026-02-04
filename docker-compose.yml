@@ -1,8 +1,18 @@
 services:
   # 데이터베이스 서비스 (MySQL)
-  pace-db:
+  pace-redis:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    container_name: pace-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - pace-network
+  
+  pace-mysql:
     image: mysql:8.0
-    container_name: pace-db
+    container_name: pace-mysql
     restart: always
     environment:
       # .env 파일에서 변수를 읽어와 보안을 유지
@@ -32,12 +42,16 @@ services:
     restart: always
     # DB 컨테이너가 먼저 실행된 후 애플리케이션이 실행되도록 순서를 보장
     depends_on:
-      - pace-db
+      - pace-mysql
+      - pace-redis
     environment:
       # DB 접속 주소에 서비스 이름(pace-db)을 사용하여 내부 통신을 수행
-      SPRING_DATASOURCE_URL: jdbc:mysql://pace-db:3306/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+      SPRING_DATASOURCE_URL: jdbc:mysql://pace-mysql:3306/${MYSQL_DATABASE}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: pace-redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
       SPRING_PROFILES_ACTIVE: prod
       JWT_SECRET: ${JWT_SECRET}
       KAKAO_CLIENT_ID: ${KAKAO_CLIENT_ID}
