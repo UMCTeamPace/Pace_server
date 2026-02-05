@@ -65,35 +65,7 @@ public class RouteResDTOConverter {
                 .routeDetailInfoResDTOList(details)
                 .build();
     }
-
-    //    public static RouteApiResDto toRouteApiResDto(GoogleDirectionApiResponse apiResponse) {
-    //        if (apiResponse == null || apiResponse.getRoutes() == null || apiResponse.getRoutes().isEmpty()) {
-    //            return RouteApiResDto.builder().build();
-    //        }
-    //
-    //        GoogleDirectionApiResponse.Route route = apiResponse.getRoutes().get(0);
-    //        if (route.getLegs() == null || route.getLegs().isEmpty()) {
-    //            return RouteApiResDto.builder().build();
-    //        }
-    //
-    //        GoogleDirectionApiResponse.Leg firstLeg = route.getLegs().get(0);
-    //        List<RouteDetailInfoResDTO> details = new ArrayList<>();
-    //        AtomicInteger sequence = new AtomicInteger(0);
-    //
-    //        // 재귀적으로 모든 스텝을 평탄화
-    //        flattenSteps(firstLeg.getSteps(), details, sequence);
-    //
-    //        return RouteApiResDto.builder()
-    //                .totalDistance(firstLeg.getDistance() != null ? safeInt(firstLeg.getDistance().getValue()) : 0)
-    //                .totalTime(firstLeg.getDuration() != null ? safeInt(firstLeg.getDuration().getValue()) : 0)
-    //                .departureTime(epochToLocalDateTime(
-    //                        firstLeg.getDepartureTime() != null ? firstLeg.getDepartureTime().getValue() : null))
-    //                .arrivalTime(epochToLocalDateTime(
-    //                        firstLeg.getArrivalTime() != null ? firstLeg.getArrivalTime().getValue() : null))
-    //                .routeDetailInfoResDTOList(details)
-    //                .build();
-    //    }
-
+    
     // 재귀적으로 스텝을 평탄화하는 메서드
     private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
                                      List<RouteDetailInfoResDTO> resultList,
