@@ -12,7 +12,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Configuration
 public class GoogleDirectionApiConfig {
     // 환경변수 설정하세요!
-    @Value("${GOOGLE_MAPS_API_KEY}")
+    @Value("${google.maps.api-key}")
     private String apiKey;
 
     @Bean

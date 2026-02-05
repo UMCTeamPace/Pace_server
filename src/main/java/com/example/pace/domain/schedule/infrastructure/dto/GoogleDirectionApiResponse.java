@@ -21,14 +21,19 @@ public class GoogleDirectionApiResponse {
 
     @Getter
     public static class Leg {
+        @JsonProperty("arrival_time")
         private ArrivalTime arrivalTime;
+        @JsonProperty("departure_time")
         private DepartureTime departureTime;
+
         private Distance distance;
         private Duration duration;
+        @JsonProperty("steps")
         private List<Step> steps;
 
     }
 
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
     @Getter
     public static class Step {
         private Distance distance;
@@ -36,27 +41,39 @@ public class GoogleDirectionApiResponse {
 
         @JsonProperty("polyline")
         private EncodedPolyline encodedPolyline;
-
+        @JsonProperty("end_location")
         private EndLocation endLocation;
+        @JsonProperty("start_location")
         private StartLocation startLocation;
+        @JsonProperty("travel_mode")
         private String travelMode;
+        @JsonProperty("steps")
         private List<Step> steps;
-        private String htmlInstructions; // 안내문구
+        @JsonProperty("html_instructions")
+        private String htmlInstructions;// 안내문구
+
+        @JsonProperty("transit_details")
         private TransitDetails transitDetails;
     }
 
 
     @Getter
     public static class TransitDetails {
+        @JsonProperty("arrival_stop")
         private ArrivalStop arrivalStop;
+        @JsonProperty("arrival_time")
         private ArrivalTime arrivalTime; //필요없어보이긴 한데 일단 넣어달라고 요청하심
+        @JsonProperty("departure_time")
         private DepartureTime departureTime;
+        @JsonProperty("departure_stop")
         private DepartureStop departureStop;
+        @JsonProperty("headsign")
         private String headsign; // ~~행 (버스기준? 지하철 적용이 힘듦)
 
         @JsonProperty("line")
         private EncodedLine encodedLine;
 
+        @JsonProperty("num_stops")
         private Long numStops;
 
     }
@@ -125,7 +142,6 @@ public class GoogleDirectionApiResponse {
         private String text;
         private Long value;
     }
-
 
     @Getter
     //자바 내부에 폴리라인 임포트문이 있어서 이름 바꿨습니당

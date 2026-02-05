@@ -14,11 +14,7 @@ import lombok.Getter;
 public class RouteApiResDto {
     private Integer totalDistance;
     private Integer totalTime;
-
-    //도착시간
     private LocalDateTime arrivalTime;
-    //출발시간
     private LocalDateTime departureTime;
-
     private List<RouteDetailInfoResDTO> routeDetailInfoResDTOList;
 }

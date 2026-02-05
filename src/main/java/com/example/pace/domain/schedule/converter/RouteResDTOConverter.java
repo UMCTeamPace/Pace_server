@@ -13,32 +13,32 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class RouteResDTOConverter {
 
-    // 한국 시간대 기준 (필요에 따라 변경 가능)
     private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
+
+    private RouteResDTOConverter() {
+        // 유틸리티 클래스 인스턴스 방지
+    }
 
     public static RouteApiResDto toRouteApiResDto(GoogleDirectionApiResponse apiResponse) {
         if (apiResponse == null || apiResponse.getRoutes() == null || apiResponse.getRoutes().isEmpty()) {
-            return RouteApiResDto.builder().build(); // 빈 객체 반환 혹은 예외 처리
+            return RouteApiResDto.builder().build();
         }
 
-        // 첫 번째 경로 사용
         GoogleDirectionApiResponse.Route route = apiResponse.getRoutes().get(0);
         if (route.getLegs() == null || route.getLegs().isEmpty()) {
             return RouteApiResDto.builder().build();
         }
 
         GoogleDirectionApiResponse.Leg firstLeg = route.getLegs().get(0);
-        List<GoogleDirectionApiResponse.Step> steps = firstLeg.getSteps();
-
         List<RouteDetailInfoResDTO> details = new ArrayList<>();
+        AtomicInteger sequence = new AtomicInteger(0);
 
-        // Sequence 부여를 위해 for문 혹은 AtomicInteger 사용
-        for (int i = 0; i < steps.size(); i++) {
-            details.add(toRouteDetailInfoResDTO(steps.get(i), i + 1));
-        }
+        // 재귀적으로 모든 스텝을 평탄화
+        flattenSteps(firstLeg.getSteps(), details, sequence);
 
         return RouteApiResDto.builder()
                 .totalDistance(firstLeg.getDistance() != null ? safeInt(firstLeg.getDistance().getValue()) : 0)
@@ -51,24 +51,51 @@ public class RouteResDTOConverter {
                 .build();
     }
 
+    // 재귀적으로 스텝을 평탄화하는 메서드
+    private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
+                                     List<RouteDetailInfoResDTO> resultList,
+                                     AtomicInteger sequence) {
+        if (steps == null || steps.isEmpty()) {
+            return;
+        }
+
+        for (GoogleDirectionApiResponse.Step step : steps) {
+            // 현재 스텝을 결과에 추가
+            resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+
+            // 자식 스텝이 있으면 재귀 처리
+            if (step.getSteps() != null && !step.getSteps().isEmpty()) {
+                flattenSteps(step.getSteps(), resultList, sequence);
+            }
+        }
+    }
+
+
     private static RouteDetailInfoResDTO toRouteDetailInfoResDTO(GoogleDirectionApiResponse.Step step, int sequence) {
+        // 좌표 정보 가져오기 (Null 체크 강화)
+        BigDecimal startLat =
+                (step.getStartLocation() != null) ? BigDecimal.valueOf(step.getStartLocation().getLat()) : null;
+        BigDecimal startLng =
+                (step.getStartLocation() != null) ? BigDecimal.valueOf(step.getStartLocation().getLng()) : null;
+        BigDecimal endLat = (step.getEndLocation() != null) ? BigDecimal.valueOf(step.getEndLocation().getLat()) : null;
+        BigDecimal endLng = (step.getEndLocation() != null) ? BigDecimal.valueOf(step.getEndLocation().getLng()) : null;
+
+        // description에서 HTML 태그 제거 (예: <b>서울역</b> -> 서울역)
+        String rawDescription = step.getHtmlInstructions();
+        String cleanDescription = (rawDescription != null) ? rawDescription.replaceAll("<[^>]*>", "") : null;
+
         RouteDetailInfoResDTO.RouteDetailInfoResDTOBuilder builder = RouteDetailInfoResDTO.builder()
-                .sequence(sequence) // 순서 주입
-                .startLat(step.getStartLocation() != null && step.getStartLocation().getLat() != null
-                        ? BigDecimal.valueOf(step.getStartLocation().getLat()) : null)
-                .startLng(step.getStartLocation() != null && step.getStartLocation().getLng() != null
-                        ? BigDecimal.valueOf(step.getStartLocation().getLng()) : null)
-                .endLat(step.getEndLocation() != null && step.getEndLocation().getLat() != null ? BigDecimal.valueOf(
-                        step.getEndLocation().getLat()) : null)
-                .endLng(step.getEndLocation() != null && step.getEndLocation().getLng() != null ? BigDecimal.valueOf(
-                        step.getEndLocation().getLng()) : null)
+                .sequence(sequence)
+                .startLat(startLat)
+                .startLng(startLng)
+                .endLat(endLat)
+                .endLng(endLng)
                 .duration(step.getDuration() != null ? safeInt(step.getDuration().getValue()) : 0)
                 .distance(step.getDistance() != null ? safeInt(step.getDistance().getValue()) : 0)
-                .description(step.getHtmlInstructions());
+                .description(cleanDescription);
 
-        // TRANSIT 모드일 때만 상세 정보 매핑
+        // TRANSIT 모드 상세 매핑
         if ("TRANSIT".equalsIgnoreCase(step.getTravelMode()) && step.getTransitDetails() != null) {
-            // Polyline은 보통 Step 레벨에 존재함
             String polyline = (step.getEncodedPolyline() != null) ? step.getEncodedPolyline().getPoints() : null;
             builder.transitDetail(toTransitRouteDetailInfoResDTO(step.getTransitDetails(), polyline));
         }
@@ -76,13 +103,13 @@ public class RouteResDTOConverter {
         return builder.build();
     }
 
+
     private static TransitRouteDetailInfoResDTO toTransitRouteDetailInfoResDTO(
             GoogleDirectionApiResponse.TransitDetails transit, String polyline) {
 
         GoogleDirectionApiResponse.EncodedLine line = transit.getEncodedLine();
         String vehicleType = (line != null && line.getVehicle() != null) ? line.getVehicle().getType() : null;
 
-        // Google 응답에서 Double 좌표 추출
         Double lat = null;
         Double lng = null;
 
@@ -102,43 +129,48 @@ public class RouteResDTOConverter {
                         transit.getDepartureTime() != null ? transit.getDepartureTime().getValue() : null))
                 .arrivalTime(epochToLocalDateTime(
                         transit.getArrivalTime() != null ? transit.getArrivalTime().getValue() : null))
-
-                // [핵심 수정] Double이 null이 아닐 때만 BigDecimal로 변환
                 .locationLat(lat != null ? BigDecimal.valueOf(lat) : null)
                 .locationLng(lng != null ? BigDecimal.valueOf(lng) : null)
-
                 .points(polyline)
                 .headsign(transit.getHeadsign())
                 .build();
-
-
     }
 
-    // Null Safety Helper
     private static Integer safeInt(Long value) {
-        return value != null ? Math.toIntExact(value) : 0;
+        if (value == null) {
+            return 0;
+        }
+        if (value > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        }
+        if (value < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+        return value.intValue();
     }
 
-
-    private static LocalDateTime epochToLocalDateTime(Long epochSeconds) {
+    public static LocalDateTime epochToLocalDateTime(Long epochSeconds) {
         if (epochSeconds == null) {
             return null;
         }
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSeconds), ZONE_ID);
     }
 
+    public static Long localDateTimeToEpoch(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return localDateTime.atZone(ZONE_ID).toEpochSecond();
+    }
 
-    // 교통정보 매핑/서울 내 지역 한정-> 타 대중교통 없다고 가정함
     private static TransitType mapTransitType(String vehicleType) {
         if (vehicleType == null) {
             return TransitType.WALK;
         }
-        // 구글 API 응답값에 맞춰 케이스 추가 필요
         return switch (vehicleType.toUpperCase()) {
             case "BUS" -> TransitType.BUS;
             case "SUBWAY" -> TransitType.SUBWAY;
             default -> TransitType.WALK;
         };
-
     }
 }
