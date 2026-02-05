@@ -42,27 +42,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
 
-            try {
-                Claims claims = jwtUtil.getClaimsFromToken(token);
+            Claims claims = jwtUtil.getClaimsFromToken(token);
 
-                String category = claims.get("category", String.class);
+            String category = claims.get("category", String.class);
 
-                if (category == null || category.equals("refresh")) {
-                    logger.warn("access token이 아닌 토큰으로 인증을 시도하셨습니다.");
-                    filterChain.doFilter(request, response);
-                    return;
-                }
-
-                memberId = Long.parseLong(claims.getSubject());
-            } catch (Exception e) {
-                // 해당 예외는 JwtExceptionFilter에서 처리
-                logger.warn("잘못된 JWT token입니다: " + e.getMessage());
+            if (category == null || category.equals("refresh")) {
+                logger.warn("access token이 아닌 토큰으로 인증을 시도하셨습니다.");
+                throw new AuthException(AuthErrorCode.TOKEN_INVALID);
             }
 
             if (redisUtil.isBlackList(token)) {
                 logger.warn("블랙리스트에 포함된 토큰입니다.");
                 throw new AuthException(AuthErrorCode.TOKEN_BLACKLIST);
             }
+
+            memberId = Long.parseLong(claims.getSubject());
         }
 
         // 토큰이 유효하고, SecurityContext에 인증 정보가 없는 경우에 인증 처리
