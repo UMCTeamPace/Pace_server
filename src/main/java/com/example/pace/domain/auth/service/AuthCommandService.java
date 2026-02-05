@@ -11,7 +11,7 @@ import com.example.pace.domain.member.enums.SocialProvider;
 import com.example.pace.domain.member.exception.MemberErrorCode;
 import com.example.pace.domain.member.exception.MemberException;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.global.auth.JwtUtil;
+import com.example.pace.global.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -117,13 +117,5 @@ public class AuthCommandService {
         member.updateRefreshToken(newRefreshToken);
 
         return AuthConverter.toExistingMemberDTO(member, newAccessToken, newRefreshToken);
-    }
-
-    // 로그아웃 처리
-    public void logout(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
-
-        member.updateRefreshToken(null);
     }
 }

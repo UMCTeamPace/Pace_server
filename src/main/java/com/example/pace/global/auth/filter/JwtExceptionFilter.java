@@ -1,6 +1,7 @@
 package com.example.pace.global.auth.filter;
 
 import com.example.pace.domain.auth.exception.AuthErrorCode;
+import com.example.pace.domain.auth.exception.AuthException;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.BaseErrorCode;
 import com.example.pace.global.apiPayload.code.GeneralErrorCode;
@@ -41,9 +42,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         } catch (MalformedJwtException e) {
             log.warn("jwt 토큰이 유효하지 않습니다.  : {}", e.getMessage());
             setErrorResponse(response, AuthErrorCode.TOKEN_INVALID);
+        } catch (AuthException e) {
+            log.warn("인증 예외 발생: {}", e.getMessage());
+            setErrorResponse(response, e.getCode());
         } catch (GeneralException e) {
             log.warn("jwt 관련 예외 발생: {}", e.getMessage());
-            setErrorResponse(response, AuthErrorCode.TOKEN_ERROR);
+            setErrorResponse(response, e.getCode());
         } catch (Exception e) {
             log.error("예상치 못한 jwt filter chain 관련 예외입니다.: {}", e.getMessage());
             setErrorResponse(response, GeneralErrorCode.INTERNAL_SERVER_ERROR);
