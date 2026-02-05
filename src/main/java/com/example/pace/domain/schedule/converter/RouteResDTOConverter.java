@@ -2,6 +2,7 @@ package com.example.pace.domain.schedule.converter;
 
 
 import com.example.pace.domain.schedule.dto.response.RouteApiResDto;
+import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
 import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.enums.TransitType;
@@ -23,21 +24,35 @@ public class RouteResDTOConverter {
         // 유틸리티 클래스 인스턴스 방지
     }
 
-    public static RouteApiResDto toRouteApiResDto(GoogleDirectionApiResponse apiResponse) {
-        if (apiResponse == null || apiResponse.getRoutes() == null || apiResponse.getRoutes().isEmpty()) {
-            return RouteApiResDto.builder().build();
+    public static RouteListResDTO toRouteListResDTO(GoogleDirectionApiResponse apiResponse) {
+
+        if (apiResponse == null || apiResponse.getRoutes() == null) {
+            return RouteListResDTO.builder()
+                    .routeApiResDtoList(List.of())
+                    .build();
         }
 
-        GoogleDirectionApiResponse.Route route = apiResponse.getRoutes().get(0);
+        List<RouteApiResDto> routeList = apiResponse.getRoutes().stream()
+                .limit(10) //
+                .map(RouteResDTOConverter::convertSingleRoute)
+                .toList();
+
+        return RouteListResDTO.builder()
+                .routeApiResDtoList(routeList)
+                .build();
+    }
+
+    private static RouteApiResDto convertSingleRoute(GoogleDirectionApiResponse.Route route) {
+
         if (route.getLegs() == null || route.getLegs().isEmpty()) {
             return RouteApiResDto.builder().build();
         }
 
         GoogleDirectionApiResponse.Leg firstLeg = route.getLegs().get(0);
+
         List<RouteDetailInfoResDTO> details = new ArrayList<>();
         AtomicInteger sequence = new AtomicInteger(0);
 
-        // 재귀적으로 모든 스텝을 평탄화
         flattenSteps(firstLeg.getSteps(), details, sequence);
 
         return RouteApiResDto.builder()
@@ -50,7 +65,7 @@ public class RouteResDTOConverter {
                 .routeDetailInfoResDTOList(details)
                 .build();
     }
-
+    
     // 재귀적으로 스텝을 평탄화하는 메서드
     private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
                                      List<RouteDetailInfoResDTO> resultList,
@@ -83,6 +98,7 @@ public class RouteResDTOConverter {
         // description에서 HTML 태그 제거 (예: <b>서울역</b> -> 서울역)
         String rawDescription = step.getHtmlInstructions();
         String cleanDescription = (rawDescription != null) ? rawDescription.replaceAll("<[^>]*>", "") : null;
+        String polyline = step.getEncodedPolyline() != null ? step.getEncodedPolyline().getPoints() : null;
 
         RouteDetailInfoResDTO.RouteDetailInfoResDTOBuilder builder = RouteDetailInfoResDTO.builder()
                 .sequence(sequence)
@@ -92,11 +108,11 @@ public class RouteResDTOConverter {
                 .endLng(endLng)
                 .duration(step.getDuration() != null ? safeInt(step.getDuration().getValue()) : 0)
                 .distance(step.getDistance() != null ? safeInt(step.getDistance().getValue()) : 0)
-                .description(cleanDescription);
+                .description(cleanDescription)
+                .points(polyline);
 
         // TRANSIT 모드 상세 매핑
         if ("TRANSIT".equalsIgnoreCase(step.getTravelMode()) && step.getTransitDetails() != null) {
-            String polyline = (step.getEncodedPolyline() != null) ? step.getEncodedPolyline().getPoints() : null;
             builder.transitDetail(toTransitRouteDetailInfoResDTO(step.getTransitDetails(), polyline));
         }
 
@@ -131,7 +147,7 @@ public class RouteResDTOConverter {
                         transit.getArrivalTime() != null ? transit.getArrivalTime().getValue() : null))
                 .locationLat(lat != null ? BigDecimal.valueOf(lat) : null)
                 .locationLng(lng != null ? BigDecimal.valueOf(lng) : null)
-                .points(polyline)
+                .shortName(line != null ? line.getName() : null)
                 .headsign(transit.getHeadsign())
                 .build();
     }
@@ -165,12 +181,13 @@ public class RouteResDTOConverter {
 
     private static TransitType mapTransitType(String vehicleType) {
         if (vehicleType == null) {
-            return TransitType.WALK;
+            return TransitType.UNDEFINED;
         }
         return switch (vehicleType.toUpperCase()) {
             case "BUS" -> TransitType.BUS;
             case "SUBWAY" -> TransitType.SUBWAY;
-            default -> TransitType.WALK;
+            case "WALKING" -> TransitType.WALK;
+            default -> TransitType.UNDEFINED;
         };
     }
 }

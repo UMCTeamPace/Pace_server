@@ -2,6 +2,7 @@ package com.example.pace.domain.schedule.controller;
 
 import com.example.pace.domain.schedule.dto.request.RouteSaveReqDto;
 import com.example.pace.domain.schedule.dto.response.RouteApiResDto;
+import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
 import com.example.pace.domain.schedule.service.RouteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +21,9 @@ public class RouteController {
     // 길찾기 검색 API
     // GET 요청
     @GetMapping("/search")
-    public ResponseEntity<RouteApiResDto> searchRoute(@ModelAttribute RouteSaveReqDto.CreateRouteDTO request) {
+    public ResponseEntity<RouteListResDTO> searchRoute(@ModelAttribute RouteSaveReqDto.CreateRouteDTO request) {
 
-        RouteApiResDto response = routeService.searchRoute(request);
+        RouteListResDTO response = routeService.searchRoute(request);
 
         return ResponseEntity.ok(response);
     }
