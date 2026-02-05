@@ -1,4 +1,4 @@
-package com.example.pace.global.auth;
+package com.example.pace.global.util;
 
 import com.example.pace.domain.member.enums.Role;
 import com.example.pace.global.config.JwtProperties;
@@ -67,6 +67,19 @@ public class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    public Long getExpirationTime(String token) {
+        Date expiration = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload().getExpiration();
+
+        long now = new Date().getTime();
+
+        // 현재 시간과의 차이를 반환
+        return expiration.getTime() - now;
     }
 
     // 액세스 토큰 생성

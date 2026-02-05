@@ -1,5 +1,6 @@
 package com.example.pace.global.auth;
 
+import com.example.pace.global.util.JwtUtil;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

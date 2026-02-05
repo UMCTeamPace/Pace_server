@@ -5,7 +5,9 @@ import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
 
 public interface MemberControllerDocs {
     @Operation(
@@ -13,7 +15,8 @@ public interface MemberControllerDocs {
             description = "Authorization 헤더에 Bearer {액세스 토큰} 을 넣으면 회원 정보 식별이 되므로, 회원id는 안보내도 됩니다!"
     )
     ApiResponse<String> withdrawal(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @Parameter(hidden = true) CustomUserDetails customUserDetails,
+            @Parameter(hidden = true) HttpServletRequest request
     );
 
     @Operation(
@@ -22,6 +25,7 @@ public interface MemberControllerDocs {
                     + "로그인 페이지로 넘겨야 합니다."
     )
     ApiResponse<String> logout(
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            @Parameter(hidden = true) CustomUserDetails customUserDetails,
+            @Parameter(hidden = true) HttpServletRequest request
     );
 }

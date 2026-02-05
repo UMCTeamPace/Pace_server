@@ -1,7 +1,8 @@
 package com.example.pace.global.auth.filter;
 
 import com.example.pace.global.auth.CustomUserDetailsService;
-import com.example.pace.global.auth.JwtUtil;
+import com.example.pace.global.util.JwtUtil;
+import com.example.pace.global.util.RedisUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,6 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsService customUserDetailsService;
+    private final RedisUtil redisUtil;
 
     @Override
     protected void doFilterInternal(
@@ -53,6 +55,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 // 해당 예외는 JwtExceptionFilter에서 처리
                 logger.warn("잘못된 JWT token입니다: " + e.getMessage());
+            }
+
+            if (redisUtil.hasKey(token)) {
+                logger.warn("로그아웃된 토큰입니다.");
+                filterChain.doFilter(request, response);
+                return;
             }
         }
 

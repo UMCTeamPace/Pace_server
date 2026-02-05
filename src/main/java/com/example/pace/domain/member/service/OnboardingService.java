@@ -1,19 +1,15 @@
 package com.example.pace.domain.member.service;
 
-import com.example.pace.domain.member.converter.SettingConverter;
 import com.example.pace.domain.member.dto.request.OnboardingReqDTO;
 import com.example.pace.domain.member.dto.response.OnboardingResDTO;
 import com.example.pace.domain.member.entity.Member;
-import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.enums.Role;
 import com.example.pace.domain.member.exception.OnboardingErrorCode;
 import com.example.pace.domain.member.exception.OnboardingException;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.domain.member.repository.SettingRepository;
-import com.example.pace.global.auth.JwtUtil;
+import com.example.pace.global.util.JwtUtil;
 import java.util.EnumSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
