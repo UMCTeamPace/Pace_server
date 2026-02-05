@@ -11,12 +11,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PlaceGroupRepositoryImpl implements PlaceGroupRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+    private final static QPlaceGroup placeGroup = QPlaceGroup.placeGroup;
+    private final static QSavedPlace savedPlace = QSavedPlace.savedPlace;
 
     @Override
     public List<PlaceGroupResDTO.PlaceGroupQueryDTO> findAllGroupInfoByMemberId(Long memberId) {
-        QPlaceGroup placeGroup = QPlaceGroup.placeGroup;
-        QSavedPlace savedPlace = QSavedPlace.savedPlace;
-
         return queryFactory
                 .select(Projections.fields(
                         PlaceGroupResDTO.PlaceGroupQueryDTO.class,

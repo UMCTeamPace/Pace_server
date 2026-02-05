@@ -34,7 +34,7 @@ public class PlaceGroupConverter {
                 .groupId(placeGroup.getId())
                 .groupName(placeGroup.getGroupName())
                 .groupColor(placeGroup.getGroupColor())
-                .placeCount(0L) // 생성 직후에는 당연히 0개
+                .placeCount((long) placeGroup.getSavedPlaceList().size())
                 .createdAt(placeGroup.getCreatedAt().format(formatter))
                 .build();
     }
