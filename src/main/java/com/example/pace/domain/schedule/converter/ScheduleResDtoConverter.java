@@ -5,6 +5,7 @@ import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto.PlaceDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto.RouteDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto.ScheduleInfoDto;
+import com.example.pace.domain.schedule.entity.RouteDetail;
 import com.example.pace.domain.schedule.entity.Schedule;
 
 public class ScheduleResDtoConverter {
@@ -36,7 +37,25 @@ public class ScheduleResDtoConverter {
                                 .destLng(schedule.getRoute().getDestLng())
                                 .totalTime(schedule.getRoute().getTotalTime())
                                 .totalDistance(schedule.getRoute().getTotalDistance())
-                                .routeDetails(null)
+                                .routeDetails(schedule.getRoute().getRouteDetails() != null ?
+                                        schedule.getRoute().getRouteDetails().stream()
+                                                .sorted(java.util.Comparator.comparing(RouteDetail::getSequence)) // 순환 경로 방지를 위한 정렬
+                                                .map(detail -> ScheduleResDto.RouteDetailDto.builder()
+                                                        .sequence(detail.getSequence())
+                                                        .description(detail.getDescription())
+                                                        .transitType(detail.getTransitType() != null ? detail.getTransitType().name() : null)
+                                                        .duration(detail.getDuration())
+                                                        .distance(detail.getDistance())
+                                                        .lineName(detail.getLineName())
+                                                        .lineColor(detail.getLineColor())
+                                                        .departureStop(detail.getDepartureStop())
+                                                        .arrivalStop(detail.getArrivalStop())
+                                                        .startLat(detail.getStartLat())
+                                                        .startLng(detail.getStartLng())
+                                                        .endLat(detail.getEndLat()) 
+                                                        .endLng(detail.getEndLng())
+                                                        .build())
+                                                .toList() : null)
                                 .build() : null)
                 .reminders(schedule.getReminderList() != null ?
                         schedule.getReminderList().stream()
