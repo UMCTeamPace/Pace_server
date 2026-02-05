@@ -19,16 +19,29 @@ public class PlaceGroupConverter {
                 .build();
     }
 
-    public static PlaceGroupResDTO.PlaceGroupDTO toPlaceGroupDTO(PlaceGroup group) {
+    public static PlaceGroupResDTO.PlaceGroupDTO toPlaceGroupDTO(PlaceGroupResDTO.PlaceGroupQueryDTO dto) {
         return PlaceGroupResDTO.PlaceGroupDTO.builder()
-                .groupId(group.getId())
-                .groupName(group.getGroupName())
-                .groupColor(group.getGroupColor())
-                .createdAt(group.getCreatedAt().format(formatter))
+                .groupId(dto.getGroupId())
+                .groupName(dto.getGroupName())
+                .groupColor(dto.getGroupColor())
+                .placeCount(dto.getPlaceCount())
+                .createdAt(dto.getCreatedAt().format(formatter))
                 .build();
     }
 
-    public static PlaceGroupResDTO.PlaceGroupListDTO toPlaceGroupListDTO(List<PlaceGroup> groupList) {
+    public static PlaceGroupResDTO.PlaceGroupDTO toPlaceGroupDTO(PlaceGroup placeGroup) {
+        return PlaceGroupResDTO.PlaceGroupDTO.builder()
+                .groupId(placeGroup.getId())
+                .groupName(placeGroup.getGroupName())
+                .groupColor(placeGroup.getGroupColor())
+                .placeCount((long) placeGroup.getSavedPlaceList().size())
+                .createdAt(placeGroup.getCreatedAt().format(formatter))
+                .build();
+    }
+
+    public static PlaceGroupResDTO.PlaceGroupListDTO toPlaceGroupListDTO(
+            List<PlaceGroupResDTO.PlaceGroupQueryDTO> groupList
+    ) {
         List<PlaceGroupResDTO.PlaceGroupDTO> dtoList = groupList.stream()
                 .map(PlaceGroupConverter::toPlaceGroupDTO).toList();
 
