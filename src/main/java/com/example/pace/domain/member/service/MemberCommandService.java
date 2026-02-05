@@ -22,13 +22,9 @@ public class MemberCommandService {
     public void withdrawalMember(Long memberId, String accessToken) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
+
         member.updateRefreshToken(null);
-
-        Long remainingTime = jwtUtil.getExpirationTime(accessToken);
-
-        if (remainingTime > 0) {
-            redisUtil.setBlackList(accessToken, remainingTime);
-        }
+        setTokenBlackList(accessToken);
 
         memberRepository.deleteById(member.getId());
     }
@@ -39,12 +35,11 @@ public class MemberCommandService {
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         member.updateRefreshToken(null);
+        setTokenBlackList(accessToken);
+    }
 
+    public void setTokenBlackList(String accessToken) {
         Long remainingTime = jwtUtil.getExpirationTime(accessToken);
-
-        // 남은 시간이 0보다 클 때만 저장
-        if (remainingTime > 0) {
-            redisUtil.setBlackList(accessToken, remainingTime);
-        }
+        redisUtil.setBlackList(accessToken, remainingTime);
     }
 }

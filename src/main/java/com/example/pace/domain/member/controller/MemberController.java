@@ -1,6 +1,5 @@
 package com.example.pace.domain.member.controller;
 
-import com.example.pace.domain.auth.service.AuthCommandService;
 import com.example.pace.domain.member.service.MemberCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
@@ -26,7 +25,7 @@ public class MemberController implements MemberControllerDocs {
             HttpServletRequest request
     ) {
         Long memberId = customUserDetails.member().getId();
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
+        String accessToken = request.getHeader("Authorization").substring(7);
         memberCommandService.withdrawalMember(memberId, accessToken);
 
         return ApiResponse.onSuccess(
@@ -42,7 +41,7 @@ public class MemberController implements MemberControllerDocs {
             HttpServletRequest request
     ) {
         Long memberId = customUserDetails.member().getId();
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
+        String accessToken = request.getHeader("Authorization").substring(7);
         memberCommandService.logout(memberId, accessToken);
 
         return ApiResponse.onSuccess(

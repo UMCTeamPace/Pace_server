@@ -1,5 +1,7 @@
 package com.example.pace.global.auth.filter;
 
+import com.example.pace.domain.auth.exception.AuthErrorCode;
+import com.example.pace.domain.auth.exception.AuthException;
 import com.example.pace.global.auth.CustomUserDetailsService;
 import com.example.pace.global.util.JwtUtil;
 import com.example.pace.global.util.RedisUtil;
@@ -38,7 +40,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // Bearer로 시작하는 토큰이 있는지 확인
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            token = authHeader.replace("Bearer ", "");
+            token = authHeader.substring(7);
 
             try {
                 Claims claims = jwtUtil.getClaimsFromToken(token);
@@ -57,10 +59,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 logger.warn("잘못된 JWT token입니다: " + e.getMessage());
             }
 
-            if (redisUtil.hasKey(token)) {
-                logger.warn("로그아웃된 토큰입니다.");
-                filterChain.doFilter(request, response);
-                return;
+            if (redisUtil.isBlackList(token)) {
+                logger.warn("블랙리스트에 포함된 토큰입니다.");
+                throw new AuthException(AuthErrorCode.TOKEN_BLACKLIST);
             }
         }
 

@@ -24,7 +24,13 @@ public enum AuthErrorCode implements BaseErrorCode {
             "TOKEN401_2"),
     TOKEN_ERROR(HttpStatus.UNAUTHORIZED,
             "토큰에 문제가 있습니다.",
-            "TOKEN401_3");
+            "TOKEN401_3"),
+    TOKEN_BLACKLIST(
+            HttpStatus.UNAUTHORIZED,
+            "블랙리스트에 포함된 토큰입니다.",
+            "TOKEN401_4"
+    ),
+    ;
 
     private final HttpStatus httpStatus;
     private final String message;
