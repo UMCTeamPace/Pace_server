@@ -35,13 +35,6 @@ public class RouteService {
             transitMode = request.transitType().name().toLowerCase();
         }
 
-        // 2. 구글 요청용 빌더 생성 (공통 필드 먼저 세팅)
-        DirectionRequestDTO.DirectionRequestDTOBuilder googleReqBuilder = DirectionRequestDTO.builder()
-                .origin(request.originLat() + "," + request.originLng())
-                .destination(request.destLat() + "," + request.destLng())
-                .transitMode(transitMode)
-                .routingPreference(routingPreference);
-
         // 2. 시간 분기 (항상 transit 기준)
         Long arrivalTimeEpoch = null;
         Long departureTimeEpoch = null;

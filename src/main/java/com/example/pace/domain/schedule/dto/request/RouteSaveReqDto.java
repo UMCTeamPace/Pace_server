@@ -26,9 +26,7 @@ public class RouteSaveReqDto {
             //교통정보 지정
             TransitType transitType,
             //검색정보 지정(최적경로순/최소환승순/최소도보순)
-            SearchWay searchWay,
-
-            String mode
+            SearchWay searchWay
 
     ) {
     }
