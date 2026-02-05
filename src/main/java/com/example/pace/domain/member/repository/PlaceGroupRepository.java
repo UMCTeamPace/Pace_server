@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PlaceGroupRepository extends JpaRepository<PlaceGroup, Long> {
+public interface PlaceGroupRepository extends JpaRepository<PlaceGroup, Long>, PlaceGroupRepositoryCustom {
     // 단일 그룹만을 조회
     Optional<PlaceGroup> findByMemberIdAndId(Long memberId, Long groupId);
 
