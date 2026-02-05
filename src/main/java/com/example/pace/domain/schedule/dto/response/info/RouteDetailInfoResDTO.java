@@ -24,6 +24,7 @@ public class RouteDetailInfoResDTO {
     private Integer distance;
 
     private String description;
+    private String points; //polyline
 
     // 교통수단일 경우만 채워짐 (service)
     private TransitRouteDetailInfoResDTO transitDetail;

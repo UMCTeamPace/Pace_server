@@ -1,14 +1,10 @@
 package com.example.pace.domain.schedule.infrastructure;
 
 
-import static org.springframework.web.reactive.function.server.RequestPredicates.queryParam;
-
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,7 +14,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class GoogleDirectionApiClient {
 
     private final WebClient googleDirectionsWebClient;
-    private static final String TRANSIT_MODE = "transit";
+    private static final String MODE = "transit";
+
 
     public GoogleDirectionApiResponse getDirections(DirectionRequestDTO request) {
 
@@ -36,7 +33,8 @@ public class GoogleDirectionApiClient {
                             .queryParam("origin", origin)
                             .queryParam("language", "ko") // 설명 한국어로 설정
                             .queryParam("destination", destination)
-                            .queryParam("mode", TRANSIT_MODE);//final 변수 사용해서 대중교통 모드 지정
+                            .queryParam("alternatives", true)
+                            .queryParam("mode", MODE);
 
                     //도착시간or출발시간 분기처리
                     if (arrivalTime != null) {

@@ -8,12 +8,15 @@ import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiRes
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse.EncodedPolyline;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Builder
 @Getter
+@Setter
 @AllArgsConstructor
 public class TransitRouteDetailInfoResDTO {
 
@@ -32,10 +35,11 @@ public class TransitRouteDetailInfoResDTO {
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
 
+    private String shortName;
     private BigDecimal locationLat;
     private BigDecimal locationLng;
 
-    private String points; //polyline
-    private String headsign;
 
+    private String headsign;
+    private List<String> stationPath;
 }

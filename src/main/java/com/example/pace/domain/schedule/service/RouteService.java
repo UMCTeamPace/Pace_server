@@ -4,10 +4,20 @@ import com.example.pace.domain.schedule.converter.RouteResDTOConverter;
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.dto.request.RouteSaveReqDto;
 import com.example.pace.domain.schedule.dto.response.RouteApiResDto;
+import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
+import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
+import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfoResDTO;
+import com.example.pace.domain.schedule.enums.SearchWay;
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.infrastructure.GoogleDirectionApiClient;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
+import com.example.pace.domain.transit.dto.SubwayStationDTO;
+import com.example.pace.domain.transit.entity.BusInfo;
+import com.example.pace.domain.transit.service.BusNetworkService;
+import com.example.pace.domain.transit.service.SubwayNetworkService;
 import java.time.ZoneId;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +27,10 @@ public class RouteService {
 
     private final GoogleDirectionApiClient googleDirectionApiClient;
 
-    public RouteApiResDto searchRoute(RouteSaveReqDto.CreateRouteDTO request) {
+    private final SubwayNetworkService subwayNetworkService;
+    private final BusNetworkService busNetworkService;
+
+    public RouteListResDTO searchRoute(RouteSaveReqDto.CreateRouteDTO request) {
 
         // 예외처리 - arrivalTime과 departureTime이 동시에 존재할 수 없음->이런오류가있을수가있나?
         if (request.arrivalTime() != null && request.departureTime() != null) {
@@ -29,11 +42,6 @@ public class RouteService {
         // 1. 공통 정보 가공 (SearchWay, TransitMode)
         String routingPreference = request.searchWay() != null
                 ? request.searchWay().getGoogleValue() : null;
-
-        String transitMode = null;
-        if (request.transitType() != null && request.transitType() != TransitType.WALK) {
-            transitMode = request.transitType().name().toLowerCase();
-        }
 
         // 2. 시간 분기 (항상 transit 기준)
         Long arrivalTimeEpoch = null;
@@ -52,7 +60,7 @@ public class RouteService {
                     );
         }
         // 둘 다 null이면 구글이 알아서 현재로 계산합니다.
-// 3. Google 요청 DTO 생성
+        // 3. Google 요청 DTO 생성
         DirectionRequestDTO googleReq = DirectionRequestDTO.builder()
                 .origin(request.originLat() + "," + request.originLng())
                 .destination(request.destLat() + "," + request.destLng())
@@ -64,9 +72,60 @@ public class RouteService {
         GoogleDirectionApiResponse googleRes =
                 googleDirectionApiClient.getDirections(googleReq);
 
-        // 5. 응답 변환
-        return RouteResDTOConverter.toRouteApiResDto(googleRes);
+        // 1) routes 리스트 변환
+        RouteListResDTO result =
+                RouteResDTOConverter.toRouteListResDTO(googleRes);
+
+        // 2) BUS / SUBWAY 경로에 path 추가
+        enrichTransitPath(result);
+
+        return result;
+
     }
+
+    private void enrichTransitPath(RouteListResDTO result) {
+
+        for (RouteApiResDto route : result.getRouteApiResDtoList()) {
+
+            for (RouteDetailInfoResDTO step : route.getRouteDetailInfoResDTOList()) {
+
+                if (step.getTransitDetail() == null) {
+                    continue;
+                }
+
+                TransitRouteDetailInfoResDTO transit = step.getTransitDetail();
+
+                String lineName = transit.getLineName();
+                String start = transit.getDepartureStop();
+                String end = transit.getArrivalStop();
+
+                if (lineName == null || start == null || end == null) {
+                    continue;
+                }
+
+                // BUS 처리
+                if (transit.getTransitType() == TransitType.BUS) {
+                    List<String> stationPath = busNetworkService.getStationsBetween(lineName, start, end)
+                            .stream()
+                            .map(BusInfo::getStationName)
+                            .toList();
+
+                    transit.setStationPath(stationPath);
+                }
+
+                // SUBWAY 처리
+                if (transit.getTransitType() == TransitType.SUBWAY) {
+                    List<String> stationPath = subwayNetworkService.getStationsBetween(lineName, start, end)
+                            .stream()
+                            .map(SubwayStationDTO::getStationName)
+                            .toList();
+
+                    transit.setStationPath(stationPath);
+                }
+            }
+        }
+    }
+
 }
 
 

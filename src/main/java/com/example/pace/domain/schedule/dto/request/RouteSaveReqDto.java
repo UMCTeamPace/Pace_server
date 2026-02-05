@@ -23,7 +23,7 @@ public class RouteSaveReqDto {
             //출발시간 지정
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
             LocalDateTime departureTime,
-            //교통정보 지정
+            //교통정보 지정 (버스/지하철/도보)
             TransitType transitType,
             //검색정보 지정(최적경로순/최소환승순/최소도보순)
             SearchWay searchWay

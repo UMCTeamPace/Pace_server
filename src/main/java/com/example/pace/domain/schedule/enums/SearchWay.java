@@ -5,7 +5,9 @@ import lombok.Getter;
 @Getter
 public enum SearchWay {
     // 분기처리를 위해 데이터 매핑
-    FASTEST(null),                 // 기본 (구글에 안 보냄)
+    EFFICIENT(null),
+    MIN_TIME(null),
+    
     MIN_TRANSFER("fewer_transfers"),
     MIN_WALK("less_walking");
 

@@ -51,7 +51,6 @@ public class GoogleDirectionApiResponse {
         private List<Step> steps;
         @JsonProperty("html_instructions")
         private String htmlInstructions;// 안내문구
-
         @JsonProperty("transit_details")
         private TransitDetails transitDetails;
     }
@@ -69,10 +68,8 @@ public class GoogleDirectionApiResponse {
         private DepartureStop departureStop;
         @JsonProperty("headsign")
         private String headsign; // ~~행 (버스기준? 지하철 적용이 힘듦)
-
         @JsonProperty("line")
         private EncodedLine encodedLine;
-
         @JsonProperty("num_stops")
         private Long numStops;
 
@@ -128,6 +125,7 @@ public class GoogleDirectionApiResponse {
     public static class EncodedLine {
         private String color;
         private Vehicle vehicle;
+        @JsonProperty("short_name")
         private String name; // 지하철 역 호선 이름
     }
 
