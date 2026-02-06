@@ -180,15 +180,18 @@ public class RouteResDTOConverter {
     }
 
     private static TransitType mapTransitType(String vehicleType) {
+        if (vehicleType == null) {
+            return TransitType.UNDEFINED;
+        }
         return switch (vehicleType.toUpperCase()) {
 
-            // ✅ BUS 계열
+            // BUS 계열 -> 그냥 일단 때려넣었습니다
             case "BUS", "INTERCITY_BUS", "TROLLEYBUS" -> TransitType.BUS;
 
-            // ✅ SUBWAY 계열
+            //  SUBWAY 계열
             case "SUBWAY", "METRO_RAIL", "HEAVY_RAIL", "COMMUTER_TRAIN" -> TransitType.SUBWAY;
 
-            // ✅ TRAIN 계열
+            //  TRAIN 계열
             case "RAIL", "TRAIN" -> TransitType.TRAIN;
 
             default -> TransitType.UNDEFINED;
