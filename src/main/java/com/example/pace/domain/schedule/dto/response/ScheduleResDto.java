@@ -76,8 +76,18 @@ public class ScheduleResDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class RouteDetailDto {
-        private String originName;
-        private BigDecimal originLat;
-        private BigDecimal originLng;
+        private Integer sequence;
+        private String description;
+        private String transitType;
+        private Integer duration;
+        private Integer distance;
+        private String lineName;
+        private String lineColor;
+        private String departureStop;
+        private String arrivalStop;
+        private BigDecimal startLat;
+        private BigDecimal startLng;
+        private BigDecimal endLat;
+        private BigDecimal endLng;
     }
 }
