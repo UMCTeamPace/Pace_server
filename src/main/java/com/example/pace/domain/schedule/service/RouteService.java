@@ -43,6 +43,9 @@ public class RouteService {
         String routingPreference = request.searchWay() != null
                 ? request.searchWay().getGoogleValue() : null;
 
+        String transitMode = request.transitType() != null
+                ? request.transitType().getGoogleValue() : null;
+
         // 2. 시간 분기 (항상 transit 기준)
         Long arrivalTimeEpoch = null;
         Long departureTimeEpoch = null;
@@ -67,6 +70,7 @@ public class RouteService {
                 .arrivalTime(arrivalTimeEpoch)       // 둘 중 하나만 값 있음
                 .departureTime(departureTimeEpoch)   // 둘 중 하나만 값 있음
                 .routingPreference(routingPreference)
+                .transitMode(transitMode)
                 .build();
 
         GoogleDirectionApiResponse googleRes =
