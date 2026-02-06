@@ -94,11 +94,15 @@ public class ScheduleResDtoConverter {
     private static List<ScheduleResDto.ReminderDto> toReminderDtos(List<Reminder> reminders) {
         if (reminders == null) return List.of();
         return reminders.stream()
-                .map(reminder -> ScheduleResDto.ReminderDto.builder()
-                        .reminderType(reminder.getReminderType())
-                        .minutesBefore(reminder.getMinutesBefore())
-                        .reminderEnabled(reminder.getReminderEnabled())
-                        .build())
+                .map(ScheduleResDtoConverter::toReminderDto)
                 .toList();
+    }
+
+    private static ScheduleResDto.ReminderDto toReminderDto(Reminder reminder) {
+        return ScheduleResDto.ReminderDto.builder()
+                .reminderType(reminder.getReminderType())
+                .minutesBefore(reminder.getMinutesBefore())
+                .reminderEnabled(reminder.getReminderEnabled())
+                .build();
     }
 }
