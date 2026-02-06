@@ -65,7 +65,7 @@ public class RouteResDTOConverter {
                 .routeDetailInfoResDTOList(details)
                 .build();
     }
-    
+
     // 재귀적으로 스텝을 평탄화하는 메서드
     private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
                                      List<RouteDetailInfoResDTO> resultList,
@@ -184,9 +184,16 @@ public class RouteResDTOConverter {
             return TransitType.UNDEFINED;
         }
         return switch (vehicleType.toUpperCase()) {
-            case "BUS" -> TransitType.BUS;
-            case "SUBWAY" -> TransitType.SUBWAY;
-            case "WALKING" -> TransitType.WALK;
+
+            // BUS 계열 -> 그냥 일단 때려넣었습니다
+            case "BUS", "INTERCITY_BUS", "TROLLEYBUS" -> TransitType.BUS;
+
+            //  SUBWAY 계열
+            case "SUBWAY", "METRO_RAIL", "HEAVY_RAIL", "COMMUTER_TRAIN" -> TransitType.SUBWAY;
+
+            //  TRAIN 계열
+            case "RAIL", "TRAIN" -> TransitType.TRAIN;
+
             default -> TransitType.UNDEFINED;
         };
     }
