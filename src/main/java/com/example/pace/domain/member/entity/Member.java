@@ -66,7 +66,7 @@ public class Member extends BaseEntity {
     private SocialProvider socialProvider;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     @Builder.Default
     private Role role = Role.ROLE_USER;
 
