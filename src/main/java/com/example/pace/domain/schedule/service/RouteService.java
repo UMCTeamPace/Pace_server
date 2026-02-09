@@ -1,5 +1,8 @@
 package com.example.pace.domain.schedule.service;
 
+import static com.example.pace.domain.schedule.enums.SearchWay.MIN_TIME;
+import static com.example.pace.domain.schedule.enums.SearchWay.MIN_TRANSFER;
+
 import com.example.pace.domain.schedule.converter.RouteResDTOConverter;
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.dto.request.RouteSaveReqDto;
@@ -26,7 +29,6 @@ import org.springframework.stereotype.Service;
 public class RouteService {
 
     private final GoogleDirectionApiClient googleDirectionApiClient;
-
     private final SubwayNetworkService subwayNetworkService;
     private final BusNetworkService busNetworkService;
 
@@ -79,6 +81,14 @@ public class RouteService {
         // 1) routes 리스트 변환
         RouteListResDTO result =
                 RouteResDTOConverter.toRouteListResDTO(googleRes);
+
+        if (request.searchWay() == MIN_TIME) {
+            googleRes.getRoutes().sort(
+                    Comparator.comparing(route ->
+                            route.getLegs().get(0).getDuration().getValue()
+                    )
+            );
+        }
 
         // 2) BUS / SUBWAY 경로에 path 추가
         enrichTransitPath(result);
