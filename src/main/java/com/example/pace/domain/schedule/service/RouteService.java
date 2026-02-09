@@ -82,12 +82,15 @@ public class RouteService {
         RouteListResDTO result =
                 RouteResDTOConverter.toRouteListResDTO(googleRes);
 
-        if (request.searchWay() == MIN_TIME) {
-            googleRes.getRoutes().sort(
-                    Comparator.comparing(route ->
-                            route.getLegs().get(0).getDuration().getValue()
-                    )
-            );
+        if (request.searchWay() == MIN_TIME && googleRes != null && googleRes.getRoutes() != null) {
+            googleRes.getRoutes().sort(Comparator.comparing(route -> {
+                if (route.getLegs() != null && !route.getLegs().isEmpty() &&
+                        route.getLegs().get(0).getDuration() != null &&
+                        route.getLegs().get(0).getDuration().getValue() != null) {
+                    return route.getLegs().get(0).getDuration().getValue();
+                }
+                return Long.MAX_VALUE;
+            }));
         }
 
         // 2) BUS / SUBWAY 경로에 path 추가
