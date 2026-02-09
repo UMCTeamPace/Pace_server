@@ -1,7 +1,6 @@
 package com.example.pace.domain.schedule.service;
 
 import static com.example.pace.domain.schedule.enums.SearchWay.MIN_TIME;
-import static com.example.pace.domain.schedule.enums.SearchWay.MIN_TRANSFER;
 
 import com.example.pace.domain.schedule.converter.RouteResDTOConverter;
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
@@ -10,7 +9,6 @@ import com.example.pace.domain.schedule.dto.response.RouteApiResDto;
 import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
 import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfoResDTO;
-import com.example.pace.domain.schedule.enums.SearchWay;
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.infrastructure.GoogleDirectionApiClient;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
@@ -18,7 +16,6 @@ import com.example.pace.domain.transit.dto.SubwayStationDTO;
 import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.service.BusNetworkService;
 import com.example.pace.domain.transit.service.SubwayNetworkService;
-import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -139,7 +136,11 @@ public class RouteService {
 
                     transit.setStationPath(stationPath);
                 }
+
+
             }
+
+
         }
     }
 
