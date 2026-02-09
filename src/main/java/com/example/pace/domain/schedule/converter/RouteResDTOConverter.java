@@ -98,7 +98,7 @@ public class RouteResDTOConverter {
                 walkingPointsSet.add(currentPoints);
             }
 
-            // 2. 실제 리스트에 추가할 때만 sequence 번호 부여!
+            // 2.  실제 리스트에 추가할 때만 sequence 번호 부여!
             // incrementAndGet()을 여기서 호출해야 빈 번호 없이 1, 2, 3... 순서대로 들어감
             resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
 
