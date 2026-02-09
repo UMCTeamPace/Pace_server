@@ -13,7 +13,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RouteResDTOConverter {
@@ -53,7 +55,8 @@ public class RouteResDTOConverter {
         List<RouteDetailInfoResDTO> details = new ArrayList<>();
         AtomicInteger sequence = new AtomicInteger(0);
 
-        flattenSteps(firstLeg.getSteps(), details, sequence);
+        Set<String> walkingPointsSet = new HashSet<>();
+        flattenSteps(firstLeg.getSteps(), details, sequence, walkingPointsSet);
 
         return RouteApiResDto.builder()
                 .totalDistance(firstLeg.getDistance() != null ? safeInt(firstLeg.getDistance().getValue()) : 0)
@@ -69,18 +72,40 @@ public class RouteResDTOConverter {
     // 재귀적으로 스텝을 평탄화하는 메서드
     private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
                                      List<RouteDetailInfoResDTO> resultList,
-                                     AtomicInteger sequence) {
+                                     AtomicInteger sequence,
+                                     Set<String> walkingPointsSet) {
+
         if (steps == null || steps.isEmpty()) {
             return;
         }
 
         for (GoogleDirectionApiResponse.Step step : steps) {
-            // 현재 스텝을 결과에 추가
+            String currentPoints = (step.getEncodedPolyline() != null)
+                    ? step.getEncodedPolyline().getPoints() : null;
+
+            // 1. 중복 체크 (일단 보류하신 대로 기존 로직 유지하되, skip 되면 sequence 안 올라감)
+            if (currentPoints != null && !resultList.isEmpty()) {
+                String lastPoints = resultList.get(resultList.size() - 1).getPoints();
+                if (currentPoints.equals(lastPoints)) {
+                    continue; // 여기서 continue 되면 아래 incrementAndGet 호출 안 됨!
+                }
+            }
+
+            if ("WALKING".equalsIgnoreCase(step.getTravelMode()) && currentPoints != null) {
+                if (walkingPointsSet.contains(currentPoints)) {
+                    continue;
+                }
+                walkingPointsSet.add(currentPoints);
+            }
+
+            // 2.  실제 리스트에 추가할 때만 sequence 번호 부여!
+            // incrementAndGet()을 여기서 호출해야 빈 번호 없이 1, 2, 3... 순서대로 들어감
             resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
 
-            // 자식 스텝이 있으면 재귀 처리
-            if (step.getSteps() != null && !step.getSteps().isEmpty()) {
-                flattenSteps(step.getSteps(), resultList, sequence);
+            // 3. 재귀 호출
+            if ("TRANSIT".equalsIgnoreCase(step.getTravelMode()) && step.getSteps() != null && !step.getSteps()
+                    .isEmpty()) {
+                flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
             }
         }
     }
