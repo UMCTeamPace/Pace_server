@@ -3,6 +3,7 @@ package com.example.pace.domain.schedule.dto.request;
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.enums.EndType;
 import com.example.pace.domain.schedule.enums.RepeatType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -81,6 +82,7 @@ public class ScheduleReqDto {
     @Getter
     @Setter
     @NoArgsConstructor
+    @Schema(name = "ScheduleReqRouteDetailDto")
     public static class RouteDetailDto {
         private Integer sequence;
         private Integer duration;
