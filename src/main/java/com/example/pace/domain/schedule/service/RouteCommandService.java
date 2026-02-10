@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class RouteService {
+public class RouteCommandService {
 
     private final GoogleDirectionApiClient googleDirectionApiClient;
     private final SubwayNetworkService subwayNetworkService;

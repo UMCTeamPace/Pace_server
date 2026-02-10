@@ -4963,7 +4963,7 @@
   },
   {
     "stationName": "도곡",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1025",
     "externalCode": "K217",
     "nextStations": [
