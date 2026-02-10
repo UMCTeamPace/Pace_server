@@ -79,34 +79,88 @@ public class RouteResDTOConverter {
             return;
         }
 
-        for (GoogleDirectionApiResponse.Step step : steps) {
-            String currentPoints = (step.getEncodedPolyline() != null)
-                    ? step.getEncodedPolyline().getPoints() : null;
+        RouteDetailInfoResDTO walkingBuffer = null;
 
-            // 1. 중복 체크 (일단 보류하신 대로 기존 로직 유지하되, skip 되면 sequence 안 올라감)
-            if (currentPoints != null && !resultList.isEmpty()) {
-                String lastPoints = resultList.get(resultList.size() - 1).getPoints();
-                if (currentPoints.equals(lastPoints)) {
-                    continue; // 여기서 continue 되면 아래 incrementAndGet 호출 안 됨!
-                }
+        for (GoogleDirectionApiResponse.Step step : steps) {
+
+            String travelMode = step.getTravelMode();
+
+            // ✅ 무의미한 step 제거
+            if (step.getDistance() != null
+                    && step.getDistance().getValue() == 0
+                    && !"TRANSIT".equalsIgnoreCase(travelMode)) {
+                continue;
             }
 
-            if ("WALKING".equalsIgnoreCase(step.getTravelMode()) && currentPoints != null) {
-                if (walkingPointsSet.contains(currentPoints)) {
+            // ================================
+            // 🚶 WALKING이면 합치기
+            // ================================
+            if ("WALKING".equalsIgnoreCase(travelMode)) {
+
+                // description null 제거
+                if (step.getHtmlInstructions() == null) {
                     continue;
                 }
-                walkingPointsSet.add(currentPoints);
+
+                // 출구 이용 제거
+                String desc = step.getHtmlInstructions().replaceAll("<[^>]*>", "");
+                if (desc.contains("출구")) {
+                    continue;
+                }
+
+                RouteDetailInfoResDTO currentWalking =
+                        toRouteDetailInfoResDTO(step, sequence.get());
+
+                if (walkingBuffer == null) {
+                    walkingBuffer = currentWalking;
+                } else {
+                    // 거리 누적
+                    walkingBuffer.setDistance(
+                            walkingBuffer.getDistance() + currentWalking.getDistance()
+                    );
+
+                    // 시간 누적
+                    walkingBuffer.setDuration(
+                            walkingBuffer.getDuration() + currentWalking.getDuration()
+                    );
+
+                    // 끝 좌표 갱신
+                    walkingBuffer.setEndLat(currentWalking.getEndLat());
+                    walkingBuffer.setEndLng(currentWalking.getEndLng());
+                }
+
+                continue;
             }
 
-            // 2.  실제 리스트에 추가할 때만 sequence 번호 부여!
-            // incrementAndGet()을 여기서 호출해야 빈 번호 없이 1, 2, 3... 순서대로 들어감
-            resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
-
-            // 3. 재귀 호출
-            if ("TRANSIT".equalsIgnoreCase(step.getTravelMode()) && step.getSteps() != null && !step.getSteps()
-                    .isEmpty()) {
-                flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
+            // ================================
+            // 🚇 TRANSIT 만나면 도보 flush
+            // ================================
+            if (walkingBuffer != null) {
+                walkingBuffer.setDescription("도보 이동");
+                walkingBuffer.setSequence(sequence.incrementAndGet());
+                resultList.add(walkingBuffer);
+                walkingBuffer = null;
             }
+
+            // TRANSIT이면 추가
+            if ("TRANSIT".equalsIgnoreCase(travelMode)) {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+
+                if (step.getSteps() != null && !step.getSteps().isEmpty()) {
+                    flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
+                }
+            } else {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+            }
+        }
+
+        // ================================
+        // 🚶 마지막이 WALKING으로 끝났으면 flush
+        // ================================
+        if (walkingBuffer != null) {
+            walkingBuffer.setDescription("도보 이동");
+            walkingBuffer.setSequence(sequence.incrementAndGet());
+            resultList.add(walkingBuffer);
         }
     }
 
