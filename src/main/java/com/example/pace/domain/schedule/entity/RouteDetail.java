@@ -80,6 +80,9 @@ public class RouteDetail extends BaseEntity {
     @Column(name = "arrival_stop")
     private String arrivalStop; //하차역 정류장 이름
 
+    @Column(name = "short_name")
+    private String shortName;
+
     public void setRoute(Route route) {
         this.route = route;
     }

@@ -63,6 +63,7 @@ public class ScheduleReqDtoConverter {
                 .stopCount(dto.getStopCount())
                 .departureStop(dto.getDepartureStop())
                 .arrivalStop(dto.getArrivalStop())
+                .shortName(dto.getShortName())
                 .startLat(toBigDecimal(dto.getStartLat()))
                 .startLng(toBigDecimal(dto.getStartLng()))
                 .endLat(toBigDecimal(dto.getEndLat()))

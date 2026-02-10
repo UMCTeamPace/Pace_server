@@ -89,5 +89,6 @@ public class ScheduleResDto {
         private BigDecimal startLng;
         private BigDecimal endLat;
         private BigDecimal endLng;
+        private String shortName;
     }
 }
