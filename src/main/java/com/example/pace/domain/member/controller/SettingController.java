@@ -4,6 +4,7 @@ import com.example.pace.domain.member.controller.docs.SettingControllerDocs;
 import com.example.pace.domain.member.dto.request.SettingUpdateRequestDTO;
 import com.example.pace.domain.member.dto.response.SettingResponseDTO;
 import com.example.pace.domain.member.exception.code.SettingSuccessCode;
+import com.example.pace.domain.member.service.command.SettingCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/member/settings")
 public class SettingController implements SettingControllerDocs {
 
-    private final SettingService settingService;
+    private final SettingCommandService settingService;
 
     @GetMapping
     @Override

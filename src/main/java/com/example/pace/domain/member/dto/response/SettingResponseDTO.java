@@ -31,4 +31,8 @@ public class SettingResponseDTO {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public static SettingResponseDTO from(Setting setting) {
+        return SettingConverter.toResponse(setting);
+    }
 }

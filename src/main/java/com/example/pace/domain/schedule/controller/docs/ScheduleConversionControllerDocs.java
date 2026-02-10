@@ -1,6 +1,7 @@
 package com.example.pace.domain.schedule.controller.docs;
 
 import com.example.pace.domain.schedule.dto.response.ScheduleConversionResDto;
+import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +15,7 @@ public interface ScheduleConversionControllerDocs {
 
     @Operation(summary = "경로 일정 -> 일반 일정 전환")
     @PatchMapping("/{id}/conversion")
-    ApiResponse<ScheduleConversionResDto> convertPathScheduleToNormal(
+    ApiResponse<ScheduleRouteDeleteResDto> convertPathScheduleToNormal(
             @AuthenticationPrincipal CustomUserDetails user,
             @PathVariable("id") Long scheduleId
     );
