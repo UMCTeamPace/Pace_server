@@ -47,6 +47,8 @@ public class ScheduleReqDtoConverter {
                 .destLng(dto.getDestLng())
                 .totalTime(dto.getTotalTime())
                 .totalDistance(dto.getTotalDistance())
+                .arrivalTime(dto.getArrivalTime())
+                .departureTime(dto.getDepartureTime())
                 .isSaved(false)
                 .build();
     }

@@ -17,6 +17,8 @@ public class ScheduleRouteUpdateReqDtoConverter {
                 .destLng(toBigDecimal(req.getDest().getDestLng()))
                 .totalTime(req.getTotalTime())
                 .totalDistance(req.getTotalDistance())
+                .arrivalTime(req.getArrivalTime())
+                .departureTime(req.getDepartureTime())
                 .isSaved(false)
                 .build();
     }
@@ -41,6 +43,7 @@ public class ScheduleRouteUpdateReqDtoConverter {
                 .startLng(toBigDecimal(dto.getStartLng()))
                 .endLat(toBigDecimal(dto.getEndLat()))
                 .endLng(toBigDecimal(dto.getEndLng()))
+                .shortName(dto.getShortName())
                 .build();
     }
 }

@@ -58,6 +58,8 @@ public class ScheduleResDtoConverter {
                 .destLng(route.getDestLng())
                 .totalTime(route.getTotalTime())
                 .totalDistance(route.getTotalDistance())
+                .arrivalTime(route.getArrivalTime())
+                .departureTime(route.getDepartureTime())
                 .routeDetails(toDetailDtos(route.getRouteDetails()))
                 .build();
     }
