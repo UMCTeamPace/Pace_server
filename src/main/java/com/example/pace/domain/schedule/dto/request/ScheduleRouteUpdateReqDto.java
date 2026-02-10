@@ -2,6 +2,7 @@ package com.example.pace.domain.schedule.dto.request;
 
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import lombok.*;
 import java.util.List;
 
@@ -17,6 +18,13 @@ public class ScheduleRouteUpdateReqDto {
 
     @JsonProperty("end_time")
     private String endTime;
+
+
+    @JsonProperty("arrival_time")
+    private LocalDateTime arrivalTime;
+
+    @JsonProperty("departure_time")
+    private LocalDateTime departureTime;
 
     @JsonProperty("total_time")
     private Integer totalTime;
@@ -94,5 +102,8 @@ public class ScheduleRouteUpdateReqDto {
 
         @JsonProperty("arrival_stop")
         private String arrivalStop;
+
+        @JsonProperty("shortName")
+        private String shortName;
     }
 }
