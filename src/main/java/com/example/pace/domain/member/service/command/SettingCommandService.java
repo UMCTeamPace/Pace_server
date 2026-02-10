@@ -21,20 +21,74 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class SettingCommandService {
     private final SettingRepository settingRepository;
     private final MemberRepository memberRepository;
 
     private static final int MAX_ALARMS_PER_TYPE = 5;
     private static final Set<Integer> ALLOWED_SCHEDULE_MINUTES = Set.of(
-            5, 10, 15, 30, 60, 120,
-            1440, 2880, 10080
+            0, 5, 10, 15, 30, 60, 120,
+            1440, //1일
+            2880, //2일
+            10080 //1주
     );
 
     private static final Set<Integer> ALLOWED_DEPARTURE_MINUTES = Set.of(
-            5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60
+            0, 5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60
     );
+
+    @Transactional(readOnly = true)
+    public SettingResponseDTO getMySetting(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("member not found"));
+
+        Setting setting = settingRepository.findByMember(member)
+                .orElseGet(() -> settingRepository.save(createDefaultSetting(member)));
+
+        return SettingResponseDTO.from(setting);
+    }
+
+
+
+    public SettingResponseDTO updateMySetting(Long memberId, SettingUpdateRequestDTO request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new RuntimeException("member not found"));
+
+        Setting setting = settingRepository.findByMember(member)
+                .orElseThrow(() -> new SettingException(SettingErrorCode.SETTING_NOT_FOUND));
+
+        setting.update(
+                request.getEarlyArrivalTime(),
+                request.getIsNotiEnabled(),
+                request.getIsLocEnabled(),
+                request.getIsReminderActive(),
+                request.getCalendarType()
+        );
+
+        if (request.getAlarms() != null) {
+            applyAlarms(setting, request.getAlarms());
+        }
+
+        return SettingConverter.toResponse(setting);
+    }
+
+    public void applyAlarms(Setting setting, List<SettingUpdateRequestDTO.Alarm> alarms) {
+        for (SettingUpdateRequestDTO.Alarm alarm : alarms) {
+            if (alarm == null || alarm.getType() == null) continue;
+
+            List<Integer> minutes = alarm.getMinutes();
+
+            // minutes == null 이면 "이 타입은 변경하지 않음"
+            if (minutes == null) continue;
+
+            // minutes == [] 이면 buildReminderTimes -> [] 이고 replaceReminderTimes가 삭제만 수행
+            setting.replaceReminderTimes(
+                    alarm.getType(),
+                    buildReminderTimes(setting, alarm.getType(), minutes)
+            );
+        }
+    }
 
     // ReminderTime 생성
     private List<ReminderTime> buildReminderTimes(

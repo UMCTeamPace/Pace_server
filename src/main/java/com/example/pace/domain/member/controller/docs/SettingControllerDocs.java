@@ -30,14 +30,20 @@ public interface SettingControllerDocs {
                                       "code": "SETTING200_0",
                                       "message": "설정 조회 성공",
                                       "result": {
-                                        "alarmEnabled": true,
-                                        "reminderTimes": [5, 10, 15, 30, 60]
+                                          "isReminderActive": true,
+                                          "earlyArrivalTime": 60,
+                                          "calendarType": "GOOGLE",
+                                          "alarms": [
+                                            { "type": "SCHEDULE", "minutes": [5] },
+                                            { "type": "DEPARTURE", "minutes": [10] }
+                                          ]  
                                       }
                                     }
                                     """
                     )
             )
     )
+
     ApiResponse<SettingResponseDTO> getMySetting(@RequestParam Long memberId);
 
     @Operation(summary = "설정 수정", description = "알림 설정을 수정합니다.")
@@ -50,21 +56,46 @@ public interface SettingControllerDocs {
                     examples = @ExampleObject(
                             name = "성공 응답 예시",
                             value = """
-                                    {
-                                      "isSuccess": true,
-                                      "code": "SETTING200_1",
-                                      "message": "설정 수정 성공",
-                                      "result": {
-                                        "alarmEnabled": true,
-                                        "reminderTimes": [10, 30]
-                                      }
-                                    }
-                                    """
+                                {
+                                  "isSuccess": true,
+                                  "code": "SETTING200_1",
+                                  "message": "설정 수정 성공",
+                                  "result": {
+                                      "isReminderActive": true,
+                                      "earlyArrivalTime": 60,
+                                      "calendarType": "GOOGLE",
+                                      "alarms": [
+                                        {"type": "SCHEDULE", "minutes": [5, 10080]},
+                                        {"type": "DEPARTURE", "minutes": [5, 10, 15]}
+                                      ]
+                                  }
+                                }
+                                """
                     )
             )
     )
     ApiResponse<SettingResponseDTO> updateMySetting(
             @RequestParam Long memberId,
-            @RequestBody SettingUpdateRequestDTO request
+            @RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "설정 수정 요청 예시",
+                                    value = """
+                                            {
+                                              "isReminderActive": true,
+                                              "earlyArrivalTime": 60,
+                                              "calendarType": "GOOGLE",
+                                              "alarms": [
+                                                { "type": "SCHEDULE",  "minutes": [] },
+                                                { "type": "DEPARTURE", "minutes": [] }
+                                              ]
+                                            }
+                                            """
+                            )
+                    )
+            )
+            SettingUpdateRequestDTO request
     );
 }

@@ -1,8 +1,6 @@
 package com.example.pace.domain.member.entity;
 
-import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,15 +26,7 @@ public class ReminderTime {
     @Column(name = "alarm_type", nullable = false, length = 20)
     private AlarmType alarmType;
 
-    public static ReminderTime toEntity(
-            Setting setting,
-            AlarmType alarmType,
-            Integer minutes
-    ) {
-        return ReminderTime.builder()
-                .setting(setting)
-                .alarmType(alarmType)
-                .minutes(minutes)
-                .build();
+    public void setSetting(Setting setting) {
+        this.setting = setting;
     }
 }
