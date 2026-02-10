@@ -83,6 +83,7 @@ public class ScheduleResDtoConverter {
                 .lineColor(detail.getLineColor())
                 .departureStop(detail.getDepartureStop())
                 .arrivalStop(detail.getArrivalStop())
+                .shortName(detail.getShortName())
                 .startLat(detail.getStartLat())
                 .startLng(detail.getStartLng())
                 .endLat(detail.getEndLat())

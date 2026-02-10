@@ -96,5 +96,6 @@ public class ScheduleReqDto {
         private Integer stopCount;
         private String departureStop;
         private String arrivalStop;
+        private String shortName;
     }
 }

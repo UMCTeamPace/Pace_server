@@ -13,7 +13,9 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RouteResDTOConverter {
@@ -53,7 +55,8 @@ public class RouteResDTOConverter {
         List<RouteDetailInfoResDTO> details = new ArrayList<>();
         AtomicInteger sequence = new AtomicInteger(0);
 
-        flattenSteps(firstLeg.getSteps(), details, sequence);
+        Set<String> walkingPointsSet = new HashSet<>();
+        flattenSteps(firstLeg.getSteps(), details, sequence, walkingPointsSet);
 
         return RouteApiResDto.builder()
                 .totalDistance(firstLeg.getDistance() != null ? safeInt(firstLeg.getDistance().getValue()) : 0)
@@ -69,20 +72,101 @@ public class RouteResDTOConverter {
     // 재귀적으로 스텝을 평탄화하는 메서드
     private static void flattenSteps(List<GoogleDirectionApiResponse.Step> steps,
                                      List<RouteDetailInfoResDTO> resultList,
-                                     AtomicInteger sequence) {
+                                     AtomicInteger sequence,
+                                     Set<String> walkingPointsSet) {
+
         if (steps == null || steps.isEmpty()) {
             return;
         }
 
-        for (GoogleDirectionApiResponse.Step step : steps) {
-            // 현재 스텝을 결과에 추가
-            resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+        RouteDetailInfoResDTO walkingBuffer = null;
 
-            // 자식 스텝이 있으면 재귀 처리
-            if (step.getSteps() != null && !step.getSteps().isEmpty()) {
-                flattenSteps(step.getSteps(), resultList, sequence);
+        for (GoogleDirectionApiResponse.Step step : steps) {
+            String travelMode = step.getTravelMode();
+
+            // ✅ 무의미한 step 제거
+            if (step.getDistance() != null
+                    && step.getDistance().getValue() == 0
+                    && !"TRANSIT".equalsIgnoreCase(travelMode)) {
+                continue;
+            }
+
+            // ================================
+            // 🚶 WALKING이면 합치기 (Setter 없이 새 객체 생성)
+            // ================================
+            if ("WALKING".equalsIgnoreCase(travelMode)) {
+                if (step.getHtmlInstructions() == null) {
+                    continue;
+                }
+
+                String desc = step.getHtmlInstructions().replaceAll("<[^>]*>", "");
+                if (desc.contains("출구")) {
+                    continue;
+                }
+
+                RouteDetailInfoResDTO currentWalking = toRouteDetailInfoResDTO(step, 0);
+
+                if (walkingBuffer == null) {
+                    walkingBuffer = currentWalking;
+                } else {
+                    // 핵심: 기존 값을 가져와서 새 Builder로 객체를 다시 생성 (re-assign)
+                    walkingBuffer = RouteDetailInfoResDTO.builder()
+                            .startLat(walkingBuffer.getStartLat())
+                            .startLng(walkingBuffer.getStartLng())
+                            .endLat(currentWalking.getEndLat()) // 끝 좌표 갱신
+                            .endLng(currentWalking.getEndLng())
+                            .distance(walkingBuffer.getDistance() + currentWalking.getDistance()) // 거리 합산
+                            .duration(walkingBuffer.getDuration() + currentWalking.getDuration()) // 시간 합산
+                            .points(walkingBuffer.getPoints())
+                            .description(walkingBuffer.getDescription())
+                            .build();
+                }
+                continue;
+            }
+
+            // ================================
+            // 🚇 TRANSIT이나 다른 수단 만나면 도보 flush
+            // ================================
+            if (walkingBuffer != null) {
+                // "도보 이동" 문구와 최종 sequence를 입혀서 리스트에 추가
+                resultList.add(finalizeWalking(walkingBuffer, sequence.incrementAndGet()));
+                walkingBuffer = null;
+            }
+
+            if ("TRANSIT".equalsIgnoreCase(travelMode)) {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+
+                if (step.getSteps() != null && !step.getSteps().isEmpty()) {
+                    flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
+                }
+            } else {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
             }
         }
+
+        // ================================
+        // 🚶 마지막 잔여 도보 flush
+        // ================================
+        if (walkingBuffer != null) {
+            resultList.add(finalizeWalking(walkingBuffer, sequence.incrementAndGet()));
+        }
+    }
+
+    /**
+     * 도보 버퍼를 최종 확정할 때 사용하는 헬퍼 메서드
+     */
+    private static RouteDetailInfoResDTO finalizeWalking(RouteDetailInfoResDTO buffer, int seq) {
+        return RouteDetailInfoResDTO.builder()
+                .sequence(seq)
+                .startLat(buffer.getStartLat())
+                .startLng(buffer.getStartLng())
+                .endLat(buffer.getEndLat())
+                .endLng(buffer.getEndLng())
+                .distance(buffer.getDistance())
+                .duration(buffer.getDuration())
+                .description(buffer.getDescription()) // 공통 문구 할당
+                .points(buffer.getPoints())
+                .build();
     }
 
 
