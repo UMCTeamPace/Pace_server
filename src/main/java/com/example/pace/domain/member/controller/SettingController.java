@@ -6,10 +6,12 @@ import com.example.pace.domain.member.dto.response.SettingResponseDTO;
 import com.example.pace.domain.member.exception.code.SettingSuccessCode;
 import com.example.pace.domain.member.service.command.SettingCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
+import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Settings", description = "사용자 설정 API")
@@ -22,23 +24,22 @@ public class SettingController implements SettingControllerDocs {
 
     @GetMapping
     @Override
-    public ApiResponse<SettingResponseDTO> getMySetting(@RequestParam Long memberId) {
+    public ApiResponse<SettingResponseDTO> getMySetting(@AuthenticationPrincipal CustomUserDetails user) {
         return ApiResponse.onSuccess(
                 SettingSuccessCode.SETTING_GET_OK,
-                settingService.getMySetting(memberId)
+                settingService.getMySetting(user.member().getId())
         );
-        // return settingService.getMySetting(memberId);
     }
 
     @Override
     @PatchMapping
     public ApiResponse<SettingResponseDTO> updateMySetting(
-            @RequestParam Long memberId,
+            @AuthenticationPrincipal CustomUserDetails user,
             @Valid @RequestBody SettingUpdateRequestDTO request
     ) {
         return ApiResponse.onSuccess(
                 SettingSuccessCode.SETTING_UPDATE_OK,
-                settingService.updateMySetting(memberId, request)
+                settingService.updateMySetting(user.member().getId(), request)
         );
     }
 }

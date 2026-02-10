@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class SettingCommandService {
     private final SettingRepository settingRepository;
     private final MemberRepository memberRepository;
@@ -41,7 +40,7 @@ public class SettingCommandService {
     @Transactional(readOnly = true)
     public SettingResponseDTO getMySetting(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("member not found"));
+                .orElseThrow(() -> new SettingException(SettingErrorCode.MEMBER_NOT_FOUND));
 
         Setting setting = settingRepository.findByMember(member)
                 .orElseGet(() -> settingRepository.save(createDefaultSetting(member)));
@@ -49,11 +48,10 @@ public class SettingCommandService {
         return SettingResponseDTO.from(setting);
     }
 
-
-
+    @Transactional
     public SettingResponseDTO updateMySetting(Long memberId, SettingUpdateRequestDTO request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("member not found"));
+                .orElseThrow(() -> new SettingException(SettingErrorCode.MEMBER_NOT_FOUND));
 
         Setting setting = settingRepository.findByMember(member)
                 .orElseThrow(() -> new SettingException(SettingErrorCode.SETTING_NOT_FOUND));

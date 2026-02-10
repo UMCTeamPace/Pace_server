@@ -50,7 +50,6 @@ public class SettingConverter {
                 .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isNotiEnabled(setting.isNotiEnabled())
                 .isLocEnabled(setting.isLocEnabled())
-                .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isReminderActive(setting.isReminderActive())
                 .calendarType(setting.getCalendarType())
                 .alarms(alarms)
