@@ -81,7 +81,7 @@ public class RouteDetail extends BaseEntity {
     private String arrivalStop; //하차역 정류장 이름
 
     @Column(name = "short_name")
-    private String shortName;
+    private String shortName; // 약칭
 
     public void setRoute(Route route) {
         this.route = route;

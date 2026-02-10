@@ -1,6 +1,8 @@
 package com.example.pace.domain.schedule.dto.response;
 
 import com.example.pace.domain.schedule.enums.ReminderType;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -75,6 +77,7 @@ public class ScheduleResDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
+    @Schema(name = "ScheduleResRouteDetailDto")
     public static class RouteDetailDto {
         private Integer sequence;
         private String description;
