@@ -8,11 +8,12 @@ spring:
   application:
     name: pace
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-      password: ${REDIS_PASSWORD}
+  data:.
+
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD}
 
   datasource:
     url: ${DATABASE_URL}

@@ -79,35 +79,94 @@ public class RouteResDTOConverter {
             return;
         }
 
-        for (GoogleDirectionApiResponse.Step step : steps) {
-            String currentPoints = (step.getEncodedPolyline() != null)
-                    ? step.getEncodedPolyline().getPoints() : null;
+        RouteDetailInfoResDTO walkingBuffer = null;
 
-            // 1. 중복 체크 (일단 보류하신 대로 기존 로직 유지하되, skip 되면 sequence 안 올라감)
-            if (currentPoints != null && !resultList.isEmpty()) {
-                String lastPoints = resultList.get(resultList.size() - 1).getPoints();
-                if (currentPoints.equals(lastPoints)) {
-                    continue; // 여기서 continue 되면 아래 incrementAndGet 호출 안 됨!
-                }
+        for (GoogleDirectionApiResponse.Step step : steps) {
+            String travelMode = step.getTravelMode();
+
+            // ✅ 무의미한 step 제거
+            if (step.getDistance() != null
+                    && step.getDistance().getValue() == 0
+                    && !"TRANSIT".equalsIgnoreCase(travelMode)) {
+                continue;
             }
 
-            if ("WALKING".equalsIgnoreCase(step.getTravelMode()) && currentPoints != null) {
-                if (walkingPointsSet.contains(currentPoints)) {
+            // ================================
+            // 🚶 WALKING이면 합치기 (Setter 없이 새 객체 생성)
+            // ================================
+            if ("WALKING".equalsIgnoreCase(travelMode)) {
+                if (step.getHtmlInstructions() == null) {
                     continue;
                 }
-                walkingPointsSet.add(currentPoints);
+
+                String desc = step.getHtmlInstructions().replaceAll("<[^>]*>", "");
+                if (desc.contains("출구")) {
+                    continue;
+                }
+
+                RouteDetailInfoResDTO currentWalking = toRouteDetailInfoResDTO(step, 0);
+
+                if (walkingBuffer == null) {
+                    walkingBuffer = currentWalking;
+                } else {
+                    // 핵심: 기존 값을 가져와서 새 Builder로 객체를 다시 생성 (re-assign)
+                    walkingBuffer = RouteDetailInfoResDTO.builder()
+                            .startLat(walkingBuffer.getStartLat())
+                            .startLng(walkingBuffer.getStartLng())
+                            .endLat(currentWalking.getEndLat()) // 끝 좌표 갱신
+                            .endLng(currentWalking.getEndLng())
+                            .distance(walkingBuffer.getDistance() + currentWalking.getDistance()) // 거리 합산
+                            .duration(walkingBuffer.getDuration() + currentWalking.getDuration()) // 시간 합산
+                            .points(walkingBuffer.getPoints())
+                            .description(walkingBuffer.getDescription())
+                            .build();
+                }
+                continue;
             }
 
-            // 2.  실제 리스트에 추가할 때만 sequence 번호 부여!
-            // incrementAndGet()을 여기서 호출해야 빈 번호 없이 1, 2, 3... 순서대로 들어감
-            resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+            // ================================
+            // 🚇 TRANSIT이나 다른 수단 만나면 도보 flush
+            // ================================
+            if (walkingBuffer != null) {
+                // "도보 이동" 문구와 최종 sequence를 입혀서 리스트에 추가
+                resultList.add(finalizeWalking(walkingBuffer, sequence.incrementAndGet()));
+                walkingBuffer = null;
+            }
 
-            // 3. 재귀 호출
-            if ("TRANSIT".equalsIgnoreCase(step.getTravelMode()) && step.getSteps() != null && !step.getSteps()
-                    .isEmpty()) {
-                flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
+            if ("TRANSIT".equalsIgnoreCase(travelMode)) {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
+
+                if (step.getSteps() != null && !step.getSteps().isEmpty()) {
+                    flattenSteps(step.getSteps(), resultList, sequence, walkingPointsSet);
+                }
+            } else {
+                resultList.add(toRouteDetailInfoResDTO(step, sequence.incrementAndGet()));
             }
         }
+
+        // ================================
+        // 🚶 마지막 잔여 도보 flush
+        // ================================
+        if (walkingBuffer != null) {
+            resultList.add(finalizeWalking(walkingBuffer, sequence.incrementAndGet()));
+        }
+    }
+
+    /**
+     * 도보 버퍼를 최종 확정할 때 사용하는 헬퍼 메서드
+     */
+    private static RouteDetailInfoResDTO finalizeWalking(RouteDetailInfoResDTO buffer, int seq) {
+        return RouteDetailInfoResDTO.builder()
+                .sequence(seq)
+                .startLat(buffer.getStartLat())
+                .startLng(buffer.getStartLng())
+                .endLat(buffer.getEndLat())
+                .endLng(buffer.getEndLng())
+                .distance(buffer.getDistance())
+                .duration(buffer.getDuration())
+                .description(buffer.getDescription()) // 공통 문구 할당
+                .points(buffer.getPoints())
+                .build();
     }
 
 
