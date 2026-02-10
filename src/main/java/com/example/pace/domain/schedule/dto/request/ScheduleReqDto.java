@@ -5,6 +5,7 @@ import com.example.pace.domain.schedule.enums.EndType;
 import com.example.pace.domain.schedule.enums.RepeatType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import com.example.pace.domain.schedule.enums.ReminderType;
@@ -30,7 +31,6 @@ public class ScheduleReqDto {
     private RepeatDto repeatInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;
-    // 경로 정보 (나중에)
     private RouteDto route;
 
 
@@ -76,6 +76,8 @@ public class ScheduleReqDto {
         private BigDecimal destLng;
         private Integer totalTime;
         private Integer totalDistance;
+        private LocalDateTime arrivalTime;
+        private LocalDateTime departureTime;
         private List<RouteDetailDto> routeDetails;
     }
 

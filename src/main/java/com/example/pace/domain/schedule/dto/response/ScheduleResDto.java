@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,8 @@ public class ScheduleResDto {
         private BigDecimal destLng;
         private Integer totalTime;
         private Integer totalDistance;
+        private LocalDateTime arrivalTime;
+        private LocalDateTime departureTime;
         private List<RouteDetailDto> routeDetails;
     }
 
