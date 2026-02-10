@@ -1,6 +1,6 @@
 package com.example.pace.global.auth;
 
-import com.example.pace.domain.auth.exception.AuthErrorCode;
+import com.example.pace.domain.auth.exception.code.AuthErrorCode;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

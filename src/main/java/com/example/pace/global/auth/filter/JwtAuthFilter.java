@@ -1,6 +1,6 @@
 package com.example.pace.global.auth.filter;
 
-import com.example.pace.domain.auth.exception.AuthErrorCode;
+import com.example.pace.domain.auth.exception.code.AuthErrorCode;
 import com.example.pace.domain.auth.exception.AuthException;
 import com.example.pace.global.auth.CustomUserDetailsService;
 import com.example.pace.global.util.JwtUtil;

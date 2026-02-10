@@ -1,10 +1,11 @@
 package com.example.pace.domain.member.controller;
 
+import com.example.pace.domain.member.controller.docs.PlaceGroupControllerDocs;
 import com.example.pace.domain.member.dto.request.PlaceGroupReqDTO;
 import com.example.pace.domain.member.dto.response.PlaceGroupResDTO;
-import com.example.pace.domain.member.exception.PlaceGroupSuccessCode;
-import com.example.pace.domain.member.service.PlaceGroupCommandService;
-import com.example.pace.domain.member.service.PlaceGroupQueryService;
+import com.example.pace.domain.member.exception.code.PlaceGroupSuccessCode;
+import com.example.pace.domain.member.service.command.PlaceGroupCommandService;
+import com.example.pace.domain.member.service.query.PlaceGroupQueryService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import jakarta.validation.Valid;

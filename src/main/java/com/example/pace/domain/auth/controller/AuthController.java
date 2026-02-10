@@ -1,15 +1,13 @@
 package com.example.pace.domain.auth.controller;
 
+import com.example.pace.domain.auth.controller.docs.AuthControllerDocs;
 import com.example.pace.domain.auth.dto.request.AuthReqDTO;
 import com.example.pace.domain.auth.dto.response.AuthResDTO;
-import com.example.pace.domain.auth.exception.AuthSuccessCode;
-import com.example.pace.domain.auth.service.AuthCommandService;
-import com.example.pace.domain.member.exception.MemberSuccessCode;
+import com.example.pace.domain.auth.exception.code.AuthSuccessCode;
+import com.example.pace.domain.auth.service.command.AuthCommandService;
+import com.example.pace.domain.member.exception.code.MemberSuccessCode;
 import com.example.pace.global.apiPayload.ApiResponse;
-import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
-import com.example.pace.global.auth.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

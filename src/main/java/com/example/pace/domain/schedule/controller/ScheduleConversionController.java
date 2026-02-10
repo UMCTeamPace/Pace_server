@@ -1,9 +1,8 @@
 package com.example.pace.domain.schedule.controller;
 
-import com.example.pace.domain.schedule.controller.ScheduleConversionControllerDocs;
+import com.example.pace.domain.schedule.controller.docs.ScheduleConversionControllerDocs;
 import com.example.pace.domain.schedule.dto.response.ScheduleConversionResDto;
-import com.example.pace.domain.schedule.exception.ScheduleSuccessCode;
-import com.example.pace.domain.schedule.service.ScheduleConversionService;
+import com.example.pace.domain.schedule.exception.code.ScheduleSuccessCode;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.tags.Tag;
