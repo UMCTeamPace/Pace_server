@@ -1,11 +1,12 @@
 package com.example.pace.domain.member.controller;
 
+import com.example.pace.domain.member.controller.docs.SavedPlaceControllerDocs;
 import com.example.pace.domain.member.dto.request.SavedPlaceReqDTO;
 import com.example.pace.domain.member.dto.response.SavedPlaceResDTO;
 import com.example.pace.domain.member.enums.SavedPlaceSortType;
-import com.example.pace.domain.member.exception.SavedPlaceSuccessCode;
-import com.example.pace.domain.member.service.SavedPlaceCommandService;
-import com.example.pace.domain.member.service.SavedPlaceQueryService;
+import com.example.pace.domain.member.exception.code.SavedPlaceSuccessCode;
+import com.example.pace.domain.member.service.command.SavedPlaceCommandService;
+import com.example.pace.domain.member.service.query.SavedPlaceQueryService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import jakarta.validation.Valid;

@@ -1,12 +1,13 @@
 package com.example.pace.domain.schedule.controller;
 
+import com.example.pace.domain.schedule.controller.docs.ScheduleControllerDocs;
 import com.example.pace.domain.schedule.dto.request.ScheduleDeleteReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.enums.UpdateScope;
-import com.example.pace.domain.schedule.exception.ScheduleSuccessCode;
-import com.example.pace.domain.schedule.service.ScheduleService;
+import com.example.pace.domain.schedule.exception.code.ScheduleSuccessCode;
+import com.example.pace.domain.schedule.service.command.ScheduleCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/schedules")
 public class ScheduleController implements ScheduleControllerDocs {
 
-    private final ScheduleService scheduleService;
+    private final ScheduleCommandService scheduleCommandService;
 
     // 일정 생성 API
     @Override
@@ -33,7 +34,7 @@ public class ScheduleController implements ScheduleControllerDocs {
             @RequestBody ScheduleReqDto requestDto
     ) {
         Long memberId = customUserDetails.member().getId();
-        ScheduleResDto responseDto= scheduleService.createSchedule(memberId, requestDto);
+        ScheduleResDto responseDto = scheduleCommandService.createSchedule(memberId, requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_CREATE_OK, responseDto));
@@ -46,8 +47,8 @@ public class ScheduleController implements ScheduleControllerDocs {
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long scheduleId
     ) {
-        Long  memberId = customUserDetails.member().getId();
-        ScheduleResDto responseDto = scheduleService.getSchedule(memberId,scheduleId);
+        Long memberId = customUserDetails.member().getId();
+        ScheduleResDto responseDto = scheduleCommandService.getSchedule(memberId, scheduleId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_GET_OK, responseDto));
     }
@@ -57,14 +58,15 @@ public class ScheduleController implements ScheduleControllerDocs {
     @GetMapping
     public ResponseEntity<ApiResponse<Slice<ScheduleResDto>>> getScheduleList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate endDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate lastDate,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate lastDate,
             @RequestParam(required = false) Long lastId
-    ){
+    ) {
         Long memberId = customUserDetails.member().getId();
         LocalDate maxSearchDate = (endDate != null) ? endDate : LocalDate.of(9999, 12, 31);
-        Slice<ScheduleResDto> responseDto = scheduleService.getScheduleList(memberId, startDate, maxSearchDate, lastDate, lastId);
+        Slice<ScheduleResDto> responseDto = scheduleCommandService.getScheduleList(memberId, startDate, maxSearchDate,
+                lastDate, lastId);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_GET_OK, responseDto));
@@ -77,12 +79,12 @@ public class ScheduleController implements ScheduleControllerDocs {
     public ResponseEntity<ApiResponse<String>> deleteSchedules(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @RequestBody ScheduleDeleteReqDto request
-    ){
+    ) {
         Long memberId = customUserDetails.member().getId();
-        scheduleService.deleteSchedules(memberId, request.scheduleIds());
+        scheduleCommandService.deleteSchedules(memberId, request.scheduleIds());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_DELETE_OK,null));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_DELETE_OK, null));
     }
 
     //일정 수정 API
@@ -93,12 +95,12 @@ public class ScheduleController implements ScheduleControllerDocs {
             @PathVariable Long scheduleId,
             @RequestParam(defaultValue = "SINGLE") UpdateScope scope,
             @RequestBody ScheduleUpdateReqDto requestDto
-    ){
+    ) {
         Long memberId = customUserDetails.member().getId();
-        ScheduleResDto responseDto = scheduleService.updateSchedule(memberId, scheduleId, requestDto, scope);
+        ScheduleResDto responseDto = scheduleCommandService.updateSchedule(memberId, scheduleId, requestDto, scope);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_UPDATE_OK,responseDto));
+                .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_UPDATE_OK, responseDto));
 
     }
 }

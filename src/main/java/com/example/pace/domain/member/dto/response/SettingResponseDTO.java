@@ -16,7 +16,6 @@ import java.util.List;
 
 @Schema(description = "사용자 설정 조회 응답 DTO")
 public class SettingResponseDTO {
-
     private Long settingId;
 
     private Integer earlyArrivalTime;
@@ -32,23 +31,4 @@ public class SettingResponseDTO {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public static SettingResponseDTO from(Setting setting) {
-        return SettingConverter.toResponse(setting);
-    }
-
-    // PATCH 응답용 최소 DTO
-    @Getter
-    @Builder
-    public static class Simple {
-        private Long settingId;
-        private LocalDateTime updatedAt;
-
-        public static Simple from(SettingResponseDTO response) {
-            return Simple.builder()
-                    .settingId(response.getSettingId())
-                    .updatedAt(response.getUpdatedAt())
-                    .build();
-        }
-    }
 }

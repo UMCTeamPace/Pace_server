@@ -1,8 +1,8 @@
 package com.example.pace.domain.schedule.controller;
 
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
-import com.example.pace.domain.schedule.exception.ScheduleSuccessCode;
-import com.example.pace.domain.schedule.service.ScheduleRouteDeleteService;
+import com.example.pace.domain.schedule.exception.code.ScheduleSuccessCode;
+import com.example.pace.domain.schedule.service.command.ScheduleRouteDeleteCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/schedules")
 public class ScheduleRouteDeleteController {
 
-    private final ScheduleRouteDeleteService scheduleRouteDeleteService;
+    private final ScheduleRouteDeleteCommandService scheduleRouteDeleteCommandService;
 
     @DeleteMapping("/{scheduleId}/route")
     public ApiResponse<ScheduleRouteDeleteResDto> deleteScheduleRoute(
@@ -26,7 +26,7 @@ public class ScheduleRouteDeleteController {
         Long memberId = customUserDetails.member().getId();
 
         ScheduleRouteDeleteResDto result =
-                scheduleRouteDeleteService.deleteScheduleRoute(scheduleId, memberId);
+                scheduleRouteDeleteCommandService.deleteScheduleRoute(scheduleId, memberId);
 
         return ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_ROUTE_DELETE_OK, result);
     }

@@ -1,6 +1,7 @@
 package com.example.pace.domain.member.controller;
 
-import com.example.pace.domain.member.service.MemberCommandService;
+import com.example.pace.domain.member.controller.docs.MemberControllerDocs;
+import com.example.pace.domain.member.service.command.MemberCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.GeneralSuccessCode;
 import com.example.pace.global.auth.CustomUserDetails;

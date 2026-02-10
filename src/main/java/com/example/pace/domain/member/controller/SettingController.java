@@ -1,8 +1,9 @@
 package com.example.pace.domain.member.controller;
+
+import com.example.pace.domain.member.controller.docs.SettingControllerDocs;
 import com.example.pace.domain.member.dto.request.SettingUpdateRequestDTO;
 import com.example.pace.domain.member.dto.response.SettingResponseDTO;
-import com.example.pace.domain.member.exception.SettingSuccessCode;
-import com.example.pace.domain.member.service.SettingService;
+import com.example.pace.domain.member.exception.code.SettingSuccessCode;
 import com.example.pace.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -14,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/member/settings")
-public class SettingController implements SettingControllerDocs{
+public class SettingController implements SettingControllerDocs {
 
     private final SettingService settingService;
 
     @GetMapping
     @Override
-    public ApiResponse<SettingResponseDTO> getMySetting (@RequestParam Long memberId) {
+    public ApiResponse<SettingResponseDTO> getMySetting(@RequestParam Long memberId) {
         return ApiResponse.onSuccess(
                 SettingSuccessCode.SETTING_GET_OK,
                 settingService.getMySetting(memberId)
@@ -35,8 +36,8 @@ public class SettingController implements SettingControllerDocs{
             @Valid @RequestBody SettingUpdateRequestDTO request
     ) {
         return ApiResponse.onSuccess(
-            SettingSuccessCode.SETTING_UPDATE_OK,
-            settingService.updateMySetting(memberId, request)
+                SettingSuccessCode.SETTING_UPDATE_OK,
+                settingService.updateMySetting(memberId, request)
         );
     }
 }

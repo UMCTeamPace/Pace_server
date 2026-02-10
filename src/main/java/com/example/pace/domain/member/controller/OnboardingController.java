@@ -1,9 +1,10 @@
 package com.example.pace.domain.member.controller;
 
+import com.example.pace.domain.member.controller.docs.OnboardingControllerDocs;
 import com.example.pace.domain.member.dto.request.OnboardingReqDTO;
 import com.example.pace.domain.member.dto.response.OnboardingResDTO;
-import com.example.pace.domain.member.exception.OnboardingSuccessCode;
-import com.example.pace.domain.member.service.OnboardingService;
+import com.example.pace.domain.member.exception.code.OnboardingSuccessCode;
+import com.example.pace.domain.member.service.command.OnboardingCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.auth.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/member")
 public class OnboardingController implements OnboardingControllerDocs {
 
-    private final OnboardingService onboardingService;
+    private final OnboardingCommandService onboardingCommandService;
 
     @Override
     @PostMapping("/onboarding")
@@ -26,7 +27,7 @@ public class OnboardingController implements OnboardingControllerDocs {
     ) {
         Long memberId = customUserDetails.member().getId();
 
-        OnboardingResDTO result = onboardingService.upsertOnboarding(memberId, request);
+        OnboardingResDTO result = onboardingCommandService.upsertOnboarding(memberId, request);
         return ApiResponse.onSuccess(OnboardingSuccessCode.ONBOARDING_SUCCESS, result);
     }
 }

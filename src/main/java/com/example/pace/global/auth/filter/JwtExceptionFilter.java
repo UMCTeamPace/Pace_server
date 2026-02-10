@@ -1,6 +1,6 @@
 package com.example.pace.global.auth.filter;
 
-import com.example.pace.domain.auth.exception.AuthErrorCode;
+import com.example.pace.domain.auth.exception.code.AuthErrorCode;
 import com.example.pace.domain.auth.exception.AuthException;
 import com.example.pace.global.apiPayload.ApiResponse;
 import com.example.pace.global.apiPayload.code.BaseErrorCode;
@@ -14,7 +14,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.SignatureException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

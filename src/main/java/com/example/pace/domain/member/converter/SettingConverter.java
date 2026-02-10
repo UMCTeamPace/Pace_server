@@ -5,10 +5,12 @@ import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
 import java.util.List;
+import java.util.Map;
 
 public class SettingConverter {
 
-    private SettingConverter() {}
+    private SettingConverter() {
+    }
 
     public static ReminderTime toEntity(
             Setting setting,
@@ -24,14 +26,18 @@ public class SettingConverter {
 
     public static SettingResponseDTO toResponse(Setting setting) {
 
-        java.util.Map<com.example.pace.domain.member.enums.AlarmType, java.util.List<Integer>> timesByType = setting.getReminderTimes().stream()
+        Map<AlarmType, List<Integer>> timesByType = setting.getReminderTimes().stream()
                 .collect(java.util.stream.Collectors.groupingBy(
                         com.example.pace.domain.member.entity.ReminderTime::getAlarmType,
-                        java.util.stream.Collectors.mapping(com.example.pace.domain.member.entity.ReminderTime::getMinutes, java.util.stream.Collectors.toList())
+                        java.util.stream.Collectors.mapping(
+                                com.example.pace.domain.member.entity.ReminderTime::getMinutes,
+                                java.util.stream.Collectors.toList())
                 ));
 
-        java.util.List<Integer> scheduleTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.SCHEDULE, java.util.List.of());
-        java.util.List<Integer> departureTimes = timesByType.getOrDefault(com.example.pace.domain.member.enums.AlarmType.DEPARTURE, java.util.List.of());
+        java.util.List<Integer> scheduleTimes = timesByType.getOrDefault(
+                com.example.pace.domain.member.enums.AlarmType.SCHEDULE, java.util.List.of());
+        java.util.List<Integer> departureTimes = timesByType.getOrDefault(
+                com.example.pace.domain.member.enums.AlarmType.DEPARTURE, java.util.List.of());
 
         return SettingResponseDTO.builder()
                 .isNotiEnabled(setting.isNotiEnabled())

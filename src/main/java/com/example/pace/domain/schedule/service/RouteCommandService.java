@@ -98,7 +98,6 @@ public class RouteCommandService {
     }
 
     private void enrichTransitPath(RouteListResDTO result) {
-
         for (RouteApiResDto route : result.getRouteApiResDtoList()) {
 
             for (RouteDetailInfoResDTO step : route.getRouteDetailInfoResDTOList()) {
