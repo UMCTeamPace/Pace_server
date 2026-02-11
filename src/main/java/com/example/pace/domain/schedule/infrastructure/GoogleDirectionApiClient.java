@@ -45,7 +45,7 @@ public class GoogleDirectionApiClient {
                         uriBuilder.queryParam("departure_time", departureTime);
                     } else {
                         // 둘 다 없으면 현재 시간으로 설정
-                        uriBuilder.queryParam("departure_time", LocalDateTime.now());
+                        uriBuilder.queryParam("departure_time", "now");
                     }
 
                     if (transitMode != null) {
