@@ -4,6 +4,7 @@ import com.example.pace.domain.schedule.enums.SearchWay;
 import com.example.pace.domain.schedule.enums.TransitType;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
 
@@ -17,12 +18,12 @@ public class RouteSaveReqDto {
             BigDecimal destLat,
             BigDecimal destLng,
 
-            //도착시간 -> req api url 형식 지정
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime arrivalTime,
-            //출발시간 지정
+            OffsetDateTime arrivalTime,
+
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-            LocalDateTime departureTime,
+            OffsetDateTime departureTime,
+
             //교통정보 지정 (버스/지하철/도보)
             TransitType transitType,
             //검색정보 지정(최적경로순/최소환승순/최소도보순)

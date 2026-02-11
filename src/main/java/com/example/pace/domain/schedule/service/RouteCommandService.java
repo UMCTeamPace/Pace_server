@@ -50,17 +50,11 @@ public class RouteCommandService {
         Long departureTimeEpoch = null;
 
         if (request.arrivalTime() != null) {
-            arrivalTimeEpoch =
-                    //로컬->에포크초 변환 유틸메서드 사용
-                    RouteResDTOConverter.localDateTimeToEpoch(
-                            request.arrivalTime()
-                    );
-        } else {
-            departureTimeEpoch =
-                    RouteResDTOConverter.localDateTimeToEpoch(
-                            request.departureTime()
-                    );
+            arrivalTimeEpoch = request.arrivalTime().toEpochSecond();
+        } else if (request.departureTime() != null) {
+            departureTimeEpoch = request.departureTime().toEpochSecond();
         }
+        
         // 둘 다 null이면 구글이 알아서 현재로 계산합니다.
         // 3. Google 요청 DTO 생성
         DirectionRequestDTO googleReq = DirectionRequestDTO.builder()
