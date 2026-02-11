@@ -1,15 +1,10 @@
 package com.example.pace.domain.schedule.infrastructure;
 
 
-import static com.example.pace.domain.schedule.converter.RouteResDTOConverter.localDateTimeToEpoch;
-
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
