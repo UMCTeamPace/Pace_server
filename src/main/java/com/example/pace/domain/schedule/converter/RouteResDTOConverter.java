@@ -249,11 +249,29 @@ public class RouteResDTOConverter {
         return value.intValue();
     }
 
+    // epoch 변환 관련 헬퍼들
+    // Google API에서 제공하는 값이 초(seconds)인지 밀리초(milliseconds)인지 확실하지 않을 때를 대비해 자동 감지 및 정규화합니다.
+    private static long normalizeEpochSeconds(Long epochLikeValue) {
+        if (epochLikeValue == null) {
+            return -1L;
+        }
+        // 1970-01-01 기준: 초는 현재 약 1_700_000_000 수준, 밀리초는 약 1_700_000_000_000 수준입니다.
+        // 1_000_000_000_000 (1e12) 보다 크면 밀리초로 간주하여 1000으로 나눕니다.
+        if (epochLikeValue > 1_000_000_000_000L) {
+            return epochLikeValue / 1000L;
+        }
+        return epochLikeValue;
+    }
+
     public static LocalDateTime epochToLocalDateTime(Long epochSeconds) {
         if (epochSeconds == null) {
             return null;
         }
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(epochSeconds), ZONE_ID);
+        long normalized = normalizeEpochSeconds(epochSeconds);
+        if (normalized < 0) {
+            return null;
+        }
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(normalized), ZONE_ID);
     }
 
     public static Long localDateTimeToEpoch(LocalDateTime localDateTime) {

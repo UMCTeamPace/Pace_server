@@ -3,7 +3,6 @@ package com.example.pace.domain.schedule.infrastructure;
 
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
