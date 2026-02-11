@@ -3,6 +3,7 @@ package com.example.pace.domain.schedule.infrastructure;
 
 import com.example.pace.domain.schedule.dto.request.DirectionRequestDTO;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,8 @@ public class GoogleDirectionApiClient {
                         // 도착 시간이 없을 때만 출발 시간을 설정
                         uriBuilder.queryParam("departure_time", departureTime);
                     } else {
-                        //'departure_time=now' 기본값(생략 가능)
+                        // 둘 다 없으면 현재 시간으로 설정
+                        uriBuilder.queryParam("departure_time", LocalDateTime.now());
                     }
 
                     if (transitMode != null) {
