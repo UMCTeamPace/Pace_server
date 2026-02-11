@@ -28,13 +28,13 @@ public class OnboardingCommandService {
 
     //ui 선택지 기반 whitelist
     private static final Set<Integer> ALLOWED_SCHEDULE_MINUTES = Set.of(
-            5, 10, 15, 30, 60, 120,
+            0, 5, 10, 15, 30, 60, 120,
             1440,   // 1일
             2880,   // 2일
             10080   // 1주
     );
     private static final Set<Integer> ALLOWED_DEPARTURE_MINUTES = Set.of(
-            5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60
+            0, 5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60
     );
 
     private final MemberRepository memberRepository;

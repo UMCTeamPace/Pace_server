@@ -56,10 +56,19 @@ public class Setting extends BaseEntity {
     @Builder.Default
     private List<ReminderTime> reminderTimes = new ArrayList<>();
 
+    public void addReminderTime(ReminderTime reminderTime) {
+        reminderTime.setSetting(this);
+        this.reminderTimes.add(reminderTime);
+    }
+
+    public void removeReminderTimesByType(AlarmType alarmType) {
+        this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
+    }
+
     //알림 교체
     public void replaceReminderTimes(AlarmType alarmType, List<ReminderTime> newTimes) {
-        this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
-        this.reminderTimes.addAll(newTimes);
+        removeReminderTimesByType(alarmType);
+        newTimes.forEach(this::addReminderTime);
     }
 
     public void update(

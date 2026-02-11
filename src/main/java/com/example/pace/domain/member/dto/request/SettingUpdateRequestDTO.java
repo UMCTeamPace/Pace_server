@@ -25,15 +25,6 @@ public class SettingUpdateRequestDTO {
     // 캘린더 선택
     private CalendarType calendarType;
 
-    // reminder_time 다중 선택
-    private List<Integer> reminderTimes;
-
-    // 일정 알림
-    private List<Integer> scheduleReminderTimes;
-
-    //출발 알림
-    private List<Integer> departureReminderTimes;
-
     //alarms로 받기 위해
     private List<Alarm> alarms;
 
@@ -42,6 +33,6 @@ public class SettingUpdateRequestDTO {
     public static class Alarm {
         private AlarmType type;        // "SCHEDULE", "DEPARTURE"
         @Size(max = 5, message = "알람 시간은 타입별로 최대 5개까지 설정할 수 있습니다.")
-        private List<Integer> minutes; // [10,60] 또는 []
+        private List<Integer> minutes;
     }
 }
