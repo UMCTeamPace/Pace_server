@@ -8,6 +8,8 @@ import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.enums.CalendarType;
+import com.example.pace.domain.member.exception.MemberException;
+import com.example.pace.domain.member.exception.code.MemberErrorCode;
 import com.example.pace.domain.member.exception.code.SettingErrorCode;
 import com.example.pace.domain.member.exception.SettingException;
 import com.example.pace.domain.member.repository.MemberRepository;
@@ -37,10 +39,10 @@ public class SettingCommandService {
             0, 5, 10, 15, 20, 25, 30, 35, 45, 50, 55, 60
     );
 
-    @Transactional(readOnly = true)
+    @Transactional
     public SettingResponseDTO getMySetting(Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new SettingException(SettingErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Setting setting = settingRepository.findByMember(member)
                 .orElseGet(() -> settingRepository.save(createDefaultSetting(member)));
@@ -51,7 +53,7 @@ public class SettingCommandService {
     @Transactional
     public SettingResponseDTO updateMySetting(Long memberId, SettingUpdateRequestDTO request) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new SettingException(SettingErrorCode.MEMBER_NOT_FOUND));
+                .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
 
         Setting setting = settingRepository.findByMember(member)
                 .orElseThrow(() -> new SettingException(SettingErrorCode.SETTING_NOT_FOUND));
