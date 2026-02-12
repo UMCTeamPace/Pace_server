@@ -4,6 +4,7 @@ import com.example.pace.domain.auth.converter.AuthConverter;
 import com.example.pace.domain.auth.dto.response.AuthResDTO;
 import com.example.pace.domain.auth.exception.code.AuthErrorCode;
 import com.example.pace.domain.auth.exception.AuthException;
+import com.example.pace.domain.auth.service.query.KakaoApiQueryService;
 import com.example.pace.domain.member.dto.response.KakaoUserInfoResDTO;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.enums.Role;
@@ -23,12 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AuthCommandService {
     private final MemberRepository memberRepository;
-    private final KakaoApiCommandService kakaoApiCommandService;
+    private final KakaoApiQueryService kakaoApiQueryService;
     private final JwtUtil jwtUtil;
 
     public AuthResDTO.LoginResultDTO loginWithKakao(String kakaoAccessToken) {
         // 카카오 API로 사용자 정보 조회
-        KakaoUserInfoResDTO kakaoUserInfoResDTO = kakaoApiCommandService.getUserInfo(kakaoAccessToken);
+        KakaoUserInfoResDTO kakaoUserInfoResDTO = kakaoApiQueryService.getUserInfo(kakaoAccessToken);
         String email = kakaoUserInfoResDTO.getKakaoAccount().getEmail();
         String socialId = kakaoUserInfoResDTO.getId().toString();
 

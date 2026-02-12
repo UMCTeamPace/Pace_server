@@ -19,8 +19,10 @@ import com.example.pace.domain.transit.service.SubwayNetworkService;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RouteCommandService {
@@ -53,8 +55,9 @@ public class RouteCommandService {
             arrivalTimeEpoch = request.arrivalTime().toEpochSecond();
         } else if (request.departureTime() != null) {
             departureTimeEpoch = request.departureTime().toEpochSecond();
+            log.info(departureTimeEpoch.toString());
         }
-        
+
         // 둘 다 null이면 구글이 알아서 현재로 계산합니다.
         // 3. Google 요청 DTO 생성
         DirectionRequestDTO googleReq = DirectionRequestDTO.builder()
@@ -76,9 +79,9 @@ public class RouteCommandService {
         if (request.searchWay() == MIN_TIME && googleRes != null && googleRes.getRoutes() != null) {
             googleRes.getRoutes().sort(Comparator.comparing(route -> {
                 if (route.getLegs() != null && !route.getLegs().isEmpty() &&
-                        route.getLegs().get(0).getDuration() != null &&
-                        route.getLegs().get(0).getDuration().getValue() != null) {
-                    return route.getLegs().get(0).getDuration().getValue();
+                        route.getLegs().getFirst().getDuration() != null &&
+                        route.getLegs().getFirst().getDuration().getValue() != null) {
+                    return route.getLegs().getFirst().getDuration().getValue();
                 }
                 return Long.MAX_VALUE;
             }));

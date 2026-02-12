@@ -1,4 +1,4 @@
-package com.example.pace.domain.auth.service.command;
+package com.example.pace.domain.auth.service.query;
 
 import com.example.pace.domain.auth.exception.code.AuthErrorCode;
 import com.example.pace.domain.member.dto.response.KakaoUserInfoResDTO;
@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class KakaoApiCommandService {
+public class KakaoApiQueryService {
     private final WebClient webClient;
     private final KaKaoProperties kakaoProperties;
 

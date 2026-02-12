@@ -1,6 +1,5 @@
 package com.example.pace.domain.schedule.converter;
 
-
 import com.example.pace.domain.schedule.dto.response.RouteApiResDto;
 import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
 import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
@@ -11,7 +10,7 @@ import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiRes
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,9 +18,6 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RouteResDTOConverter {
-
-    private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
-
     private RouteResDTOConverter() {
         // 유틸리티 클래스 인스턴스 방지
     }
@@ -84,7 +80,7 @@ public class RouteResDTOConverter {
         for (GoogleDirectionApiResponse.Step step : steps) {
             String travelMode = step.getTravelMode();
 
-            // ✅ 무의미한 step 제거
+            // 무의미한 step 제거
             if (step.getDistance() != null
                     && step.getDistance().getValue() == 0
                     && !"TRANSIT".equalsIgnoreCase(travelMode)) {
@@ -125,7 +121,7 @@ public class RouteResDTOConverter {
             }
 
             // ================================
-            // 🚇 TRANSIT이나 다른 수단 만나면 도보 flush
+            // TRANSIT이나 다른 수단 만나면 도보 flush
             // ================================
             if (walkingBuffer != null) {
                 // "도보 이동" 문구와 최종 sequence를 입혀서 리스트에 추가
@@ -271,14 +267,7 @@ public class RouteResDTOConverter {
         if (normalized < 0) {
             return null;
         }
-        return LocalDateTime.ofInstant(Instant.ofEpochSecond(normalized), ZONE_ID);
-    }
-
-    public static Long localDateTimeToEpoch(LocalDateTime localDateTime) {
-        if (localDateTime == null) {
-            return null;
-        }
-        return localDateTime.atZone(ZONE_ID).toEpochSecond();
+        return LocalDateTime.ofInstant(Instant.ofEpochSecond(normalized), ZoneOffset.UTC);
     }
 
     private static TransitType mapTransitType(String vehicleType) {
