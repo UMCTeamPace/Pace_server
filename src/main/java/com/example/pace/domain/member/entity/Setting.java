@@ -27,7 +27,7 @@ public class Setting extends BaseEntity {
     private Long settingId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false, unique = true)
     private Member member;
 
     // 알림 권한 허용 여부
@@ -78,11 +78,21 @@ public class Setting extends BaseEntity {
             Boolean isReminderActive,
             CalendarType calendarType
     ) {
-        if (earlyArrivalTime != null) this.earlyArrivalTime = earlyArrivalTime;
-        if (isNotiEnabled != null) this.isNotiEnabled = isNotiEnabled;
-        if (isLocEnabled != null) this.isLocEnabled = isLocEnabled;
-        if (isReminderActive != null) this.isReminderActive = isReminderActive;
-        if (calendarType != null) this.calendarType = calendarType;
+        if (earlyArrivalTime != null) {
+            this.earlyArrivalTime = earlyArrivalTime;
+        }
+        if (isNotiEnabled != null) {
+            this.isNotiEnabled = isNotiEnabled;
+        }
+        if (isLocEnabled != null) {
+            this.isLocEnabled = isLocEnabled;
+        }
+        if (isReminderActive != null) {
+            this.isReminderActive = isReminderActive;
+        }
+        if (calendarType != null) {
+            this.calendarType = calendarType;
+        }
     }
 
     // Lombok Boolean Getter 우회

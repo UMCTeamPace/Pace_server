@@ -7,6 +7,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -25,6 +26,10 @@ import lombok.Setter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(
         name = "saved_place",
+        indexes = {
+                // 그룹 내 장소 조회 및 정렬 성능을 고려한 인덱스 칼럼 지정
+                @Index(name = "idx_saved_place_member_group_date", columnList = "member_id, place_group_id, created_at")
+        },
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_saved_place_member_place",
