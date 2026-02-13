@@ -2,7 +2,7 @@ package com.example.pace.domain.schedule.controller;
 
 import com.example.pace.domain.schedule.dto.request.RouteSaveReqDto;
 import com.example.pace.domain.schedule.dto.response.RouteListResDTO;
-import com.example.pace.domain.schedule.service.RouteCommandService;
+import com.example.pace.domain.schedule.service.command.RouteCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

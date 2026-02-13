@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true) // 조회 성능 최적화 (쓰기 작업은 메서드에 따로)
 public class ScheduleCommandService {
 
     private final ScheduleRepository scheduleRepository;
@@ -85,6 +84,7 @@ public class ScheduleCommandService {
 
 
     // 일정 상세 조회
+    @Transactional(readOnly = true)
     public ScheduleResDto getSchedule(Long memberId, Long scheduleId) {
         Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
                 .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
