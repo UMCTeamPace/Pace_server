@@ -12,6 +12,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -32,7 +33,15 @@ import org.hibernate.annotations.BatchSize;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "schedule")
+@Table(
+        name = "schedule",
+        indexes = {
+                // 커서 페이징 최적화 인덱스 칼럼 지정
+                @Index(name = "idx_schedule_member_date_id", columnList = "member_id, start_date, id"),
+                // 반복 일정 조회를 위한 인덱스 칼럼 지정
+                @Index(name = "idx_schedule_repeat_group", columnList = "repeat_group_id")
+        }
+)
 public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Id
@@ -45,13 +54,19 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
+    @Column(name = "is_all_day", nullable = false)
     private Boolean isAllDay;
+    @Column(name = "start_date")
     private LocalDate startDate;
+    @Column(name = "end_date")
     private LocalDate endDate;
+    @Column(name = "start_time")
     private LocalTime startTime;
+    @Column(name = "end_time")
     private LocalTime endTime;
+    @Column(name = "is_repeat")
     private Boolean isRepeat;
+    @Column(name = "repeat_group_id")
     private String repeatGroupId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -85,15 +100,32 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         this.place = place;
         place.setSchedule(this);
     }
+
     public void updateGeneralInfo(ScheduleUpdateReqDto dto) {
-        if (dto.getTitle() != null) this.title = dto.getTitle();
-        if (dto.getMemo() != null) this.memo = dto.getMemo();
-        if (dto.getStartDate() != null) this.startDate = dto.getStartDate();
-        if (dto.getEndDate() != null) this.endDate = dto.getEndDate();
-        if (dto.getStartTime() != null) this.startTime = dto.getStartTime();
-        if (dto.getEndTime() != null) this.endTime = dto.getEndTime();
-        if (dto.getIsAllDay() != null) this.isAllDay = dto.getIsAllDay();
-        if (dto.getIsPathIncluded() != null) this.isPathIncluded = dto.getIsPathIncluded();
+        if (dto.getTitle() != null) {
+            this.title = dto.getTitle();
+        }
+        if (dto.getMemo() != null) {
+            this.memo = dto.getMemo();
+        }
+        if (dto.getStartDate() != null) {
+            this.startDate = dto.getStartDate();
+        }
+        if (dto.getEndDate() != null) {
+            this.endDate = dto.getEndDate();
+        }
+        if (dto.getStartTime() != null) {
+            this.startTime = dto.getStartTime();
+        }
+        if (dto.getEndTime() != null) {
+            this.endTime = dto.getEndTime();
+        }
+        if (dto.getIsAllDay() != null) {
+            this.isAllDay = dto.getIsAllDay();
+        }
+        if (dto.getIsPathIncluded() != null) {
+            this.isPathIncluded = dto.getIsPathIncluded();
+        }
     }
 
     public void updateDetailedInfo(ScheduleUpdateReqDto dto) {
@@ -133,7 +165,9 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @PrePersist
     public void prePersist() {
-        if (isPathIncluded == null) isPathIncluded = false;
+        if (isPathIncluded == null) {
+            isPathIncluded = false;
+        }
     }
 
 }

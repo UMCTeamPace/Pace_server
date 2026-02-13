@@ -19,10 +19,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Table(name = "bus_info", indexes = {
-        @Index(name = "idx_bus_line_name", columnList = "line_name"), // 노선 번호로 검색 최적화
-        @Index(name = "idx_bus_line_sequence", columnList = "line_name, sequence") // 노선 내 순서 정렬 최적화
-})
+@Table(
+        name = "bus_info",
+        indexes = {
+                @Index(name = "idx_bus_line_name", columnList = "line_name"), // 노선 번호로 검색 최적화
+                @Index(name = "idx_bus_line_sequence", columnList = "line_name, sequence") // 노선 내 순서 정렬 최적화
+        }
+)
 public class BusInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
