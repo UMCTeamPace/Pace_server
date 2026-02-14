@@ -31,7 +31,7 @@ public class ScheduleReqDto {
     private RepeatDto repeatInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;
-    private RouteDto route;
+    private RouteReqDto route;
 
 
 
@@ -67,7 +67,7 @@ public class ScheduleReqDto {
     @Getter
     @Setter
     @NoArgsConstructor
-    public static class RouteDto {
+    public static class RouteReqDto {
         private String originName;
         private BigDecimal originLat;
         private BigDecimal originLng;
@@ -78,28 +78,41 @@ public class ScheduleReqDto {
         private Integer totalDistance;
         private LocalDateTime arrivalTime;
         private LocalDateTime departureTime;
-        private List<RouteDetailDto> routeDetails;
+        private List<RouteDetailReqDto> routeDetails;
     }
 
     @Getter
     @Setter
     @NoArgsConstructor
     @Schema(name = "ScheduleReqRouteDetailDto")
-    public static class RouteDetailDto {
+    public static class RouteDetailReqDto {
         private Integer sequence;
-        private Integer duration;
-        private Integer distance;
-        private String description;
         private Double startLat;
         private Double startLng;
         private Double endLat;
         private Double endLng;
+        private Integer duration;
+        private Integer distance;
+        private String description;
+        private String points;
+        private TransitDetailReqDto transitDetail;
+    }
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    public static class TransitDetailReqDto {
         private TransitType transitType;
         private String lineName;
         private String lineColor;
         private Integer stopCount;
         private String departureStop;
         private String arrivalStop;
+        private LocalDateTime departureTime;
+        private LocalDateTime arrivalTime;
         private String shortName;
+        private Double locationLat;
+        private Double locationLng;
+        private String headsign;
+        private List<String> stationPath;
     }
 }

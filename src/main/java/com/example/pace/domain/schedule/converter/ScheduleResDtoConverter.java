@@ -7,11 +7,20 @@ import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.RouteDetail;
 import com.example.pace.domain.schedule.entity.Schedule;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
 
 public class ScheduleResDtoConverter {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            // JSON에 모르는 필드가 있어도 에러 X
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     public static ScheduleResDto toScheduleResDto(Schedule schedule) {
         return ScheduleResDto.builder()
@@ -47,9 +56,9 @@ public class ScheduleResDtoConverter {
     }
 
     // 경로 정보
-    private static ScheduleResDto.RouteDto toRouteDto(Route route) {
+    private static ScheduleResDto.RouteResDto toRouteDto(Route route) {
         if (route == null) return null;
-        return ScheduleResDto.RouteDto.builder()
+        return ScheduleResDto.RouteResDto.builder()
                 .originName(route.getOriginName())
                 .originLat(route.getOriginLat())
                 .originLng(route.getOriginLng())
@@ -65,7 +74,7 @@ public class ScheduleResDtoConverter {
     }
 
     // 상세 경로
-    private static List<ScheduleResDto.RouteDetailDto> toDetailDtos(List<RouteDetail> details) {
+    private static List<ScheduleResDto.RouteDetailResDto> toDetailDtos(List<RouteDetail> details) {
         if (details == null) return List.of();
         return details.stream()
                 .sorted(comparing(RouteDetail::getSequence))
@@ -74,23 +83,20 @@ public class ScheduleResDtoConverter {
     }
 
     // 개별 상세 경로
-    private static ScheduleResDto.RouteDetailDto toRouteDetailDto(RouteDetail detail) {
-        return ScheduleResDto.RouteDetailDto.builder()
-                .sequence(detail.getSequence())
-                .description(detail.getDescription())
-                .transitType(detail.getTransitType() != null ? detail.getTransitType().name() : null)
-                .duration(detail.getDuration())
-                .distance(detail.getDistance())
-                .lineName(detail.getLineName())
-                .lineColor(detail.getLineColor())
-                .departureStop(detail.getDepartureStop())
-                .arrivalStop(detail.getArrivalStop())
-                .shortName(detail.getShortName())
-                .startLat(detail.getStartLat())
-                .startLng(detail.getStartLng())
-                .endLat(detail.getEndLat())
-                .endLng(detail.getEndLng())
-                .build();
+    private static ScheduleResDto.RouteDetailResDto toRouteDetailDto(RouteDetail detail) {
+        if (detail == null) return null;
+        try {
+            // JSON String -> DTO 객체 변환
+            ScheduleResDto.RouteDetailResDto resDto = objectMapper.readValue(
+                    detail.getData(),
+                    ScheduleResDto.RouteDetailResDto.class
+            );
+
+            return resDto;
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("RouteDetail 데이터 파싱 오류 (ID: " + detail.getId() + ")", e);
+        }
     }
 
     // 알림 정보
