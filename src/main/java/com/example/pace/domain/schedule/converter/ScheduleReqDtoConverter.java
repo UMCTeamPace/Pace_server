@@ -5,9 +5,16 @@ import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.RepeatRule;
 import com.example.pace.domain.schedule.entity.RouteDetail;
 import com.example.pace.domain.schedule.entity.Schedule;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 
+
 public class ScheduleReqDtoConverter {
+
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule());
     // 요청 dto -> Schedule 엔티티 객체
     public static Schedule toSchedule(ScheduleReqDto source) {
         return Schedule.builder()
@@ -36,7 +43,7 @@ public class ScheduleReqDtoConverter {
                 .build();
     }
 
-    public static Route toRoute(ScheduleReqDto.RouteDto dto) {
+    public static Route toRoute(ScheduleReqDto.RouteReqDto dto) {
         if (dto == null) return null;
         return Route.builder()
                 .originName(dto.getOriginName())
@@ -53,24 +60,20 @@ public class ScheduleReqDtoConverter {
                 .build();
     }
 
-    public static RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailDto dto) {
-        return RouteDetail.builder()
-                .sequence(dto.getSequence())
-                .duration(dto.getDuration())
-                .distance(dto.getDistance())
-                .description(dto.getDescription())
-                .transitType(dto.getTransitType())
-                .lineName(dto.getLineName())
-                .lineColor(dto.getLineColor())
-                .stopCount(dto.getStopCount())
-                .departureStop(dto.getDepartureStop())
-                .arrivalStop(dto.getArrivalStop())
-                .shortName(dto.getShortName())
-                .startLat(toBigDecimal(dto.getStartLat()))
-                .startLng(toBigDecimal(dto.getStartLng()))
-                .endLat(toBigDecimal(dto.getEndLat()))
-                .endLng(toBigDecimal(dto.getEndLng()))
-                .build();
+    public static RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailReqDto dto) {
+        if (dto == null) return null;
+
+        try {
+            // DTO 객체 전체를 JSON 문자열로 변환
+            String jsonData = objectMapper.writeValueAsString(dto);
+
+            return RouteDetail.builder()
+                    .sequence(dto.getSequence()) // 순서는 별도 컬럼으로 저장
+                    .data(jsonData)              // 나머지는 JSON으로 저장
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("RouteDetail JSON 변환 중 오류 발생", e);
+        }
     }
 
     private static BigDecimal toBigDecimal(Double value) {

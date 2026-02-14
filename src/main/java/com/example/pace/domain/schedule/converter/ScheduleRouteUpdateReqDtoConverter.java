@@ -3,18 +3,25 @@ package com.example.pace.domain.schedule.converter;
 import com.example.pace.domain.schedule.dto.request.ScheduleRouteUpdateReqDto;
 import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.RouteDetail;
-import java.math.BigDecimal;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class ScheduleRouteUpdateReqDtoConverter {
 
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
     public static Route toRoute(ScheduleRouteUpdateReqDto req) {
         return Route.builder()
-                .originName(req.getOrigin().getOriginName())
-                .originLat(toBigDecimal(req.getOrigin().getOriginLat()))
-                .originLng(toBigDecimal(req.getOrigin().getOriginLng()))
-                .destName(req.getDest().getDestName())
-                .destLat(toBigDecimal(req.getDest().getDestLat()))
-                .destLng(toBigDecimal(req.getDest().getDestLng()))
+                .originName(req.getOriginName())
+                .originLat(req.getOriginLat())
+                .originLng(req.getOriginLng())
+                .destName(req.getDestName())
+                .destLat(req.getDestLat())
+                .destLng(req.getDestLng())
                 .totalTime(req.getTotalTime())
                 .totalDistance(req.getTotalDistance())
                 .arrivalTime(req.getArrivalTime())
@@ -23,27 +30,17 @@ public class ScheduleRouteUpdateReqDtoConverter {
                 .build();
     }
 
-    private static BigDecimal toBigDecimal(Double value) {
-        return value != null ? BigDecimal.valueOf(value) : null;
-    }
+    public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto) {
+        try {
+            String jsonData = objectMapper.writeValueAsString(dto);
 
-    public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailDto dto) {
-        return RouteDetail.builder()
-                .sequence(dto.getSequence())
-                .duration(dto.getDuration())
-                .distance(dto.getDistance())
-                .description(dto.getDescription())
-                .transitType(dto.getTransitType())
-                .lineName(dto.getLineName())
-                .lineColor(dto.getLineColor())
-                .stopCount(dto.getStopCount())
-                .departureStop(dto.getDepartureStop())
-                .arrivalStop(dto.getArrivalStop())
-                .startLat(toBigDecimal(dto.getStartLat()))
-                .startLng(toBigDecimal(dto.getStartLng()))
-                .endLat(toBigDecimal(dto.getEndLat()))
-                .endLng(toBigDecimal(dto.getEndLng()))
-                .shortName(dto.getShortName())
-                .build();
+            return RouteDetail.builder()
+                    .sequence(dto.getSequence())
+                    .data(jsonData) 
+                    .build();
+        } catch (JsonProcessingException e) {
+            // JSON 변환 실패 시 예외 처리
+            throw new RuntimeException("RouteDetail 데이터 변환 중 오류가 발생했습니다.", e);
+        }
     }
 }
