@@ -13,12 +13,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class ScheduleRouteDeleteCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
 
+    @Transactional
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
 
         // 내 일정인지(scheduleId + memberId)로 조회

@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class PlaceGroupCommandService {
     private final PlaceGroupRepository placeGroupRepository;
     private final MemberRepository memberRepository;
 
     // 그룹 저장
+    @Transactional
     public PlaceGroupResDTO.PlaceGroupDTO createGroup(Long memberId, PlaceGroupReqDTO.SaveGroupReqDTO request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -39,6 +39,7 @@ public class PlaceGroupCommandService {
     }
 
     // 그룹 업데이트
+    @Transactional
     public PlaceGroupResDTO.PlaceGroupDTO updateGroup(Long memberId, Long groupId,
                                                       PlaceGroupReqDTO.UpdateGroupReqDTO request) {
         PlaceGroup placeGroup = placeGroupRepository.findByMemberIdAndId(memberId, groupId)
@@ -66,6 +67,7 @@ public class PlaceGroupCommandService {
     }
 
     // 그룹 삭제
+    @Transactional
     public void deleteGroups(Long memberId, List<Long> groupIdList) {
         List<PlaceGroup> groupList = placeGroupRepository.findAllByIdInAndMemberId(groupIdList, memberId);
 

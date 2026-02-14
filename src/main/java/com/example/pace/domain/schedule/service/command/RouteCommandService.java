@@ -1,4 +1,4 @@
-package com.example.pace.domain.schedule.service;
+package com.example.pace.domain.schedule.service.command;
 
 import static com.example.pace.domain.schedule.enums.SearchWay.MIN_TIME;
 
