@@ -40,7 +40,7 @@ public class ScheduleRouteUpdateCommandService {
 
         // 2) RouteDetail 변환/연결
         if (req.getRouteDetails() != null) {
-            for (ScheduleRouteUpdateReqDto.RouteDetailDto dto : req.getRouteDetails()) {
+            for (ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto : req.getRouteDetails()) {
                 RouteDetail detail =
                         ScheduleRouteUpdateReqDtoConverter.toRouteDetail(dto);
                 newRoute.addRouteDetail(detail);
