@@ -1,7 +1,6 @@
 package com.example.pace.domain.member.entity;
 
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -48,9 +47,8 @@ public class Setting extends BaseEntity {
     private Boolean isReminderActive;
 
     // 캘린더 선택
-    @Enumerated(EnumType.STRING)
-    @Column(name = "calendar_type", nullable = false, length = 30)
-    private CalendarType calendarType;
+    @Column(name = "calendar_id", nullable = true)
+    private Long calendarId;
 
     @OneToMany(mappedBy = "setting", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -76,7 +74,7 @@ public class Setting extends BaseEntity {
             Boolean isNotiEnabled,
             Boolean isLocEnabled,
             Boolean isReminderActive,
-            CalendarType calendarType
+            Long calendarId
     ) {
         if (earlyArrivalTime != null) {
             this.earlyArrivalTime = earlyArrivalTime;
@@ -90,8 +88,8 @@ public class Setting extends BaseEntity {
         if (isReminderActive != null) {
             this.isReminderActive = isReminderActive;
         }
-        if (calendarType != null) {
-            this.calendarType = calendarType;
+        if (calendarId != null) {
+            this.calendarId = calendarId;
         }
     }
 

@@ -51,7 +51,7 @@ public class SettingConverter {
                 .isNotiEnabled(setting.isNotiEnabled())
                 .isLocEnabled(setting.isLocEnabled())
                 .isReminderActive(setting.isReminderActive())
-                .calendarType(setting.getCalendarType())
+                .calendarId(setting.getCalendarId())
                 .alarms(alarms)
                 .createdAt(setting.getCreatedAt())
                 .updatedAt(setting.getUpdatedAt())
