@@ -64,6 +64,8 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     private LocalTime startTime;
     @Column(name = "end_time")
     private LocalTime endTime;
+    private String calendarId;
+    private String color;
     @Column(name = "is_repeat")
     private Boolean isRepeat;
     @Column(name = "repeat_group_id")
@@ -119,6 +121,12 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         }
         if (dto.getEndTime() != null) {
             this.endTime = dto.getEndTime();
+        }
+        if (dto.getCalendarId() != null) {
+            this.calendarId = dto.getCalendarId();
+        }
+        if (dto.getColor() != null) {
+            this.color = dto.getColor();
         }
         if (dto.getIsAllDay() != null) {
             this.isAllDay = dto.getIsAllDay();

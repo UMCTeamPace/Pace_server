@@ -24,6 +24,8 @@ public class ScheduleReqDtoConverter {
                 .endDate(source.getEndDate())
                 .startTime(source.getStartTime())
                 .endTime(source.getEndTime())
+                .calendarId(source.getCalendarId())
+                .color(source.getColor())
                 .memo(source.getMemo())
                 .isPathIncluded(source.getIsPathIncluded())
                 .build();

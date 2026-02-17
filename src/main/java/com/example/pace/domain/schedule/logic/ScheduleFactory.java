@@ -33,6 +33,8 @@ public class ScheduleFactory {
                 .endDate(endDate)
                 .startTime(request.getStartTime())
                 .endTime(request.getEndTime())
+                .calendarId(request.getCalendarId())
+                .color(request.getColor())
                 .isRepeat(request.getIsRepeat())
                 .repeatGroupId(groupId)
                 .repeatRule(repeatRule)
