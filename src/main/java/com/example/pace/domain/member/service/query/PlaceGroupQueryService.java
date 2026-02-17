@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class PlaceGroupQueryService {
     private final PlaceGroupRepository placeGroupRepository;
 
+    @Transactional(readOnly = true)
     public PlaceGroupResDTO.PlaceGroupListDTO getPlaceGroupList(Long memberId) {
         List<PlaceGroupResDTO.PlaceGroupQueryDTO> queryList = placeGroupRepository.findAllGroupInfoByMemberId(memberId);
 

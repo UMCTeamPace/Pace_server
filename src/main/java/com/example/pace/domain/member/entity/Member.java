@@ -36,7 +36,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 name = "social_provider_id_unique",
-                columnNames = {"socialProvider", "socialId"}
+                columnNames = {"social_provider", "social_id"}
         )
 })
 @SQLDelete(sql = "UPDATE member SET is_active = false WHERE id = ?") // delete()시 hard delete 하는 것이 아닌 soft delete를 진행

@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class SavedPlaceQueryService {
     private final SavedPlaceRepository savedPlaceRepository;
 
+    @Transactional(readOnly = true)
     public SavedPlaceResDTO.PlaceListDTO getSavedPlaceList(Long memberId, Long groupId, SavedPlaceSortType sortType) {
         List<SavedPlace> placeList = savedPlaceRepository.findAllPlaceByMemberAndGroupId(memberId, groupId, sortType);
 

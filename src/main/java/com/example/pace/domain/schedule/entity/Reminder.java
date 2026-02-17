@@ -12,7 +12,13 @@ import lombok.*;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "reminder")
+@Table(
+        name = "reminder",
+        indexes = {
+                // 일정으로 알림 관련 정보를 조회하기 위한 인덱스 칼럼 지정
+                @Index(name = "idx_reminder_schedule", columnList = "schedule_id")
+        }
+)
 public class Reminder extends BaseEntity {
 
     @Id

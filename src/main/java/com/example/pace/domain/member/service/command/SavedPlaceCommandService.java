@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class SavedPlaceCommandService {
     private final SavedPlaceRepository savedPlaceRepository;
@@ -29,6 +28,7 @@ public class SavedPlaceCommandService {
     private final PlaceGroupRepository placeGroupRepository;
 
     // 장소 저장
+    @Transactional
     public SavedPlaceResDTO.PlaceDTO savePlace(Long memberId, SavedPlaceReqDTO.SavedPlaceDTO request) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(MemberErrorCode.MEMBER_NOT_FOUND));
@@ -47,6 +47,7 @@ public class SavedPlaceCommandService {
     }
 
     // 장소들 삭제
+    @Transactional
     public void deletePlaces(Long memberId, List<Long> placeIdList) {
         List<SavedPlace> myPlaceList = savedPlaceRepository.findAllByIdInAndMemberId(placeIdList, memberId);
 
@@ -59,6 +60,7 @@ public class SavedPlaceCommandService {
     }
 
     // 장소들 이동
+    @Transactional
     public void movePlaces(Long memberId, SavedPlaceReqDTO.MovePlaceListDTO request) {
         List<Long> placeIdList = request.getPlaceIdList();
         Long targetGroupId = request.getTargetGroupId();

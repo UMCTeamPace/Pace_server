@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class BusNetworkService {
     private final BusInfoRepository busInfoRepository;
 
+    @Transactional(readOnly = true)
     public List<BusInfo> getStationsBetween(String lineName, String startStation, String endStation) {
         List<BusInfo> startStopList = busInfoRepository.findByLineNameAndStationName(lineName, startStation);
         List<BusInfo> endStopList = busInfoRepository.findByLineNameAndStationName(lineName, endStation);

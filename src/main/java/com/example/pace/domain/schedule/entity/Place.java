@@ -1,6 +1,5 @@
 package com.example.pace.domain.schedule.entity;
 
-import com.example.pace.domain.member.entity.Member;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import lombok.AccessLevel;
@@ -12,20 +11,16 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
+    @JoinColumn(name = "schedule_id", nullable = false, unique = true)
     private Schedule schedule;
 
     private String targetName;
     private BigDecimal targetLat;
     private BigDecimal targetLng;
-
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
-
-    }
 }
