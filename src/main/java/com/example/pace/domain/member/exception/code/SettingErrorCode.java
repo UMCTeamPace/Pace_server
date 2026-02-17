@@ -15,7 +15,9 @@ public enum SettingErrorCode implements BaseErrorCode {
     ONBOARDING_REQUIRED(HttpStatus.CONFLICT, "SETTING409_1", "온보딩 후에 가능합니다."),
     FORBIDDEN(HttpStatus.FORBIDDEN, "SETTING403_1", "접근 권한이 없습니다."),
     TOO_MANY_ALARMS(HttpStatus.BAD_REQUEST, "SETTING400_1", "알람은 타입별로 최대 5개까지 설정할 수 있습니다."),
-    INVALID_ALARM_MINUTES(HttpStatus.BAD_REQUEST, "SETTING400_2", "허용되지 않은 알람 시간 값이 포함되어 있습니다.");
+    INVALID_ALARM_MINUTES(HttpStatus.BAD_REQUEST, "SETTING400_2", "허용되지 않은 알람 시간 값이 포함되어 있습니다."),
+    INVALID_CALENDAR_ID(HttpStatus.BAD_REQUEST, "SETTING400_3", "calendarId 형식이 올바르지 않습니다."),
+    CALENDAR_NOT_FOUND(HttpStatus.NOT_FOUND, "SETTING404_3", "존재하지 않는 캘린더입니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

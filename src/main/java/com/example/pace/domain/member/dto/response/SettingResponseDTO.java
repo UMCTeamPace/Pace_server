@@ -2,7 +2,6 @@ package com.example.pace.domain.member.dto.response;
 
 import com.example.pace.domain.member.converter.SettingConverter;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.entity.Setting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -25,7 +24,7 @@ public class SettingResponseDTO {
     private Boolean isLocEnabled;
 
     private Boolean isReminderActive;
-    private CalendarType calendarType;
+    private Long calendarId;
     private List<AlarmConfig> alarms;
 
     private LocalDateTime createdAt;

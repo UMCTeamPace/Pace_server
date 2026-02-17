@@ -1,7 +1,6 @@
 package com.example.pace.domain.member.dto.request;
 
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.Getter;
@@ -23,7 +22,7 @@ public class SettingUpdateRequestDTO {
     private Boolean isReminderActive;
 
     // 캘린더 선택
-    private CalendarType calendarType;
+    private String calendarId;
 
     //alarms로 받기 위해
     private List<Alarm> alarms;

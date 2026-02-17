@@ -59,13 +59,21 @@ public class OnboardingCommandService {
         // alarms 정규화:  항상 SCHEDULE/DEPARTURE 둘 다 포함시키기 (없으면 빈 리스트로)
         Map<AlarmType, List<Integer>> alarmMap = toValidatedAlarmMap(request.alarms());
 
+        Long calendarId;
+        try {
+            calendarId = Long.parseLong(request.calendarId());
+        } catch (NumberFormatException e) {
+            throw new OnboardingException(OnboardingErrorCode.INVALID_CALENDAR_ID);
+        }
+
+
         // setting 기본 값 업데이트 (온보딩에서 받는 값)
         setting.update(
                 earlyArrivalTime,   // Integer earlyArrivalTime
                 null,                         // isNotiEnabled: 온보딩에서 안 받으면 유지
                 null,                         // isLocEnabled: 온보딩에서 안 받으면 유지
                 request.isReminderActive(),
-                request.calendarType()
+                calendarId
         );
 
         // 알림 시간 갱신 (타입별 교체)(빈 리스트면 해당 타입 전부 삭제)

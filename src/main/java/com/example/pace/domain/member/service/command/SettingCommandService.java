@@ -7,7 +7,6 @@ import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import com.example.pace.domain.member.exception.MemberException;
 import com.example.pace.domain.member.exception.code.MemberErrorCode;
 import com.example.pace.domain.member.exception.code.SettingErrorCode;
@@ -58,12 +57,14 @@ public class SettingCommandService {
         Setting setting = settingRepository.findByMember(member)
                 .orElseThrow(() -> new SettingException(SettingErrorCode.SETTING_NOT_FOUND));
 
+        Long calendarId = parseCalendarId(request.getCalendarId());
+
         setting.update(
                 request.getEarlyArrivalTime(),
                 request.getIsNotiEnabled(),
                 request.getIsLocEnabled(),
                 request.getIsReminderActive(),
-                request.getCalendarType()
+                calendarId
         );
 
         if (request.getAlarms() != null) {
@@ -71,6 +72,17 @@ public class SettingCommandService {
         }
 
         return SettingConverter.toResponse(setting);
+    }
+
+    private Long parseCalendarId(String raw) {
+        if (raw == null) {
+            return null; // calendarId를 필수로 만들 거면 여기서 예외로 바꿔도 됨
+        }
+        try {
+            return Long.parseLong(raw);
+        } catch (NumberFormatException e) {
+            throw new SettingException(SettingErrorCode.INVALID_CALENDAR_ID);
+        }
     }
 
     public void applyAlarms(Setting setting, List<SettingUpdateRequestDTO.Alarm> alarms) {
@@ -133,7 +145,7 @@ public class SettingCommandService {
                 .isLocEnabled(false)
                 .earlyArrivalTime(20)
                 .isReminderActive(true)
-                .calendarType(CalendarType.GOOGLE)
+                .calendarId(null)
                 .build();
     }
 

@@ -1,7 +1,6 @@
 package com.example.pace.domain.member.dto.request;
 
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.enums.CalendarType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -29,10 +28,9 @@ public record OnboardingReqDTO (
 
         @Min(0) @Max(60) Integer earlyArrivalTime,   // 정책에 맞게 1시간으로 상한 조절
 
-        @NotNull CalendarType calendarType,  // enum이면 enum으로 바꾸기
+        @NotNull String calendarId,
 
-        @Valid
-        List<AlarmConfig> alarms
+        @Valid List<AlarmConfig> alarms
 ){
     public record AlarmConfig(
             @NotNull AlarmType type,
