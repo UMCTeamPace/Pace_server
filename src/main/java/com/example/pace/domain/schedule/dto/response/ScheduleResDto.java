@@ -35,6 +35,8 @@ public class ScheduleResDto {
         private LocalDate endDate;
         private LocalTime startTime;
         private LocalTime endTime;
+        private String calendarId;
+        private String color;
         private String memo;
     }
 
