@@ -15,7 +15,13 @@ public class GeneralExceptionAdvice {
     // 커스텀 예외 처리
     @ExceptionHandler(GeneralException.class)
     public ResponseEntity<ApiResponse<Void>> handleException(GeneralException e) {
-        log.error("Internal server error:", e);
+        BaseErrorCode code = e.getCode();
+
+        if (code.getHttpStatus().is5xxServerError()) {
+            log.error("Internal server error:", e);
+        } else {
+            log.warn("Client error occurred: {}: {}", code.getCode(), code.getMessage());
+        }
 
         return ResponseEntity
                 .status(e.getCode().getHttpStatus())
