@@ -1,6 +1,7 @@
 server:
   port: 8080
-
+  # nginx가 전달해주는 헤더를 신뢰하고 사용
+  forward-headers-strategy: native
 spring:
   config:
     import: optional:file:.env[.properties]
