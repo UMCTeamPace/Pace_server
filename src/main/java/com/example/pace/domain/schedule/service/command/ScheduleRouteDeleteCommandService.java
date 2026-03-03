@@ -1,5 +1,6 @@
 package com.example.pace.domain.schedule.service.command;
 
+import com.example.pace.domain.schedule.converter.ScheduleConverter;
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
 import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.Schedule;
@@ -17,6 +18,7 @@ public class ScheduleRouteDeleteCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
+    private final ScheduleConverter scheduleConverter;
 
     @Transactional
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
@@ -39,6 +41,6 @@ public class ScheduleRouteDeleteCommandService {
         schedule.setIsPathIncluded(false);
 
         // 응답용 (updatedAt은 auditing으로 갱신되거나, 필요시 scheduleRepository.save(schedule) 해도 됨)
-        return ScheduleRouteDeleteResDto.of(schedule.getId(), schedule.getUpdatedAt());
+        return scheduleConverter.toScheduleRouteDeleteResDto(schedule);
     }
 }

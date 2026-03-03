@@ -1,6 +1,6 @@
 package com.example.pace.domain.schedule.service.command;
 
-import com.example.pace.domain.schedule.converter.ScheduleRouteUpdateReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleRouteUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteUpdateResDto;
 import com.example.pace.domain.schedule.entity.Route;
@@ -20,6 +20,7 @@ public class ScheduleRouteUpdateCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
+    private final ScheduleConverter scheduleConverter;
 
     @Transactional
     public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId,
@@ -36,13 +37,13 @@ public class ScheduleRouteUpdateCommandService {
         }
 
         // 1) Route 변환
-        Route newRoute = ScheduleRouteUpdateReqDtoConverter.toRoute(req);
+        Route newRoute = scheduleConverter.toRoute(req);
 
         // 2) RouteDetail 변환/연결
         if (req.getRouteDetails() != null) {
             for (ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto : req.getRouteDetails()) {
                 RouteDetail detail =
-                        ScheduleRouteUpdateReqDtoConverter.toRouteDetail(dto);
+                        scheduleConverter.toRouteDetail(dto);
                 newRoute.addRouteDetail(detail);
             }
         }

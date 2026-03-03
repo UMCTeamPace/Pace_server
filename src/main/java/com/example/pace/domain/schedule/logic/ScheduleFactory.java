@@ -4,18 +4,21 @@ package com.example.pace.domain.schedule.logic;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
 import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ScheduleRouteUpdateReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.entity.RepeatRule;
 import com.example.pace.domain.schedule.entity.Route;
 import com.example.pace.domain.schedule.entity.Schedule;
 import java.time.LocalDate;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ScheduleFactory {
+
+    private final ScheduleConverter scheduleConverter;
 
     public Schedule create(
             Member member,
@@ -48,13 +51,13 @@ public class ScheduleFactory {
 
         //경로 저장
         if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-            Route route = ScheduleReqDtoConverter.toRoute(request.getRoute());
+            Route route = scheduleConverter.toRoute(request.getRoute());
             schedule.addRoute(route);
 
             if (request.getRoute().getRouteDetails() != null) {
                 request.getRoute().getRouteDetails().stream()
                         .filter(java.util.Objects::nonNull)
-                        .map(ScheduleReqDtoConverter::toRouteDetail)
+                        .map(scheduleConverter::toRouteDetail)
                         .forEach(route::addRouteDetail);
             }
         }
@@ -84,6 +87,8 @@ public class ScheduleFactory {
                 .endTime(request.getEndTime() != null ? request.getEndTime() : existingSchedule.getEndTime())
                 .startDate(date)
                 .endDate(endDate)
+                .calendarId(request.getCalendarId() != null ? request.getCalendarId() : existingSchedule.getCalendarId())
+                .color(request.getColor() != null ? request.getColor() : existingSchedule.getColor())
                 .repeatGroupId(repeatGroupId)
                 .isRepeat(repeatGroupId != null)
                 .repeatRule(repeatRule)

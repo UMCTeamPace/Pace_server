@@ -2,8 +2,7 @@ package com.example.pace.domain.schedule.service.command;
 
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.repository.MemberRepository;
-import com.example.pace.domain.schedule.converter.ScheduleReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ScheduleResDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
@@ -39,6 +38,7 @@ public class ScheduleCommandService {
     private final RepeatRuleRepository repeatRuleRepository;
     private final RepeatCalculator repeatCalculator;
     private final ScheduleFactory scheduleFactory;
+    private final ScheduleConverter scheduleConverter;
 
 
     // 일정 생성
@@ -53,7 +53,7 @@ public class ScheduleCommandService {
         // 반복 그룹 정보 생성
         String groupId = Boolean.TRUE.equals(request.getIsRepeat()) ? UUID.randomUUID().toString() : null;
         RepeatRule repeatRule = (groupId != null) ?
-                repeatRuleRepository.save(ScheduleReqDtoConverter.toRepeatRule(request.getRepeatInfo())) : null;
+                repeatRuleRepository.save(scheduleConverter.toRepeatRule(request.getRepeatInfo())) : null;
 
         long durationDays = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
         List<LocalDate> dates;
@@ -79,7 +79,7 @@ public class ScheduleCommandService {
             throw new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND);
         }
 
-        return ScheduleResDtoConverter.toScheduleResDto(savedSchedules.get(0));
+        return scheduleConverter.toScheduleResDto(savedSchedules.get(0));
     }
 
 
@@ -89,7 +89,7 @@ public class ScheduleCommandService {
         Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, scheduleId)
                 .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        return ScheduleResDtoConverter.toScheduleResDto(schedule);
+        return scheduleConverter.toScheduleResDto(schedule);
     }
 
     @Transactional(readOnly = true)
@@ -106,7 +106,7 @@ public class ScheduleCommandService {
         Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId, cursorDate, cursorId,
                 maxSearchDate, pageable);
 
-        return schedules.map(ScheduleResDtoConverter::toScheduleResDto);
+        return schedules.map(scheduleConverter::toScheduleResDto);
     }
 
     // 일정 삭제
@@ -145,7 +145,7 @@ public class ScheduleCommandService {
                 scheduleRepository.deleteAllByRepeatGroupId(schedule.getRepeatGroupId());
 
                 RepeatRule newRule = repeatRuleRepository.save(
-                        ScheduleReqDtoConverter.toRepeatRule(request.getRepeatInfo()));
+                        scheduleConverter.toRepeatRule(request.getRepeatInfo()));
 
                 // 날짜 계산
                 List<LocalDate> newDates = repeatCalculator.calculateDates(request.getRepeatInfo(), currentStart);
@@ -163,7 +163,7 @@ public class ScheduleCommandService {
                         .toList();
                 List<Schedule> savedSchedules = scheduleRepository.saveAll(newSchedules);
 
-                return ScheduleResDtoConverter.toScheduleResDto(savedSchedules.get(0));
+                return scheduleConverter.toScheduleResDto(savedSchedules.get(0));
             }
             // 내용만 바뀐 경우
             else {
@@ -176,7 +176,7 @@ public class ScheduleCommandService {
             schedule.updateDetailedInfo(request);
         }
 
-        return ScheduleResDtoConverter.toScheduleResDto(schedule);
+        return scheduleConverter.toScheduleResDto(schedule);
 
     }
 
