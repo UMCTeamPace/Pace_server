@@ -31,7 +31,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          script: mkdir -p ~/pace-project
+          script: mkdir -p ~/pace-project/nginx
 
       - name: Copy docker-compose.yml via scp
         uses: appleboy/scp-action@v0.1.7
@@ -39,7 +39,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "docker-compose.yml" # 내 깃허브에 있는 파일 이름
+          source: "docker-compose.yml,nginx/default.conf" # 내 깃허브에 있는 파일 이름
           target: "~/pace-project" # 서버에 저장될 폴더 이름
 
       - name: Deploy to EC2
@@ -71,7 +71,7 @@ jobs:
             # 헬스 체크: 서버가 제대로 떴는지 10번 확인함
             echo "Starting health check..."
             for i in {1..10}; do
-              RESPONSE=$(curl -s http://localhost:8080/health) # 내 서버에 안부를 물어봄
+              RESPONSE=$(curl -s http://localhost/health) # 내 서버에 안부를 물어봄
               if [ "$RESPONSE" = "OK" ]; then # 대답이 "OK"면 성공
                 echo "Health check passed!"
                 exit 0
