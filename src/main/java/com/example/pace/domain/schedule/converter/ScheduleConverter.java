@@ -2,16 +2,13 @@ package com.example.pace.domain.schedule.converter;
 
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleRouteUpdateReqDto;
+import com.example.pace.domain.schedule.dto.request.TransitDetailDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
 import com.example.pace.domain.schedule.entity.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static java.util.Comparator.comparing;
@@ -19,9 +16,6 @@ import static java.util.Comparator.comparing;
 @Component
 @RequiredArgsConstructor
 public class ScheduleConverter {
-
-    private static final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule());
 
     public Route toRoute(ScheduleReqDto.RouteReqDto dto) {
         if (dto == null) return null;
@@ -42,15 +36,19 @@ public class ScheduleConverter {
 
     public RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailReqDto dto) {
         if (dto == null) return null;
-        try {
-            String jsonData = objectMapper.writeValueAsString(dto);
-            return RouteDetail.builder()
-                    .sequence(dto.getSequence())
-                    .data(jsonData)
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("RouteDetail(생성) JSON 변환 오류", e);
-        }
+        return RouteDetail.builder()
+                .sequence(dto.getSequence())
+                .startLat(dto.getStartLat())
+                .startLng(dto.getStartLng())
+                .endLat(dto.getEndLat())
+                .endLng(dto.getEndLng())
+                .duration(dto.getDuration())
+                .distance(dto.getDistance())
+                .description(dto.getDescription())
+                .points(dto.getPoints())
+                .transitDetail(toTransitDetail(dto.getTransitDetail())) // 중첩 객체 변환
+                .build();
+
     }
 
     public Route toRoute(ScheduleRouteUpdateReqDto req) {
@@ -70,16 +68,19 @@ public class ScheduleConverter {
     }
 
     public RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto) {
-        try {
-            // DTO 객체 전체를 JSON 문자열로 변환
-            String jsonData = objectMapper.writeValueAsString(dto);
-            return RouteDetail.builder()
-                    .sequence(dto.getSequence()) // 순서는 별도 컬럼으로 저장
-                    .data(jsonData)              // 나머지는 JSON으로 저장
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("RouteDetail(수정) JSON 변환 오류", e);
-        }
+        if (dto == null) return null;
+        return RouteDetail.builder()
+                .sequence(dto.getSequence())
+                .startLat(dto.getStartLat())
+                .startLng(dto.getStartLng())
+                .endLat(dto.getEndLat())
+                .endLng(dto.getEndLng())
+                .duration(dto.getDuration())
+                .distance(dto.getDistance())
+                .description(dto.getDescription())
+                .points(dto.getPoints())
+                .transitDetail(toTransitDetail(dto.getTransitDetail()))
+                .build();
     }
 
     // Entity -> Response DTO
@@ -151,13 +152,57 @@ public class ScheduleConverter {
     // 개별 상세 경로
     private ScheduleResDto.RouteDetailResDto toRouteDetailDto(RouteDetail detail) {
         if (detail == null) return null;
-        try {
-            return objectMapper.readValue(detail.getData(), ScheduleResDto.RouteDetailResDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("RouteDetail 데이터 파싱 오류", e);
-        }
+        return ScheduleResDto.RouteDetailResDto.builder()
+                .sequence(detail.getSequence())
+                .startLat(detail.getStartLat())
+                .startLng(detail.getStartLng())
+                .endLat(detail.getEndLat())
+                .endLng(detail.getEndLng())
+                .duration(detail.getDuration())
+                .distance(detail.getDistance())
+                .description(detail.getDescription())
+                .points(detail.getPoints())
+                .transitDetail(toTransitDetailResDto(detail.getTransitDetail())) // 응답용 헬퍼 사용
+                .build();
     }
 
+    private TransitDetail toTransitDetail(TransitDetailDto dto) {
+        if (dto == null) return null;
+        return TransitDetail.builder()
+                .transitType(dto.getTransitType())
+                .lineName(dto.getLineName())
+                .lineColor(dto.getLineColor())
+                .stopCount(dto.getStopCount())
+                .departureStop(dto.getDepartureStop())
+                .arrivalStop(dto.getArrivalStop())
+                .departureTime(dto.getDepartureTime())
+                .arrivalTime(dto.getArrivalTime())
+                .shortName(dto.getShortName())
+                .locationLat(dto.getLocationLat())
+                .locationLng(dto.getLocationLng())
+                .headsign(dto.getHeadsign())
+                .stationPath(dto.getStationPath())
+                .build();
+    }
+
+    private ScheduleResDto.TransitDetailResDto toTransitDetailResDto(TransitDetail detail) {
+        if (detail == null) return null;
+        return ScheduleResDto.TransitDetailResDto.builder()
+                .transitType(detail.getTransitType())
+                .lineName(detail.getLineName())
+                .lineColor(detail.getLineColor())
+                .stopCount(detail.getStopCount())
+                .departureStop(detail.getDepartureStop())
+                .arrivalStop(detail.getArrivalStop())
+                .departureTime(detail.getDepartureTime())
+                .arrivalTime(detail.getArrivalTime())
+                .shortName(detail.getShortName())
+                .locationLat(detail.getLocationLat())
+                .locationLng(detail.getLocationLng())
+                .headsign(detail.getHeadsign())
+                .stationPath(detail.getStationPath())
+                .build();
+    }
     // 알림 정보
     private List<ScheduleResDto.ReminderDto> toReminderDtos(List<Reminder> reminders) {
         if (reminders == null) return List.of();
