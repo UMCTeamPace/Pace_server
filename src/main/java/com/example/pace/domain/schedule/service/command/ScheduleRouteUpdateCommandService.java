@@ -25,7 +25,7 @@ public class ScheduleRouteUpdateCommandService {
     @Transactional
     public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId,
                                                          ScheduleRouteUpdateReqDto req) {
-        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+        Schedule schedule = scheduleRepository.findByIdAndMemberId(Math.abs(scheduleId), memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         // 0) 기존 route 제거

@@ -24,11 +24,11 @@ public class ScheduleRouteDeleteCommandService {
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
 
         // 내 일정인지(scheduleId + memberId)로 조회
-        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+        Schedule schedule = scheduleRepository.findByIdAndMemberId(Math.abs(scheduleId), memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         // 일정에 연결된 Route 조회
-        Route route = routeRepository.findByScheduleId(scheduleId)
+        Route route = routeRepository.findByScheduleId(Math.abs(scheduleId))
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.ROUTE_NOT_FOUND));
 
         // Schedule - Route 연관관계 끊기

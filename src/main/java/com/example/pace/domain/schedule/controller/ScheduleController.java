@@ -5,7 +5,6 @@ import com.example.pace.domain.schedule.dto.request.ScheduleDeleteReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleReqDto;
 import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
-import com.example.pace.domain.schedule.enums.UpdateScope;
 import com.example.pace.domain.schedule.exception.code.ScheduleSuccessCode;
 import com.example.pace.domain.schedule.service.command.ScheduleCommandService;
 import com.example.pace.global.apiPayload.ApiResponse;
@@ -88,16 +87,14 @@ public class ScheduleController implements ScheduleControllerDocs {
     }
 
     //일정 수정 API
-    @Override
     @PatchMapping("/{scheduleId}")
     public ResponseEntity<ApiResponse<ScheduleResDto>> updateSchedule(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             @PathVariable Long scheduleId,
-            @RequestParam(defaultValue = "SINGLE") UpdateScope scope,
             @RequestBody ScheduleUpdateReqDto requestDto
     ) {
         Long memberId = customUserDetails.member().getId();
-        ScheduleResDto responseDto = scheduleCommandService.updateSchedule(memberId, scheduleId, requestDto, scope);
+        ScheduleResDto responseDto = scheduleCommandService.updateSchedule(memberId, scheduleId, requestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.onSuccess(ScheduleSuccessCode.SCHEDULE_UPDATE_OK, responseDto));

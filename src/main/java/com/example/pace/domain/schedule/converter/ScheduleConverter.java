@@ -23,19 +23,6 @@ public class ScheduleConverter {
     private static final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
 
-    // repeatDto -> RepeatRule 엔티티 객체
-    public RepeatRule toRepeatRule(ScheduleReqDto.RepeatDto repeatDto) {
-        if (repeatDto == null) return null;
-        return RepeatRule.builder()
-                .repeatType(repeatDto.getRepeatType())
-                .repeatInterval(repeatDto.getRepeatInterval())
-                .daysOfWeek(repeatDto.getDaysOfWeek())
-                .endType(repeatDto.getEndType())
-                .endCount(repeatDto.getEndCount())
-                .endDate(repeatDto.getRepeatEndDate())
-                .build();
-    }
-
     public Route toRoute(ScheduleReqDto.RouteReqDto dto) {
         if (dto == null) return null;
         return Route.builder()
@@ -98,7 +85,7 @@ public class ScheduleConverter {
     // Entity -> Response DTO
     public ScheduleResDto toScheduleResDto(Schedule schedule) {
         return ScheduleResDto.builder()
-                .scheduleId(schedule.getId())
+                .scheduleId(schedule.getId()* -1)
                 .scheduleInfo(toInfoDto(schedule))
                 .place(toPlaceDto(schedule.getPlace()))
                 .route(toRouteDto(schedule.getRoute()))
@@ -114,7 +101,6 @@ public class ScheduleConverter {
     private ScheduleResDto.ScheduleInfoDto toInfoDto(Schedule schedule) {
         return ScheduleResDto.ScheduleInfoDto.builder()
                 .title(schedule.getTitle())
-                .isAllDay(schedule.getIsAllDay())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
                 .startTime(schedule.getStartTime())
@@ -188,7 +174,4 @@ public class ScheduleConverter {
                 .build();
     }
 
-    private BigDecimal toBigDecimal(Double value) {
-        return value != null ? BigDecimal.valueOf(value) : null;
-    }
 }
