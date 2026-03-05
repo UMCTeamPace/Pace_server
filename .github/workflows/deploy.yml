@@ -71,7 +71,7 @@ jobs:
             # 헬스 체크: 서버가 제대로 떴는지 10번 확인함
             echo "Starting health check..."
             for i in {1..10}; do
-              RESPONSE=$(curl -s http://localhost/health) # 내 서버에 안부를 물어봄
+              RESPONSE=$(curl -s -H "Host: pace-server.kro.kr" http://localhost/health) # 내 서버에 안부를 물어봄
               if [ "$RESPONSE" = "OK" ]; then # 대답이 "OK"면 성공
                 echo "Health check passed!"
                 exit 0
