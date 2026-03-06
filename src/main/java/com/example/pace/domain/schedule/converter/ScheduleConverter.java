@@ -86,7 +86,8 @@ public class ScheduleConverter {
     // Entity -> Response DTO
     public ScheduleResDto toScheduleResDto(Schedule schedule) {
         return ScheduleResDto.builder()
-                .scheduleId(schedule.getId()* -1)
+                .scheduleId(Boolean.TRUE.equals(schedule.getIsPathIncluded()) ?
+                        schedule.getId() * -1 : schedule.getId())
                 .scheduleInfo(toInfoDto(schedule))
                 .place(toPlaceDto(schedule.getPlace()))
                 .route(toRouteDto(schedule.getRoute()))
@@ -95,7 +96,7 @@ public class ScheduleConverter {
     }
 
     public ScheduleRouteDeleteResDto toScheduleRouteDeleteResDto(Schedule schedule) {
-        return ScheduleRouteDeleteResDto.of(schedule.getId(), schedule.getUpdatedAt());
+        return ScheduleRouteDeleteResDto.of(schedule.getId()*-1, schedule.getUpdatedAt());
     }
 
     // 기본 정보
