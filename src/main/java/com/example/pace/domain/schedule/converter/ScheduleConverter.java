@@ -6,18 +6,14 @@ import com.example.pace.domain.schedule.dto.request.TransitDetailDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleResDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteDeleteResDto;
 import com.example.pace.domain.schedule.entity.*;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 import static java.util.Comparator.comparing;
 
-@Component
-@RequiredArgsConstructor
 public class ScheduleConverter {
 
-    public Route toRoute(ScheduleReqDto.RouteReqDto dto) {
+    public static Route toRoute(ScheduleReqDto.RouteReqDto dto) {
         if (dto == null) return null;
         return Route.builder()
                 .originName(dto.getOriginName())
@@ -34,7 +30,7 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailReqDto dto) {
+    public static RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailReqDto dto) {
         if (dto == null) return null;
         return RouteDetail.builder()
                 .sequence(dto.getSequence())
@@ -51,7 +47,7 @@ public class ScheduleConverter {
 
     }
 
-    public Route toRoute(ScheduleRouteUpdateReqDto req) {
+    public static Route toRoute(ScheduleRouteUpdateReqDto req) {
         return Route.builder()
                 .originName(req.getOriginName())
                 .originLat(req.getOriginLat())
@@ -67,7 +63,7 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto) {
+    public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto) {
         if (dto == null) return null;
         return RouteDetail.builder()
                 .sequence(dto.getSequence())
@@ -84,7 +80,7 @@ public class ScheduleConverter {
     }
 
     // Entity -> Response DTO
-    public ScheduleResDto toScheduleResDto(Schedule schedule) {
+    public static ScheduleResDto toScheduleResDto(Schedule schedule) {
         return ScheduleResDto.builder()
                 .scheduleId(Boolean.TRUE.equals(schedule.getIsPathIncluded()) ?
                         schedule.getId() * -1 : schedule.getId())
@@ -95,12 +91,12 @@ public class ScheduleConverter {
                 .build();
     }
 
-    public ScheduleRouteDeleteResDto toScheduleRouteDeleteResDto(Schedule schedule) {
+    public static ScheduleRouteDeleteResDto toScheduleRouteDeleteResDto(Schedule schedule) {
         return ScheduleRouteDeleteResDto.of(schedule.getId()*-1, schedule.getUpdatedAt());
     }
 
     // 기본 정보
-    private ScheduleResDto.ScheduleInfoDto toInfoDto(Schedule schedule) {
+    private static ScheduleResDto.ScheduleInfoDto toInfoDto(Schedule schedule) {
         return ScheduleResDto.ScheduleInfoDto.builder()
                 .title(schedule.getTitle())
                 .startDate(schedule.getStartDate())
@@ -114,7 +110,7 @@ public class ScheduleConverter {
     }
 
     // 장소 정보
-    private ScheduleResDto.PlaceDto toPlaceDto(Place place) {
+    private static ScheduleResDto.PlaceDto toPlaceDto(Place place) {
         if (place == null) return null;
         return ScheduleResDto.PlaceDto.builder()
                 .targetName(place.getTargetName())
@@ -124,7 +120,7 @@ public class ScheduleConverter {
     }
 
     // 경로 정보
-    private ScheduleResDto.RouteResDto toRouteDto(Route route) {
+    private static ScheduleResDto.RouteResDto toRouteDto(Route route) {
         if (route == null) return null;
         return ScheduleResDto.RouteResDto.builder()
                 .originName(route.getOriginName())
@@ -142,16 +138,16 @@ public class ScheduleConverter {
     }
 
     // 상세 경로
-    private List<ScheduleResDto.RouteDetailResDto> toDetailDtos(List<RouteDetail> details) {
+    private static List<ScheduleResDto.RouteDetailResDto> toDetailDtos(List<RouteDetail> details) {
         if (details == null) return List.of();
         return details.stream()
                 .sorted(comparing(RouteDetail::getSequence))
-                .map(this::toRouteDetailDto)
+                .map(ScheduleConverter::toRouteDetailDto)
                 .toList();
     }
 
     // 개별 상세 경로
-    private ScheduleResDto.RouteDetailResDto toRouteDetailDto(RouteDetail detail) {
+    private static ScheduleResDto.RouteDetailResDto toRouteDetailDto(RouteDetail detail) {
         if (detail == null) return null;
         return ScheduleResDto.RouteDetailResDto.builder()
                 .sequence(detail.getSequence())
@@ -167,7 +163,7 @@ public class ScheduleConverter {
                 .build();
     }
 
-    private TransitDetail toTransitDetail(TransitDetailDto dto) {
+    private static TransitDetail toTransitDetail(TransitDetailDto dto) {
         if (dto == null) return null;
         return TransitDetail.builder()
                 .transitType(dto.getTransitType())
@@ -186,7 +182,7 @@ public class ScheduleConverter {
                 .build();
     }
 
-    private ScheduleResDto.TransitDetailResDto toTransitDetailResDto(TransitDetail detail) {
+    private static ScheduleResDto.TransitDetailResDto toTransitDetailResDto(TransitDetail detail) {
         if (detail == null) return null;
         return ScheduleResDto.TransitDetailResDto.builder()
                 .transitType(detail.getTransitType())
@@ -205,14 +201,14 @@ public class ScheduleConverter {
                 .build();
     }
     // 알림 정보
-    private List<ScheduleResDto.ReminderDto> toReminderDtos(List<Reminder> reminders) {
+    private static List<ScheduleResDto.ReminderDto> toReminderDtos(List<Reminder> reminders) {
         if (reminders == null) return List.of();
         return reminders.stream()
-                .map(this::toReminderDto)
+                .map(ScheduleConverter::toReminderDto)
                 .toList();
     }
 
-    private ScheduleResDto.ReminderDto toReminderDto(Reminder reminder) {
+    private static ScheduleResDto.ReminderDto toReminderDto(Reminder reminder) {
         return ScheduleResDto.ReminderDto.builder()
                 .reminderType(reminder.getReminderType())
                 .minutesBefore(reminder.getMinutesBefore())

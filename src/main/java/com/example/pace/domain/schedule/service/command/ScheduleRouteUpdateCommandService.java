@@ -20,7 +20,6 @@ public class ScheduleRouteUpdateCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
-    private final ScheduleConverter scheduleConverter;
 
     @Transactional
     public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId,
@@ -37,13 +36,13 @@ public class ScheduleRouteUpdateCommandService {
         }
 
         // 1) Route 변환
-        Route newRoute = scheduleConverter.toRoute(req);
+        Route newRoute = ScheduleConverter.toRoute(req);
 
         // 2) RouteDetail 변환/연결
         if (req.getRouteDetails() != null) {
             for (ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto : req.getRouteDetails()) {
                 RouteDetail detail =
-                        scheduleConverter.toRouteDetail(dto);
+                        ScheduleConverter.toRouteDetail(dto);
                 newRoute.addRouteDetail(detail);
             }
         }

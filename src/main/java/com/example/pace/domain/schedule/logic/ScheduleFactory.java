@@ -13,10 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ScheduleFactory {
-
-    private final ScheduleConverter scheduleConverter;
 
     public Schedule create(
             Member member,
@@ -43,13 +40,13 @@ public class ScheduleFactory {
 
         //경로 저장
         if (Boolean.TRUE.equals(request.getIsPathIncluded()) && request.getRoute() != null) {
-            Route route = scheduleConverter.toRoute(request.getRoute());
+            Route route = ScheduleConverter.toRoute(request.getRoute());
             schedule.addRoute(route);
 
             if (request.getRoute().getRouteDetails() != null) {
                 request.getRoute().getRouteDetails().stream()
                         .filter(java.util.Objects::nonNull)
-                        .map(scheduleConverter::toRouteDetail)
+                        .map(ScheduleConverter::toRouteDetail)
                         .forEach(route::addRouteDetail);
             }
         }

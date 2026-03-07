@@ -18,7 +18,6 @@ public class ScheduleRouteDeleteCommandService {
 
     private final ScheduleRepository scheduleRepository;
     private final RouteRepository routeRepository;
-    private final ScheduleConverter scheduleConverter;
 
     @Transactional
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
@@ -41,6 +40,6 @@ public class ScheduleRouteDeleteCommandService {
         schedule.setIsPathIncluded(false);
 
         // 응답용 (updatedAt은 auditing으로 갱신되거나, 필요시 scheduleRepository.save(schedule) 해도 됨)
-        return scheduleConverter.toScheduleRouteDeleteResDto(schedule);
+        return ScheduleConverter.toScheduleRouteDeleteResDto(schedule);
     }
 }

@@ -31,7 +31,6 @@ public class ScheduleCommandService {
     private final ScheduleRepository scheduleRepository;
     private final MemberRepository memberRepository;
     private final ScheduleFactory scheduleFactory;
-    private final ScheduleConverter scheduleConverter;
 
 
     // 일정 생성
@@ -48,7 +47,7 @@ public class ScheduleCommandService {
                 request
         );
         Schedule savedSchedule = scheduleRepository.save(schedule);
-        return scheduleConverter.toScheduleResDto(savedSchedule);
+        return ScheduleConverter.toScheduleResDto(savedSchedule);
     }
 
 
@@ -58,7 +57,7 @@ public class ScheduleCommandService {
         Schedule schedule = scheduleRepository.findByMemberIdAndId(memberId, Math.abs(scheduleId))
                 .orElseThrow(() -> new GeneralException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
-        return scheduleConverter.toScheduleResDto(schedule);
+        return ScheduleConverter.toScheduleResDto(schedule);
     }
 
     @Transactional(readOnly = true)
@@ -75,7 +74,7 @@ public class ScheduleCommandService {
         Slice<Schedule> schedules = scheduleRepository.findAllByMemberAndDateRange(memberId, cursorDate, cursorId,
                 maxSearchDate, pageable);
 
-        return schedules.map(scheduleConverter::toScheduleResDto);
+        return schedules.map(ScheduleConverter::toScheduleResDto);
     }
 
     // 일정 삭제
@@ -103,7 +102,7 @@ public class ScheduleCommandService {
             validateTimeRange(request.getStartTime(), request.getEndTime());
         }
         applyScheduleUpdate(schedule, request);
-        return scheduleConverter.toScheduleResDto(schedule);
+        return ScheduleConverter.toScheduleResDto(schedule);
 
     }
 
