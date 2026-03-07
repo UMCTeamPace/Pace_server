@@ -32,7 +32,7 @@ public class ScheduleConverter {
 
     public static RouteDetail toRouteDetail(ScheduleReqDto.RouteDetailReqDto dto) {
         if (dto == null) return null;
-        return RouteDetail.builder()
+        RouteDetail routeDetail = RouteDetail.builder()
                 .sequence(dto.getSequence())
                 .startLat(dto.getStartLat())
                 .startLng(dto.getStartLng())
@@ -42,8 +42,12 @@ public class ScheduleConverter {
                 .distance(dto.getDistance())
                 .description(dto.getDescription())
                 .points(dto.getPoints())
-                .transitDetail(toTransitDetail(dto.getTransitDetail())) // 중첩 객체 변환
                 .build();
+        if (dto.getTransitDetail() != null) {
+            routeDetail.addTransitDetail(toTransitDetail(dto.getTransitDetail()));
+        }
+
+        return routeDetail;
 
     }
 
@@ -65,7 +69,7 @@ public class ScheduleConverter {
 
     public static RouteDetail toRouteDetail(ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto) {
         if (dto == null) return null;
-        return RouteDetail.builder()
+        RouteDetail routeDetail = RouteDetail.builder()
                 .sequence(dto.getSequence())
                 .startLat(dto.getStartLat())
                 .startLng(dto.getStartLng())
@@ -75,8 +79,13 @@ public class ScheduleConverter {
                 .distance(dto.getDistance())
                 .description(dto.getDescription())
                 .points(dto.getPoints())
-                .transitDetail(toTransitDetail(dto.getTransitDetail()))
                 .build();
+
+        if (dto.getTransitDetail() != null) {
+            routeDetail.addTransitDetail(toTransitDetail(dto.getTransitDetail()));
+        }
+
+        return routeDetail;
     }
 
     // Entity -> Response DTO

@@ -8,6 +8,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -54,7 +55,8 @@ public class TransitDetail extends BaseEntity {
     @Column(name = "station_name")
     private List<String> stationPath;
 
-    @OneToOne(mappedBy = "transitDetail")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_detail_id", unique = true)
     private RouteDetail routeDetail;
 
 }

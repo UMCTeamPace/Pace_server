@@ -56,11 +56,15 @@ public class RouteDetail extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String points;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "transit_detail_id")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "routeDetail")
     private TransitDetail transitDetail;
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public void addTransitDetail(TransitDetail transitDetail) {
+        this.transitDetail = transitDetail;
+        transitDetail.setRouteDetail(this);
     }
 }
