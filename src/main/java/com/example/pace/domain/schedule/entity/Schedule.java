@@ -1,9 +1,6 @@
 package com.example.pace.domain.schedule.entity;
 
 import com.example.pace.domain.member.entity.Member;
-import com.example.pace.domain.schedule.converter.PlaceReqDtoConverter;
-import com.example.pace.domain.schedule.converter.ReminderReqDtoConverter;
-import com.example.pace.domain.schedule.dto.request.ScheduleUpdateReqDto;
 import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,7 +14,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,8 +34,6 @@ import org.hibernate.annotations.BatchSize;
         indexes = {
                 // 커서 페이징 최적화 인덱스 칼럼 지정
                 @Index(name = "idx_schedule_member_date_id", columnList = "member_id, start_date, id"),
-                // 반복 일정 조회를 위한 인덱스 칼럼 지정
-                @Index(name = "idx_schedule_repeat_group", columnList = "repeat_group_id")
         }
 )
 public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
@@ -54,8 +48,6 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Column(nullable = false)
     private String title;
-    @Column(name = "is_all_day", nullable = false)
-    private Boolean isAllDay;
     @Column(name = "start_date")
     private LocalDate startDate;
     @Column(name = "end_date")
@@ -66,21 +58,12 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
     private LocalTime endTime;
     private String calendarId;
     private String color;
-    @Column(name = "is_repeat")
-    private Boolean isRepeat;
-    @Column(name = "repeat_group_id")
-    private String repeatGroupId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repeat_rule_id")
-    private RepeatRule repeatRule;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
     @Column(name = "is_path_included", nullable = false)
     private Boolean isPathIncluded; // 경로 포함 여부
-
 
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Route route;
@@ -103,57 +86,6 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
         place.setSchedule(this);
     }
 
-    public void updateGeneralInfo(ScheduleUpdateReqDto dto) {
-        if (dto.getTitle() != null) {
-            this.title = dto.getTitle();
-        }
-        if (dto.getMemo() != null) {
-            this.memo = dto.getMemo();
-        }
-        if (dto.getStartDate() != null) {
-            this.startDate = dto.getStartDate();
-        }
-        if (dto.getEndDate() != null) {
-            this.endDate = dto.getEndDate();
-        }
-        if (dto.getStartTime() != null) {
-            this.startTime = dto.getStartTime();
-        }
-        if (dto.getEndTime() != null) {
-            this.endTime = dto.getEndTime();
-        }
-        if (dto.getCalendarId() != null) {
-            this.calendarId = dto.getCalendarId();
-        }
-        if (dto.getColor() != null) {
-            this.color = dto.getColor();
-        }
-        if (dto.getIsAllDay() != null) {
-            this.isAllDay = dto.getIsAllDay();
-        }
-        if (dto.getIsPathIncluded() != null) {
-            this.isPathIncluded = dto.getIsPathIncluded();
-        }
-    }
-
-    public void updateDetailedInfo(ScheduleUpdateReqDto dto) {
-        this.updateGeneralInfo(dto);
-
-        if (dto.getPlace() != null) {
-            Place newPlace = PlaceReqDtoConverter.toPlace(dto.getPlace());
-            // 새 객체로 교체
-            this.addPlace(newPlace);
-        }
-
-        // 알림 업데이트
-        if (dto.getReminders() != null) {
-            this.reminderList.clear();
-            dto.getReminders().forEach(reminderDto ->
-                    this.addReminder(ReminderReqDtoConverter.toReminder(reminderDto))
-            );
-        }
-    }
-
     //schedule에 route 붙이기
     public void addRoute(Route route) {
         this.route = route;
@@ -166,16 +98,4 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
             this.route = null;
         }
     }
-
-    public void updateScheduleRoute(boolean isPathIncluded) {
-        this.isPathIncluded = isPathIncluded;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        if (isPathIncluded == null) {
-            isPathIncluded = false;
-        }
-    }
-
 }

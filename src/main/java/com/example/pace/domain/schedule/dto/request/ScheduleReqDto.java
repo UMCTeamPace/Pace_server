@@ -1,8 +1,5 @@
 package com.example.pace.domain.schedule.dto.request;
 
-import com.example.pace.domain.schedule.enums.TransitType;
-import com.example.pace.domain.schedule.enums.EndType;
-import com.example.pace.domain.schedule.enums.RepeatType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -20,7 +17,6 @@ import java.util.List;
 public class ScheduleReqDto {
 
     private String title;
-    private Boolean isAllDay;
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalTime startTime;
@@ -29,25 +25,10 @@ public class ScheduleReqDto {
     private String color;
     private String memo;
     private Boolean isPathIncluded;
-    private Boolean isRepeat;
-    private RepeatDto repeatInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;
     private RouteReqDto route;
 
-
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class RepeatDto {
-        private RepeatType repeatType;
-        private Integer repeatInterval;
-        private String daysOfWeek;
-        private EndType endType;
-        private Integer endCount;
-        private LocalDate repeatEndDate;
-    }
 
     @Getter
     @Setter
@@ -97,24 +78,7 @@ public class ScheduleReqDto {
         private Integer distance;
         private String description;
         private String points;
-        private TransitDetailReqDto transitDetail;
+        private TransitDetailDto transitDetail;
     }
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    public static class TransitDetailReqDto {
-        private TransitType transitType;
-        private String lineName;
-        private String lineColor;
-        private Integer stopCount;
-        private String departureStop;
-        private String arrivalStop;
-        private LocalDateTime departureTime;
-        private LocalDateTime arrivalTime;
-        private String shortName;
-        private Double locationLat;
-        private Double locationLng;
-        private String headsign;
-        private List<String> stationPath;
-    }
+
 }

@@ -1,6 +1,6 @@
 package com.example.pace.domain.schedule.service.command;
 
-import com.example.pace.domain.schedule.converter.ScheduleRouteUpdateReqDtoConverter;
+import com.example.pace.domain.schedule.converter.ScheduleConverter;
 import com.example.pace.domain.schedule.dto.request.ScheduleRouteUpdateReqDto;
 import com.example.pace.domain.schedule.dto.response.ScheduleRouteUpdateResDto;
 import com.example.pace.domain.schedule.entity.Route;
@@ -24,7 +24,7 @@ public class ScheduleRouteUpdateCommandService {
     @Transactional
     public ScheduleRouteUpdateResDto updateScheduleRoute(Long memberId, Long scheduleId,
                                                          ScheduleRouteUpdateReqDto req) {
-        Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
+        Schedule schedule = scheduleRepository.findByIdAndMemberId(Math.abs(scheduleId), memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
 
         // 0) 기존 route 제거
@@ -36,13 +36,13 @@ public class ScheduleRouteUpdateCommandService {
         }
 
         // 1) Route 변환
-        Route newRoute = ScheduleRouteUpdateReqDtoConverter.toRoute(req);
+        Route newRoute = ScheduleConverter.toRoute(req);
 
         // 2) RouteDetail 변환/연결
         if (req.getRouteDetails() != null) {
             for (ScheduleRouteUpdateReqDto.RouteDetailUpdateReqDto dto : req.getRouteDetails()) {
                 RouteDetail detail =
-                        ScheduleRouteUpdateReqDtoConverter.toRouteDetail(dto);
+                        ScheduleConverter.toRouteDetail(dto);
                 newRoute.addRouteDetail(detail);
             }
         }

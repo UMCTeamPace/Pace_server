@@ -40,27 +40,7 @@ public class ScheduleRouteUpdateReqDto {
         private Double startLng;
         private Double endLat;
         private Double endLng;
-        private TransitDetailUpdateReqDto transitDetail;
+        private TransitDetailDto transitDetail;
     }
 
-    @Getter
-    @Setter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class TransitDetailUpdateReqDto {
-        private TransitType transitType;
-        private String lineName;
-        private String lineColor;
-        private Integer stopCount;
-        private String departureStop;
-        private String arrivalStop;
-        private LocalDateTime departureTime;
-        private LocalDateTime arrivalTime;
-        private String shortName;
-        private Double locationLat;
-        private Double locationLng;
-        private String headsign;
-        private List<String> stationPath;
-    }
 }
