@@ -19,6 +19,8 @@ public class ScheduleUpdateReqDto {
     private LocalDate endDate;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String calendarId;
+    private String color;
     private Boolean isPathIncluded;
     private RepeatDto repeatInfo;
     private PlaceDto place;

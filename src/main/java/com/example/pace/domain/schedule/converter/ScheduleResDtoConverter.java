@@ -41,6 +41,8 @@ public class ScheduleResDtoConverter {
                 .endDate(schedule.getEndDate())
                 .startTime(schedule.getStartTime())
                 .endTime(schedule.getEndTime())
+                .calendarId(schedule.getCalendarId())
+                .color(schedule.getColor())
                 .memo(schedule.getMemo())
                 .build();
     }
