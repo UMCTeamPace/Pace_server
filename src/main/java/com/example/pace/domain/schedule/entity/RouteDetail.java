@@ -2,6 +2,7 @@ package com.example.pace.domain.schedule.entity;
 
 
 import com.example.pace.global.entity.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -43,10 +45,26 @@ public class RouteDetail extends BaseEntity {
     @Column(name = "sequence")
     private Integer sequence; //경로 내 순서
 
-    @Column(name = "data", columnDefinition = "TEXT")
-    private String data;
+    private Double startLat;
+    private Double startLng;
+    private Double endLat;
+    private Double endLng;
+    private Integer duration;
+    private Integer distance;
+    private String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String points;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "routeDetail")
+    private TransitDetail transitDetail;
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public void addTransitDetail(TransitDetail transitDetail) {
+        this.transitDetail = transitDetail;
+        transitDetail.setRouteDetail(this);
     }
 }

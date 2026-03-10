@@ -59,7 +59,13 @@ public class OnboardingCommandService {
         // alarms 정규화:  항상 SCHEDULE/DEPARTURE 둘 다 포함시키기 (없으면 빈 리스트로)
         Map<AlarmType, List<Integer>> alarmMap = toValidatedAlarmMap(request.alarms());
 
-        Long calendarId = parseCalendarId(request.calendarId());
+        Long calendarId;
+        try {
+            calendarId = Long.parseLong(request.calendarId());
+        } catch (NumberFormatException e) {
+            throw new OnboardingException(OnboardingErrorCode.INVALID_CALENDAR_ID);
+        }
+
 
         // setting 기본 값 업데이트 (온보딩에서 받는 값)
         setting.update(
@@ -145,13 +151,4 @@ public class OnboardingCommandService {
             }
         }
     }
-
-    private Long parseCalendarId(String raw) {
-        try {
-            return Long.parseLong(raw);
-        } catch (Exception e) {
-            throw new OnboardingException(OnboardingErrorCode.INVALID_CALENDAR_ID);
-        }
-    }
-
 }

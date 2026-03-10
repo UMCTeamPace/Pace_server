@@ -21,13 +21,6 @@ public class ScheduleRouteDeleteCommandService {
     @Transactional
     public ScheduleRouteDeleteResDto deleteScheduleRoute(Long scheduleId, Long memberId) {
 
-        System.out.println("scheduleId = " + scheduleId);
-        System.out.println("memberId = " + memberId);
-        System.out.println("path scheduleId = " + scheduleId);
-        System.out.println("token memberId = " + memberId);
-        System.out.println("findById = " + scheduleRepository.findById(scheduleId));
-        System.out.println("findByIdAndMemberId = " + scheduleRepository.findByIdAndMemberId(scheduleId, memberId));
-
         // 내 일정인지(scheduleId + memberId)로 조회
         Schedule schedule = scheduleRepository.findByIdAndMemberId(scheduleId, memberId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
