@@ -97,5 +97,6 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
             this.route.setSchedule(null);
             this.route = null;
         }
+        this.isPathIncluded = false;
     }
 }

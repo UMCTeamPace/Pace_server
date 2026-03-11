@@ -35,9 +35,6 @@ public class ScheduleRouteDeleteCommandService {
         //일반 일정으로 진행
         schedule.setIsPathIncluded(false);
 
-        // 실제 Route 삭제 (RouteDetail은 cascade+orphanRemoval로 같이 삭제되는 구조가 일반적)
-        routeRepository.delete(route);
-
         // 응답용 (updatedAt은 auditing으로 갱신되거나, 필요시 scheduleRepository.save(schedule) 해도 됨)
         return ScheduleRouteDeleteResDto.of(schedule.getId(), schedule.getUpdatedAt());
 
