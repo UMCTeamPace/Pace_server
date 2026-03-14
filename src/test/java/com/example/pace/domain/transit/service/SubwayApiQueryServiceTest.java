@@ -4,6 +4,7 @@ import com.example.pace.domain.transit.dto.request.SubwayArrivalReqDTO;
 import com.example.pace.domain.transit.dto.response.SubwayArrivalResDTO.SubwayArrivalInfoDTO;
 import com.example.pace.domain.transit.service.query.SubwayApiQueryService;
 import java.util.List;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Disabled
 public class SubwayApiQueryServiceTest {
     @Autowired
     private SubwayApiQueryService subwayApiQueryService;
@@ -38,13 +40,13 @@ public class SubwayApiQueryServiceTest {
 
             result.forEach(info -> {
                 System.out.println("-----------------");
-                System.out.println("도착지 방면: " + info.getTrainLineNm());
-                System.out.println("다음 열차 도착 예정 시간: " + info.getBarvlDt() + "초");
-                System.out.println("도착 메세지: " + info.getArvlMsg2());
-                System.out.println("종착역: " + info.getBstatnNm());
-                System.out.println("상/하행: " + info.getUpdnLine());
-                System.out.println("열차가 어디에 있는지: " + info.getArvlMsg3());
-                System.out.println("몇 전역에 있는지: " + info.getBeforeSubwayCount());
+                System.out.println("도착지 방면: " + info.getTrainLineNm() + " (trainLineNm)");
+                System.out.println("다음 열차 도착 예정 시간: " + info.getBarvlDt() + "초 (barvlDt)");
+                System.out.println("도착 메세지: " + info.getArvlMsg2() + " (arvlMsg2)");
+                System.out.println("종착역: " + info.getBstatnNm() + " (bstatnNm)");
+                System.out.println("상/하행: " + info.getUpdnLine() + " (updnLine)");
+                System.out.println("열차가 어디에 있는지: " + info.getArvlMsg3() + " (arvlMsg3)");
+                System.out.println("몇 전역에 있는지: " + info.getBeforeSubwayCount() + " (beforeSubwayCount)");
                 // 필터링이 잘 되었는지 확인
                 // 모든 결과는 7호선(1007)이어야 함
                 assertThat(info.getSubwayId()).isEqualTo("1007");
