@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 // 개발자 전용 인증 토큰 발급기(?)
-@Disabled
+// @Disabled
 @SpringBootTest
 public class JwtTokenGeneratorTest {
     @Autowired

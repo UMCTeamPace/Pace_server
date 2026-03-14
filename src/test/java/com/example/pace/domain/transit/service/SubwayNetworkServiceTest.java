@@ -2,7 +2,7 @@ package com.example.pace.domain.transit.service;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import com.example.pace.domain.transit.dto.SubwayStationDTO;
+import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -23,12 +23,12 @@ public class SubwayNetworkServiceTest {
         String start = "강남";
         String end = "삼성";
 
-        List<SubwayStationDTO> path = subwayNetworkService.getStationsBetween(line, start, end);
+        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(line, start, end);
 
         assertThat(path).isNotEmpty();
 
         List<String> stationNames = path.stream()
-                .map(SubwayStationDTO::getStationName)
+                .map(SubwayStationResDTO::getStationName)
                 .toList();
 
         System.out.println("탐색된 경로: " + stationNames);
@@ -43,10 +43,10 @@ public class SubwayNetworkServiceTest {
         String start = "성수";
         String end = "용두";
 
-        List<SubwayStationDTO> path = subwayNetworkService.getStationsBetween(line, start, end);
+        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(line, start, end);
 
         List<String> stationNames = path.stream()
-                .map(SubwayStationDTO::getStationName)
+                .map(SubwayStationResDTO::getStationName)
                 .toList();
 
         System.out.println("2호선 외선 순환 경로: " + stationNames);

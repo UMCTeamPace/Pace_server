@@ -1,6 +1,6 @@
 package com.example.pace.domain.transit.service;
 
-import com.example.pace.domain.transit.dto.SubwayStationDTO;
+import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import com.example.pace.domain.transit.loader.SubwayDataLoader;
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class SubwayNetworkService {
     private final SubwayDataLoader subwayDataLoader;
 
-    public List<SubwayStationDTO> getStationsBetween(String lineName, String startName, String endName) {
+    public List<SubwayStationResDTO> getStationsBetween(String lineName, String startName, String endName) {
         String startKey = makeKey(lineName, startName);
         String endKey = makeKey(lineName, endName);
 
@@ -48,7 +48,7 @@ public class SubwayNetworkService {
                 return reconstructPath(cameFrom, endKey);
             }
 
-            SubwayStationDTO currentStation = getStationByKey(currentKey);
+            SubwayStationResDTO currentStation = getStationByKey(currentKey);
 
             if (currentStation == null) {
                 continue;
@@ -70,7 +70,7 @@ public class SubwayNetworkService {
         return Collections.emptyList();
     }
 
-    private List<String> getSameLineNeighbors(SubwayStationDTO station) {
+    private List<String> getSameLineNeighbors(SubwayStationResDTO station) {
         List<String> neighborList = new LinkedList<>();
         String line = station.getLineName();
 
@@ -89,8 +89,8 @@ public class SubwayNetworkService {
         return neighborList;
     }
 
-    private List<SubwayStationDTO> reconstructPath(Map<String, String> cameFrom, String endKey) {
-        LinkedList<SubwayStationDTO> path = new LinkedList<>();
+    private List<SubwayStationResDTO> reconstructPath(Map<String, String> cameFrom, String endKey) {
+        LinkedList<SubwayStationResDTO> path = new LinkedList<>();
         String currentKey = endKey;
 
         while (currentKey != null) {
@@ -101,12 +101,28 @@ public class SubwayNetworkService {
         return path;
     }
 
-    private SubwayStationDTO getStationByKey(String key) {
+    private SubwayStationResDTO getStationByKey(String key) {
         String[] parts = key.split("_");
         return subwayDataLoader.getStation(parts[0], parts[1]);
     }
 
     private String makeKey(String lineName, String stationName) {
         return lineName + "_" + stationName;
+    }
+
+    // 두 역 사이의 정거장 수 계산
+    public int getStationCountBetween(String lineName, String startName, String endName) {
+        // 출발지 역과 목적지 역이 같을 경우
+        if (startName.equals(endName)) {
+            return 0;
+        }
+
+        List<SubwayStationResDTO> stations = getStationsBetween(lineName, startName, endName);
+
+        if (stations.isEmpty()) {
+            return -1;
+        }
+
+        return stations.size() - 1;
     }
 }

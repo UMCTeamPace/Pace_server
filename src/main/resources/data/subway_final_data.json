@@ -29158,7 +29158,7 @@
     "stationCode": "2729",
     "externalCode": "727",
     "nextStations": [
-      "자양"
+      "뚝섬유원지"
     ],
     "prevStations": [
       "어린이대공원"
@@ -29245,7 +29245,7 @@
     }
   },
   {
-    "stationName": "자양",
+    "stationName": "뚝섬유원지",
     "lineName": "7호선",
     "stationCode": "2730",
     "externalCode": "728",
@@ -29345,7 +29345,7 @@
       "강남구청"
     ],
     "prevStations": [
-      "자양"
+      "뚝섬유원지"
     ],
     "timeTable": {
       "weekday": {

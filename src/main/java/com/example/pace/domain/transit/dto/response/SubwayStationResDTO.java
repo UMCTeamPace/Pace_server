@@ -1,4 +1,4 @@
-package com.example.pace.domain.transit.dto;
+package com.example.pace.domain.transit.dto.response;
 
 import java.util.List;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class SubwayStationDTO {
+public class SubwayStationResDTO {
     private String stationName; // 역 이름
     private String lineName; // 호선 이름
     private String stationCode; // 역 코드

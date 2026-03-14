@@ -12,7 +12,7 @@ import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfo
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.infrastructure.GoogleDirectionApiClient;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-import com.example.pace.domain.transit.dto.SubwayStationDTO;
+import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.service.BusNetworkService;
 import com.example.pace.domain.transit.service.SubwayNetworkService;
@@ -127,7 +127,7 @@ public class RouteCommandService {
                 if (transit.getTransitType() == TransitType.SUBWAY) {
                     List<String> stationPath = subwayNetworkService.getStationsBetween(lineName, start, end)
                             .stream()
-                            .map(SubwayStationDTO::getStationName)
+                            .map(SubwayStationResDTO::getStationName)
                             .toList();
 
                     transit.setStationPath(stationPath);
