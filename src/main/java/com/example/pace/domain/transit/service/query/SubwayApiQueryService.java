@@ -26,11 +26,11 @@ public class SubwayApiQueryService {
     private final SubwayNetworkService subwayNetworkService;
 
     public List<SubwayArrivalResDTO.SubwayArrivalInfoDTO> getLiveSubwayStation(
-            SubwayArrivalReqDTO.SubwayArrivalDTO subwayArrivalReqDTO
+            SubwayArrivalReqDTO.SubwayArrivalDTO request
     ) {
-        String startStationName = subwayArrivalReqDTO.getStartStationName();
-        String endStationName = subwayArrivalReqDTO.getEndStationName();
-        String lineName = subwayArrivalReqDTO.getLineName();
+        String startStationName = request.getStartStationName();
+        String endStationName = request.getEndStationName();
+        String lineName = request.getLineName();
 
         String url = UriComponentsBuilder.fromUriString(subwayProperties.getApiUrl())
                 .pathSegment(subwayProperties.getKey(), "json", "realtimeStationArrival",

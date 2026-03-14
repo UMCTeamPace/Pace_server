@@ -112,6 +112,11 @@ public class SubwayNetworkService {
 
     // 두 역 사이의 정거장 수 계산
     public int getStationCountBetween(String lineName, String startName, String endName) {
+        // npe 방지
+        if (startName == null || endName == null) {
+            return -1;
+        }
+
         // 출발지 역과 목적지 역이 같을 경우
         if (startName.equals(endName)) {
             return 0;
