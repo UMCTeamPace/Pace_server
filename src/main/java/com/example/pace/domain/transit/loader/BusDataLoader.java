@@ -72,6 +72,7 @@ public class BusDataLoader implements CommandLineRunner {
                     String routeId = getCellValue(row.getCell(0));
                     String lineName = getCellValue(row.getCell(1));
                     Integer sequence = (int) Double.parseDouble(getCellValue(row.getCell(2))); // 엑셀 숫자는 기본적으로 Double형
+                    String nodeId = getCellValue(row.getCell(3));
                     String arsId = getCellValue(row.getCell(4));
                     String stationName = getCellValue(row.getCell(5));
                     BigDecimal stationLng = new BigDecimal(getCellValue(row.getCell(6))); // x좌표(경도)
@@ -81,6 +82,7 @@ public class BusDataLoader implements CommandLineRunner {
                             .busRouteId(routeId)
                             .lineName(lineName)
                             .sequence(sequence)
+                            .nodeId(nodeId)
                             .arsId(arsId)
                             .stationName(stationName)
                             .stationLng(stationLng)

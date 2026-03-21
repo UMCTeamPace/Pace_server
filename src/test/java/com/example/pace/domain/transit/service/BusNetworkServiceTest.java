@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
+// @Disabled
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) // H2로 교체하지 않고 실제 DB 사용
 class BusNetworkServiceTest {
@@ -43,7 +43,7 @@ class BusNetworkServiceTest {
         List<BusInfo> result = busNetworkService.getStationsBetween(lineName, start, end);
 
         assertThat(result).isNotEmpty();
-
+        assertThat(result.getFirst().getNodeId()).isEqualTo("107000163");
         List<String> names = result.stream().map(BusInfo::getStationName).toList();
 
         System.out.println("조회된 경로: " + names);

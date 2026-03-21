@@ -34,6 +34,9 @@ public class BusInfo {
     @Column(name = "bus_route_id", nullable = false)
     private String busRouteId; // 노선 ID
 
+    @Column(name = "node_id", nullable = false)
+    private String nodeId;
+
     @Column(name = "line_name", nullable = false)
     private String lineName; // 노선 명 (버스 번호, 예: 150, 143)
 
