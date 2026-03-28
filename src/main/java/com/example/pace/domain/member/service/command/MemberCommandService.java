@@ -1,6 +1,7 @@
 package com.example.pace.domain.member.service.command;
 
 import com.example.pace.domain.member.dto.response.KakaoUserInfoResDTO;
+import com.example.pace.domain.member.dto.response.KakaoUserInfoResDTO.KakaoAccount;
 import com.example.pace.domain.member.entity.Member;
 import com.example.pace.domain.member.enums.Role;
 import com.example.pace.domain.member.enums.SocialProvider;
@@ -44,7 +45,18 @@ public class MemberCommandService {
 
     @Transactional
     public Member getOrSaveMember(KakaoUserInfoResDTO kakaoUserInfoResDTO) {
+        KakaoUserInfoResDTO.KakaoAccount account = kakaoUserInfoResDTO.getKakaoAccount();
+
+        if (kakaoUserInfoResDTO.getId() == null || account == null) {
+            throw new MemberException(MemberErrorCode.MEMBER_NOT_FOUND);
+        }
+
         String socialId = kakaoUserInfoResDTO.getId().toString();
+
+        String email = account.getEmail() != null ? account.getEmail() : "no-email@kakao.com";
+        String nickname = (account.getProfile() != null && account.getProfile().getNickname() != null)
+                ? account.getProfile().getNickname()
+                : "익명사용자";
 
         return memberRepository.findBySocialProviderAndSocialIdIgnoreStatus(
                 SocialProvider.KAKAO.name(),

@@ -39,7 +39,7 @@ jwt:
   temp-token:
     expiration-time: 600000 # 10분
   dev-token:
-    expiration-time: 1209600000
+    expiration-time: 12096000000
   issuer: pace-server
 
 kakao:
