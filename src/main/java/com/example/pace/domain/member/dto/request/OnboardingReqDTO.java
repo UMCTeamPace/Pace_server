@@ -11,19 +11,19 @@ import java.util.List;
 @Schema(
         description = "온보딩 저장 요청",
         example = """
-        {
-          "isReminderActive": true,
-          "earlyArrivalTime": 60,
-          "calendarType": "GOOGLE",
-          "alarms": [
-            { "type": "SCHEDULE", "minutes": [] },
-            { "type": "DEPARTURE", "minutes": [] }
-          ]
-        }
-        """
+                {
+                  "isReminderActive": true,
+                  "earlyArrivalTime": 60,
+                  "calendarId": "GOOGLE",
+                  "alarms": [
+                    { "type": "SCHEDULE", "minutes": [] },
+                    { "type": "DEPARTURE", "minutes": [] }
+                  ]
+                }
+                """
 )
 
-public record OnboardingReqDTO (
+public record OnboardingReqDTO(
         @NotNull Boolean isReminderActive,
 
         @Min(0) @Max(60) Integer earlyArrivalTime,   // 정책에 맞게 1시간으로 상한 조절
@@ -31,9 +31,10 @@ public record OnboardingReqDTO (
         @NotNull String calendarId,
 
         @Valid List<AlarmConfig> alarms
-){
+) {
     public record AlarmConfig(
             @NotNull AlarmType type,
             List<@NotNull @Min(0) @Max(1440) Integer> minutes    // 실제 유효성은 service에서 alarmtype별 whitelist로 검증
-    ) {}
+    ) {
+    }
 }

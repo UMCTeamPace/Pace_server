@@ -5,7 +5,10 @@ import com.example.pace.global.apiPayload.code.BaseErrorCode;
 import com.example.pace.global.apiPayload.code.GeneralErrorCode;
 import com.example.pace.global.apiPayload.exception.GeneralException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -27,6 +30,25 @@ public class GeneralExceptionAdvice {
                 .status(e.getCode().getHttpStatus())
                 .body(ApiResponse.onFailure(
                         e.getCode()
+                ));
+    }
+
+    // @Valid에서 검증 오류가 발생한 예외에 대한 핸들러
+    @ExceptionHandler(BindException.class)
+    public ResponseEntity<ApiResponse<String>> handleValidationException(BindException e) {
+        FieldError fieldError = e.getBindingResult().getFieldError();
+
+        String message = (fieldError != null) ? fieldError.getDefaultMessage() : "검증 오류가 발생했습니다.";
+        String fieldName = (fieldError != null) ? fieldError.getField() : "알 수 없는 필드";
+
+        log.warn("Validation error on field '{}': {}", fieldName, message);
+
+        // 400 Bad Request 로 응답
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.onFailure(
+                        GeneralErrorCode.BAD_REQUEST,
+                        String.format("[%s] %s", fieldName, message)
                 ));
     }
 

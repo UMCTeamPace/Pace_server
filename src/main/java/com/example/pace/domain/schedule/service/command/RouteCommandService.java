@@ -16,6 +16,7 @@ import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.service.BusNetworkService;
 import com.example.pace.domain.transit.service.SubwayNetworkService;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -115,12 +116,17 @@ public class RouteCommandService {
 
                 // BUS 처리
                 if (transit.getTransitType() == TransitType.BUS) {
-                    List<String> stationPath = busNetworkService.getStationsBetween(lineName, start, end)
-                            .stream()
-                            .map(BusInfo::getStationName)
-                            .toList();
+                    try {
+                        List<String> stationPath = busNetworkService.getStationsBetween(lineName, start, end)
+                                .stream()
+                                .map(BusInfo::getStationName)
+                                .toList();
 
-                    transit.setStationPath(stationPath);
+                        transit.setStationPath(stationPath);
+                    } catch (Exception e) {
+                        log.warn("버스 상세 경로를 찾을 수 없습니다: {} ({} -> {})", lineName, start, end);
+                        transit.setStationPath(Collections.emptyList());
+                    }
                 }
 
                 // SUBWAY 처리
