@@ -5,7 +5,9 @@ import com.example.pace.domain.transit.dto.request.SubwayArrivalReqDTO;
 import com.example.pace.domain.transit.dto.response.SubwayArrivalResDTO;
 import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import com.example.pace.domain.transit.exception.SubwayApiException;
+import com.example.pace.domain.transit.exception.TransitException;
 import com.example.pace.domain.transit.exception.code.SubwayApiErrorCode;
+import com.example.pace.domain.transit.exception.code.TransitErrorCode;
 import com.example.pace.domain.transit.service.SubwayNetworkService;
 import com.example.pace.global.config.SubwayProperties;
 import java.util.List;
@@ -32,6 +34,15 @@ public class SubwayApiQueryService {
         String endStationName = request.getEndStationName();
         String lineName = request.getLineName();
 
+        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(lineName, startStationName,
+                endStationName);
+
+        if (path == null || path.isEmpty()) {
+            throw new TransitException(TransitErrorCode.TRANSIT_BUS_NOT_FOUND);
+        }
+
+        String nextStationName = (path.size() > 1) ? path.get(1).getStationName() : "종점";
+
         String url = UriComponentsBuilder.fromUriString(subwayProperties.getApiUrl())
                 .pathSegment(subwayProperties.getKey(), "json", "realtimeStationArrival",
                         "0", "10", startStationName)
@@ -57,9 +68,11 @@ public class SubwayApiQueryService {
 
         return response.getRealtimeArrivalList().stream()
                 .filter(arrival -> isSameLine(arrival.getSubwayId(), lineName))
-                .filter(arrival -> isInboundDirection(arrival, startStationName, endStationName, lineName))
+                .filter(arrival -> isInboundDirection(arrival, path, lineName))
                 .filter(arrival -> isReachDestination(arrival, startStationName, endStationName, lineName))
                 .peek(arrival -> {
+                    arrival.setNextStationName(nextStationName);
+
                     int count = subwayNetworkService.getStationCountBetween(
                             lineName,
                             arrival.getArvlMsg3(),
@@ -74,13 +87,9 @@ public class SubwayApiQueryService {
     // 상행인지, 하행인지 판별(상행이라고 했을 때 true면 상행, false면 하행)
     private boolean isInboundDirection(
             SubwayArrivalResDTO.SubwayArrivalInfoDTO arrival,
-            String start,
-            String end,
+            List<SubwayStationResDTO> path,
             String lineName
     ) {
-        // 출발지부터 목적지까지의 경로
-        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(lineName, start, end);
-
         // 출발지 역이 목적지 역인 경우 그냥 모든 열차를 보여줌
         // 추후 상의를 통하여 어케할지 정하기
         if (path.size() == 1) {
