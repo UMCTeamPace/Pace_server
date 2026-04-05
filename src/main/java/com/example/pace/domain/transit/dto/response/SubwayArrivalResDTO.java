@@ -35,6 +35,8 @@ public class SubwayArrivalResDTO {
         private String bstatnNm;
         // 상/하행 구분
         private String updnLine;
+        // 다음역 이름
+        private String nextStationName;
         // 몇 정거장 전인지
         private Integer beforeSubwayCount;
     }
