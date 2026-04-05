@@ -41,7 +41,7 @@ public class SubwayApiQueryService {
             throw new TransitException(TransitErrorCode.TRANSIT_BUS_NOT_FOUND);
         }
 
-        String nextStationName = path.get(1).getStationName();
+        String nextStationName = (path.size() > 1) ? path.get(1).getStationName() : "종점";
 
         String url = UriComponentsBuilder.fromUriString(subwayProperties.getApiUrl())
                 .pathSegment(subwayProperties.getKey(), "json", "realtimeStationArrival",
