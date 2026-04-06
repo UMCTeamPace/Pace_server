@@ -45,4 +45,6 @@ public class TransitRouteDetailInfoResDTO {
 
     private String upNext; // 상행 다음 정류장
     private String downNext; // 하행 다음정류장
+
 }
+

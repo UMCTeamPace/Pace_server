@@ -6,8 +6,6 @@ import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-
-import com.example.pace.domain.transit.dto.response.SubwayStationResDTO;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -205,8 +203,6 @@ public class RouteResDTOConverter {
             GoogleDirectionApiResponse.TransitDetails transit, String polyline) {
 
         GoogleDirectionApiResponse.EncodedLine line = transit.getEncodedLine();
-        SubwayStationResDTO.TrainInfoDTO trainInfoDTO = new SubwayStationResDTO.TrainInfoDTO();
-        SubwayStationResDTO subwayStationResDTO = new SubwayStationResDTO();
         String vehicleType = (line != null && line.getVehicle() != null) ? line.getVehicle().getType() : null;
 
         Double lat = null;
@@ -232,20 +228,6 @@ public class RouteResDTOConverter {
                 .locationLng(lng != null ? BigDecimal.valueOf(lng) : null)
                 .shortName(line != null ? line.getName() : null)
                 .headsign(transit.getHeadsign())
-                .downNext(
-                        trainInfoDTO.getDirection().equals("하행") &&
-                                subwayStationResDTO.getPrevStations() != null &&
-                                !subwayStationResDTO.getPrevStations().isEmpty()
-                                ? subwayStationResDTO.getPrevStations().get(0)
-                                : null)
-                //하행일때 이전역의 0번째 리스트
-                .upNext(
-                        trainInfoDTO.getDirection().equals("상행") &&
-                                subwayStationResDTO.getNextStations() != null &&
-                                !subwayStationResDTO.getNextStations().isEmpty()
-                                ? subwayStationResDTO.getNextStations().get(0)
-                                : null)
-                //상행일때 다음역의 0번째 리스트
                 .build();
     }
 
