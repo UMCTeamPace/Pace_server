@@ -36,4 +36,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     @Query("select s from Schedule s join fetch s.member where s.id in :ids")
     List<Schedule> findAllWithMemberByIdIn(@Param("ids") List<Long> ids, @Param("memberId") Long memberId);
+
+    void deleteAllByEndDateBefore(LocalDate date);
 }
