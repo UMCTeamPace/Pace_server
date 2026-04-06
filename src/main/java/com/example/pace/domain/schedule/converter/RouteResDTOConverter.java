@@ -6,7 +6,6 @@ import com.example.pace.domain.schedule.dto.response.info.RouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.dto.response.info.TransitRouteDetailInfoResDTO;
 import com.example.pace.domain.schedule.enums.TransitType;
 import com.example.pace.domain.schedule.infrastructure.dto.GoogleDirectionApiResponse;
-
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDateTime;
