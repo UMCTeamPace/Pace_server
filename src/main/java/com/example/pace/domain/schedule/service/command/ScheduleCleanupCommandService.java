@@ -17,10 +17,10 @@ public class ScheduleCleanupCommandService {
 
     // 매일 새벽 4시에 삭제
     @Transactional
-    @Scheduled(cron = "0 0 4 * * *")
+    @Scheduled(cron = "0 0 4 * * *", zone = "Asia/Seoul")
     public void cleanupOldSchedules() {
         LocalDate cutoffDate = LocalDate.now().minusDays(30);
         scheduleRepository.deleteAllByEndDateBefore(cutoffDate);
-        log.info("(test) 일정 자동 삭제 완료");
+        log.info("일정 자동 삭제 완료");
     }
 }
