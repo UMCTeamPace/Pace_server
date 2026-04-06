@@ -182,8 +182,15 @@ public class RouteCommandService {
                             subwayApiQueryService.getLiveSubwayStation(req);
 
                     SubwayArrivalResDTO.SubwayArrivalInfoDTO arrival =
-                            arrivals.isEmpty() ? null : arrivals.get(0);
+                            arrivals.isEmpty() ? null : arrivals.getFirst();
                     // 이거 0번째 리스트 가져와도 아무상관이 없는지...
+
+                    if (arrival == null) {
+                        // 실시간 정보 없을 때 기본 처리
+                        transit.setUpNext("정보 없음");
+                        transit.setDownNext("정보 없음");
+                        return;
+                    }
 
                     boolean isUp = isUpAndDown(arrival, start, end, lineName);
                     SubwayStationResDTO startStation =
