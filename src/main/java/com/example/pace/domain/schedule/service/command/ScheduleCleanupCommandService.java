@@ -20,7 +20,13 @@ public class ScheduleCleanupCommandService {
     @Scheduled(cron = "0 0 4 * * *", zone = "Asia/Seoul")
     public void cleanupOldSchedules() {
         LocalDate cutoffDate = LocalDate.now().minusDays(30);
-        scheduleRepository.deleteAllByEndDateBefore(cutoffDate);
+
+        // 자식 데이터 먼저 삭제
+        scheduleRepository.deleteRemindersByScheduleEndDateBefore(cutoffDate);
+        scheduleRepository.deleteRoutesByScheduleEndDateBefore(cutoffDate);
+        scheduleRepository.deletePlacesByScheduleEndDateBefore(cutoffDate);
+        // 부모 데이터 삭제
+        scheduleRepository.deleteSchedulesByEndDateBefore(cutoffDate);
         log.info("일정 자동 삭제 완료");
     }
 }
