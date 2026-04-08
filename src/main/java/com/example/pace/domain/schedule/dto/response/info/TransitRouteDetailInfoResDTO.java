@@ -16,7 +16,6 @@ import lombok.Setter;
 
 @Builder
 @Getter
-@Setter
 @AllArgsConstructor
 public class TransitRouteDetailInfoResDTO {
 
@@ -41,9 +40,12 @@ public class TransitRouteDetailInfoResDTO {
 
 
     private String headsign;
-    private List<String> stationPath;
 
+    @Setter
+    private List<String> stationPath;
+    @Setter
     private String upNext; // 상행 다음 정류장
+    @Setter
     private String downNext; // 하행 다음정류장
 
 }
