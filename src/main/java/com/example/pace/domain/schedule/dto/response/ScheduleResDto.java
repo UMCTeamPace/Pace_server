@@ -1,8 +1,11 @@
 package com.example.pace.domain.schedule.dto.response;
 
 import com.example.pace.domain.schedule.enums.ReminderType;
+import com.example.pace.domain.schedule.enums.TransitType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -19,7 +22,7 @@ public class ScheduleResDto {
     private ScheduleInfoDto scheduleInfo;
     private PlaceDto place;
     private List<ReminderDto> reminders;
-    private RouteDto route;
+    private RouteResDto route;
 
     @Getter
     @Builder
@@ -27,11 +30,12 @@ public class ScheduleResDto {
     @NoArgsConstructor
     public static class ScheduleInfoDto {
         private String title;
-        private Boolean isAllDay;
         private LocalDate startDate;
         private LocalDate endDate;
         private LocalTime startTime;
         private LocalTime endTime;
+        private String calendarId;
+        private String color;
         private String memo;
     }
 
@@ -59,7 +63,7 @@ public class ScheduleResDto {
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class RouteDto {
+    public static class RouteResDto {
         private String originName;
         private BigDecimal originLat;
         private BigDecimal originLng;
@@ -68,16 +72,46 @@ public class ScheduleResDto {
         private BigDecimal destLng;
         private Integer totalTime;
         private Integer totalDistance;
-        private List<RouteDetailDto> routeDetails;
+        private LocalDateTime arrivalTime;
+        private LocalDateTime departureTime;
+        private List<RouteDetailResDto> routeDetails;
     }
 
     @Getter
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class RouteDetailDto {
-        private String originName;
-        private BigDecimal originLat;
-        private BigDecimal originLng;
+    @Schema(name = "ScheduleResRouteDetailDto")
+    public static class RouteDetailResDto {
+        private Integer sequence;
+        private Double startLat;
+        private Double startLng;
+        private Double endLat;
+        private Double endLng;
+        private Integer duration;
+        private Integer distance;
+        private String description;
+        private String points;
+        private TransitDetailResDto transitDetail;
+    }
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class TransitDetailResDto {
+        private TransitType transitType;
+        private String lineName;
+        private String lineColor;
+        private Integer stopCount;
+        private String departureStop;
+        private String arrivalStop;
+        private LocalDateTime departureTime;
+        private LocalDateTime arrivalTime;
+        private String shortName;
+        private Double locationLat;
+        private Double locationLng;
+        private String headsign;
+        private List<String> stationPath;
     }
 }

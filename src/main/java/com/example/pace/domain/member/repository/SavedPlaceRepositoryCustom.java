@@ -1,6 +1,7 @@
 package com.example.pace.domain.member.repository;
 
 import com.example.pace.domain.member.entity.SavedPlace;
+import com.example.pace.domain.member.enums.SavedPlaceSortType;
 import java.util.List;
 
 public interface SavedPlaceRepositoryCustom {
@@ -8,5 +9,5 @@ public interface SavedPlaceRepositoryCustom {
     boolean isPlaceSavedInGroup(Long memberId, String placeId, Long groupId);
 
     // 해당 유저의 그룹 내에 저장된 장소 목록 조회
-    List<SavedPlace> findAllPlaceByMemberAndGroupId(Long memberId, Long groupId);
+    List<SavedPlace> findAllPlaceByMemberAndGroupId(Long memberId, Long groupId, SavedPlaceSortType sortType);
 }

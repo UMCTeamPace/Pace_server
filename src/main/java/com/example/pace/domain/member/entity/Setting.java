@@ -1,31 +1,11 @@
 package com.example.pace.domain.member.entity;
 
-import com.example.pace.domain.member.enums.CalendarType;
-import com.example.pace.global.entity.BaseEntity;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.domain.member.converter.SettingConverter;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.example.pace.global.entity.BaseEntity;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(
@@ -46,7 +26,7 @@ public class Setting extends BaseEntity {
     private Long settingId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false, unique = true)
     private Member member;
 
     // 알림 권한 허용 여부
@@ -67,73 +47,53 @@ public class Setting extends BaseEntity {
     private Boolean isReminderActive;
 
     // 캘린더 선택
-    @Enumerated(EnumType.STRING)
-    @Column(name = "calendar_type", nullable = false, length = 30)
-    private CalendarType calendarType;
+    @Column(name = "calendar_id", nullable = true)
+    private Long calendarId;
 
     @OneToMany(mappedBy = "setting", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ReminderTime> reminderTimes = new ArrayList<>();
 
-
-    public static com.example.pace.domain.member.entity.Setting defaultOf(Member member) {
-        return com.example.pace.domain.member.entity.Setting.builder()
-                .member(member)
-                .isNotiEnabled(false)      // 권한 허용(또는 허용 유무)
-                .isLocEnabled(false)
-                .earlyArrivalTime(20)
-                .isReminderActive(true)
-                .calendarType(CalendarType.GOOGLE) // 프로젝트 기본값에 따라 달라짐
-                .build();
+    public void addReminderTime(ReminderTime reminderTime) {
+        reminderTime.setSetting(this);
+        this.reminderTimes.add(reminderTime);
     }
 
-    public void replaceReminderTimes(AlarmType alarmType, List<Integer> minutesList) {
+    public void removeReminderTimesByType(AlarmType alarmType) {
         this.reminderTimes.removeIf(rt -> rt.getAlarmType() == alarmType);
-
-        if (minutesList.isEmpty()) { return; }
-
-        minutesList.stream()
-                .filter(Objects::nonNull)
-                .filter(m -> m > 0)
-                .distinct()
-                .forEach(minutes ->
-                        this.reminderTimes.add(
-                                SettingConverter.toEntity(this, alarmType, minutes)
-                        )
-                );
     }
 
-    public List<Integer> getScheduleReminderTimes() {
-        return reminderTimes.stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.SCHEDULE)
-                .map(ReminderTime::getMinutes)
-                .toList();
+    //알림 교체
+    public void replaceReminderTimes(AlarmType alarmType, List<ReminderTime> newTimes) {
+        removeReminderTimesByType(alarmType);
+        newTimes.forEach(this::addReminderTime);
     }
-    // 명시적 getter Converter때문에 사용(Lombok 우회)
-    public List<Integer> getDepartureReminderTimes() {
-        return reminderTimes.stream()
-                .filter(rt -> rt.getAlarmType() == AlarmType.DEPARTURE)
-                .map(ReminderTime::getMinutes)
-                .toList();
-    }
-
 
     public void update(
             Integer earlyArrivalTime,
             Boolean isNotiEnabled,
             Boolean isLocEnabled,
             Boolean isReminderActive,
-            CalendarType calendarType
+            Long calendarId
     ) {
-        if (earlyArrivalTime != null) this.earlyArrivalTime = earlyArrivalTime;
-        if (isNotiEnabled != null) this.isNotiEnabled = isNotiEnabled;
-        if (isLocEnabled != null) this.isLocEnabled = isLocEnabled;
-        if (isReminderActive != null) this.isReminderActive = isReminderActive;
-        if (calendarType != null) this.calendarType = calendarType;
+        if (earlyArrivalTime != null) {
+            this.earlyArrivalTime = earlyArrivalTime;
+        }
+        if (isNotiEnabled != null) {
+            this.isNotiEnabled = isNotiEnabled;
+        }
+        if (isLocEnabled != null) {
+            this.isLocEnabled = isLocEnabled;
+        }
+        if (isReminderActive != null) {
+            this.isReminderActive = isReminderActive;
+        }
+        if (calendarId != null) {
+            this.calendarId = calendarId;
+        }
     }
 
-    // 명시적 getter Converter때문에 사용(Lombok 우회)
-
+    // Lombok Boolean Getter 우회
     public boolean isNotiEnabled() {
         return this.isNotiEnabled;
     }

@@ -4937,7 +4937,7 @@
   },
   {
     "stationName": "선릉",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1023",
     "externalCode": "K215",
     "nextStations": [
@@ -4963,7 +4963,7 @@
   },
   {
     "stationName": "도곡",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1025",
     "externalCode": "K217",
     "nextStations": [
@@ -4989,7 +4989,7 @@
   },
   {
     "stationName": "구룡",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1026",
     "externalCode": "K218",
     "nextStations": [
@@ -5015,7 +5015,7 @@
   },
   {
     "stationName": "개포동",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1027",
     "externalCode": "K219",
     "nextStations": [
@@ -5241,7 +5241,7 @@
   },
   {
     "stationName": "대모산입구",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1028",
     "externalCode": "K220",
     "nextStations": [
@@ -5267,7 +5267,7 @@
   },
   {
     "stationName": "왕십리",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "102C",
     "externalCode": "K210",
     "nextStations": [
@@ -5293,7 +5293,7 @@
   },
   {
     "stationName": "수서",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1030",
     "externalCode": "K221",
     "nextStations": [
@@ -5319,7 +5319,7 @@
   },
   {
     "stationName": "복정",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1031",
     "externalCode": "K222",
     "nextStations": [
@@ -12770,7 +12770,7 @@
   },
   {
     "stationName": "오이도",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1800",
     "externalCode": "K258",
     "nextStations": [
@@ -14788,7 +14788,7 @@
   },
   {
     "stationName": "한대앞",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1830",
     "externalCode": "K251",
     "nextStations": [
@@ -14814,7 +14814,7 @@
   },
   {
     "stationName": "고잔",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1832",
     "externalCode": "K253",
     "nextStations": [
@@ -14840,7 +14840,7 @@
   },
   {
     "stationName": "안산",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1834",
     "externalCode": "K255",
     "nextStations": [
@@ -14866,7 +14866,7 @@
   },
   {
     "stationName": "신길온천",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1835",
     "externalCode": "K256",
     "nextStations": [
@@ -14892,7 +14892,7 @@
   },
   {
     "stationName": "정왕",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1836",
     "externalCode": "K257",
     "nextStations": [
@@ -14918,7 +14918,7 @@
   },
   {
     "stationName": "청량리",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1845",
     "externalCode": "K209",
     "nextStations": [
@@ -14942,7 +14942,7 @@
   },
   {
     "stationName": "수원",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1846",
     "externalCode": "K245",
     "nextStations": [
@@ -14968,7 +14968,7 @@
   },
   {
     "stationName": "서울숲",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1847",
     "externalCode": "K211",
     "nextStations": [
@@ -14994,7 +14994,7 @@
   },
   {
     "stationName": "압구정로데오",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1848",
     "externalCode": "K212",
     "nextStations": [
@@ -15020,7 +15020,7 @@
   },
   {
     "stationName": "강남구청",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1849",
     "externalCode": "K213",
     "nextStations": [
@@ -15230,7 +15230,7 @@
   },
   {
     "stationName": "선정릉",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1850",
     "externalCode": "K214",
     "nextStations": [
@@ -15256,7 +15256,7 @@
   },
   {
     "stationName": "가천대",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1851",
     "externalCode": "K223",
     "nextStations": [
@@ -15282,7 +15282,7 @@
   },
   {
     "stationName": "태평",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1852",
     "externalCode": "K224",
     "nextStations": [
@@ -15308,7 +15308,7 @@
   },
   {
     "stationName": "모란",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1853",
     "externalCode": "K225",
     "nextStations": [
@@ -15334,7 +15334,7 @@
   },
   {
     "stationName": "서현",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1855",
     "externalCode": "K228",
     "nextStations": [
@@ -15360,7 +15360,7 @@
   },
   {
     "stationName": "수내",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1856",
     "externalCode": "K229",
     "nextStations": [
@@ -15386,7 +15386,7 @@
   },
   {
     "stationName": "정자",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1857",
     "externalCode": "K230",
     "nextStations": [
@@ -15412,7 +15412,7 @@
   },
   {
     "stationName": "미금",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1858",
     "externalCode": "K231",
     "nextStations": [
@@ -15438,7 +15438,7 @@
   },
   {
     "stationName": "오리",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1859",
     "externalCode": "K232",
     "nextStations": [
@@ -15464,7 +15464,7 @@
   },
   {
     "stationName": "이매",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1860",
     "externalCode": "K227",
     "nextStations": [
@@ -15490,7 +15490,7 @@
   },
   {
     "stationName": "보정",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1861",
     "externalCode": "K234",
     "nextStations": [
@@ -15516,7 +15516,7 @@
   },
   {
     "stationName": "구성",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1863",
     "externalCode": "K235",
     "nextStations": [
@@ -15542,7 +15542,7 @@
   },
   {
     "stationName": "신갈",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1864",
     "externalCode": "K236",
     "nextStations": [
@@ -15568,7 +15568,7 @@
   },
   {
     "stationName": "기흥",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1865",
     "externalCode": "K237",
     "nextStations": [
@@ -15594,7 +15594,7 @@
   },
   {
     "stationName": "상갈",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1866",
     "externalCode": "K238",
     "nextStations": [
@@ -15620,7 +15620,7 @@
   },
   {
     "stationName": "청명",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1867",
     "externalCode": "K239",
     "nextStations": [
@@ -15646,7 +15646,7 @@
   },
   {
     "stationName": "망포",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1869",
     "externalCode": "K241",
     "nextStations": [
@@ -15672,7 +15672,7 @@
   },
   {
     "stationName": "매탄권선",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1870",
     "externalCode": "K242",
     "nextStations": [
@@ -15698,7 +15698,7 @@
   },
   {
     "stationName": "수원시청",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1871",
     "externalCode": "K243",
     "nextStations": [
@@ -15724,7 +15724,7 @@
   },
   {
     "stationName": "매교",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1872",
     "externalCode": "K244",
     "nextStations": [
@@ -15750,7 +15750,7 @@
   },
   {
     "stationName": "고색",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1873",
     "externalCode": "K246",
     "nextStations": [
@@ -15776,7 +15776,7 @@
   },
   {
     "stationName": "오목천",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1874",
     "externalCode": "K247",
     "nextStations": [
@@ -15802,7 +15802,7 @@
   },
   {
     "stationName": "어천",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1875",
     "externalCode": "K248",
     "nextStations": [
@@ -15828,7 +15828,7 @@
   },
   {
     "stationName": "야목",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1876",
     "externalCode": "K249",
     "nextStations": [
@@ -15854,7 +15854,7 @@
   },
   {
     "stationName": "사리",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1877",
     "externalCode": "K250",
     "nextStations": [
@@ -15880,7 +15880,7 @@
   },
   {
     "stationName": "달월",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1878",
     "externalCode": "K259",
     "nextStations": [
@@ -15906,7 +15906,7 @@
   },
   {
     "stationName": "월곶",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1879",
     "externalCode": "K260",
     "nextStations": [
@@ -15932,7 +15932,7 @@
   },
   {
     "stationName": "소래포구",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1880",
     "externalCode": "K261",
     "nextStations": [
@@ -15958,7 +15958,7 @@
   },
   {
     "stationName": "인천논현",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1881",
     "externalCode": "K262",
     "nextStations": [
@@ -15984,7 +15984,7 @@
   },
   {
     "stationName": "호구포",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1882",
     "externalCode": "K263",
     "nextStations": [
@@ -16010,7 +16010,7 @@
   },
   {
     "stationName": "남동인더스파크",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1883",
     "externalCode": "K264",
     "nextStations": [
@@ -16036,7 +16036,7 @@
   },
   {
     "stationName": "원인재",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1884",
     "externalCode": "K265",
     "nextStations": [
@@ -16062,7 +16062,7 @@
   },
   {
     "stationName": "연수",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1885",
     "externalCode": "K266",
     "nextStations": [
@@ -16272,7 +16272,7 @@
   },
   {
     "stationName": "숭의",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1889",
     "externalCode": "K270",
     "nextStations": [
@@ -16298,7 +16298,7 @@
   },
   {
     "stationName": "신포",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1890",
     "externalCode": "K271",
     "nextStations": [
@@ -16324,7 +16324,7 @@
   },
   {
     "stationName": "인천",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1891",
     "externalCode": "K272",
     "nextStations": [],
@@ -29158,7 +29158,7 @@
     "stationCode": "2729",
     "externalCode": "727",
     "nextStations": [
-      "자양"
+      "뚝섬유원지"
     ],
     "prevStations": [
       "어린이대공원"
@@ -29245,7 +29245,7 @@
     }
   },
   {
-    "stationName": "자양",
+    "stationName": "뚝섬유원지",
     "lineName": "7호선",
     "stationCode": "2730",
     "externalCode": "728",
@@ -29345,7 +29345,7 @@
       "강남구청"
     ],
     "prevStations": [
-      "자양"
+      "뚝섬유원지"
     ],
     "timeTable": {
       "weekday": {
@@ -44232,7 +44232,7 @@
   },
   {
     "stationName": "한티",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1024",
     "externalCode": "K216",
     "nextStations": [
@@ -45109,7 +45109,7 @@
   },
   {
     "stationName": "초지",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1833",
     "externalCode": "K254",
     "nextStations": [
@@ -45135,7 +45135,7 @@
   },
   {
     "stationName": "죽전",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1862",
     "externalCode": "K233",
     "nextStations": [
@@ -45277,7 +45277,7 @@
   },
   {
     "stationName": "중앙",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1831",
     "externalCode": "K252",
     "nextStations": [
@@ -45303,7 +45303,7 @@
   },
   {
     "stationName": "인하대",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1888",
     "externalCode": "K269",
     "nextStations": [
@@ -45329,7 +45329,7 @@
   },
   {
     "stationName": "야탑",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1854",
     "externalCode": "K226",
     "nextStations": [
@@ -45355,7 +45355,7 @@
   },
   {
     "stationName": "영통",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1868",
     "externalCode": "K240",
     "nextStations": [
@@ -45381,7 +45381,7 @@
   },
   {
     "stationName": "송도",
-    "lineName": "수인분당선",
+    "lineName": "수인.분당선",
     "stationCode": "1886",
     "externalCode": "K267",
     "nextStations": [
@@ -48212,7 +48212,7 @@
   },
   {
     "stationName": "북한산우이",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4701",
     "externalCode": "941",
     "nextStations": [
@@ -48236,7 +48236,7 @@
   },
   {
     "stationName": "솔밭공원",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4702",
     "externalCode": "942",
     "nextStations": [
@@ -48570,7 +48570,7 @@
   },
   {
     "stationName": "4?19민주묘지",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4703",
     "externalCode": "943",
     "nextStations": [
@@ -48596,7 +48596,7 @@
   },
   {
     "stationName": "가오리",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4704",
     "externalCode": "944",
     "nextStations": [
@@ -48622,7 +48622,7 @@
   },
   {
     "stationName": "화계",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4705",
     "externalCode": "945",
     "nextStations": [
@@ -48648,7 +48648,7 @@
   },
   {
     "stationName": "삼양",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4706",
     "externalCode": "946",
     "nextStations": [
@@ -48674,7 +48674,7 @@
   },
   {
     "stationName": "삼양사거리",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4707",
     "externalCode": "947",
     "nextStations": [
@@ -48700,7 +48700,7 @@
   },
   {
     "stationName": "솔샘",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4708",
     "externalCode": "948",
     "nextStations": [
@@ -49610,7 +49610,7 @@
   },
   {
     "stationName": "북한산보국문",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4709",
     "externalCode": "949",
     "nextStations": [
@@ -49636,7 +49636,7 @@
   },
   {
     "stationName": "정릉",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4710",
     "externalCode": "950",
     "nextStations": [
@@ -49662,7 +49662,7 @@
   },
   {
     "stationName": "성신여대입구",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4711",
     "externalCode": "951",
     "nextStations": [
@@ -49688,7 +49688,7 @@
   },
   {
     "stationName": "보문",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4712",
     "externalCode": "952",
     "nextStations": [
@@ -49714,7 +49714,7 @@
   },
   {
     "stationName": "신설동",
-    "lineName": "우이신설경전철",
+    "lineName": "우이신설선",
     "stationCode": "4713",
     "externalCode": "953",
     "nextStations": [],

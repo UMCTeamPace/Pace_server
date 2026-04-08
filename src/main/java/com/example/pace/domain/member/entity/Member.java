@@ -36,7 +36,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 name = "social_provider_id_unique",
-                columnNames = {"socialProvider", "socialId"}
+                columnNames = {"social_provider", "social_id"}
         )
 })
 @SQLDelete(sql = "UPDATE member SET is_active = false WHERE id = ?") // delete()시 hard delete 하는 것이 아닌 soft delete를 진행
@@ -66,7 +66,7 @@ public class Member extends BaseEntity {
     private SocialProvider socialProvider;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     @Builder.Default
     private Role role = Role.ROLE_USER;
 
@@ -79,8 +79,9 @@ public class Member extends BaseEntity {
     @Builder.Default
     private Boolean onboardingComplete = false;
 
-    public void updateOnboardingCompleted(boolean completed) {
-        this.onboardingComplete = completed;
+    public void updateOnboardingCompleted() {
+        this.role = Role.ROLE_USER;
+        this.onboardingComplete = true;
     }
 
     // 추후에 매핑 관계 반영 예정

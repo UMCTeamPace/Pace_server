@@ -15,6 +15,7 @@ public class AuthConverter {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .isNewUser(false)
+                .role(member.getRole())
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class AuthConverter {
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .isNewUser(true)
+                .role(member.getRole())
                 .build();
     }
 }

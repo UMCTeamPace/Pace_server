@@ -43,7 +43,7 @@ class BusNetworkServiceTest {
         List<BusInfo> result = busNetworkService.getStationsBetween(lineName, start, end);
 
         assertThat(result).isNotEmpty();
-
+        assertThat(result.getFirst().getNodeId()).isEqualTo("107000163");
         List<String> names = result.stream().map(BusInfo::getStationName).toList();
 
         System.out.println("조회된 경로: " + names);

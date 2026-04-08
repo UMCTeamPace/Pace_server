@@ -1,7 +1,7 @@
 package com.example.pace.domain.member.dto.response;
 
 import com.example.pace.domain.member.converter.SettingConverter;
-import com.example.pace.domain.member.enums.CalendarType;
+import com.example.pace.domain.member.enums.AlarmType;
 import com.example.pace.domain.member.entity.Setting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -24,31 +24,20 @@ public class SettingResponseDTO {
     private Boolean isLocEnabled;
 
     private Boolean isReminderActive;
-
-    private CalendarType calendarType;
-
-    private List<Integer> scheduleReminderTimes;
-    private List<Integer> departureReminderTimes;
+    private Long calendarId;
+    private List<AlarmConfig> alarms;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @Builder
+    public record AlarmConfig(
+            AlarmType type,
+            List<Integer> minutes
+    ) {}
 
     public static SettingResponseDTO from(Setting setting) {
         return SettingConverter.toResponse(setting);
     }
 
-    // PATCH 응답용 최소 DTO
-    @Getter
-    @Builder
-    public static class Simple {
-        private Long settingId;
-        private LocalDateTime updatedAt;
-
-        public static Simple from(SettingResponseDTO response) {
-            return Simple.builder()
-                    .settingId(response.getSettingId())
-                    .updatedAt(response.getUpdatedAt())
-                    .build();
-        }
-    }
 }

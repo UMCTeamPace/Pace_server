@@ -1,6 +1,7 @@
 package com.example.pace.domain.member.dto.request;
 
-import com.example.pace.domain.member.enums.CalendarType;
+import com.example.pace.domain.member.enums.AlarmType;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,14 +22,16 @@ public class SettingUpdateRequestDTO {
     private Boolean isReminderActive;
 
     // 캘린더 선택
-    private CalendarType calendarType;
+    private String calendarId;
 
-    // reminder_time 다중 선택
-    private List<Integer> reminderTimes;
+    //alarms로 받기 위해
+    private List<Alarm> alarms;
 
-    // 일정 알림
-    private List<Integer> scheduleReminderTimes;
-
-    //출발 알림
-    private List<Integer> departureReminderTimes;
+    @Getter
+    @NoArgsConstructor
+    public static class Alarm {
+        private AlarmType type;        // "SCHEDULE", "DEPARTURE"
+        @Size(max = 5, message = "알람 시간은 타입별로 최대 5개까지 설정할 수 있습니다.")
+        private List<Integer> minutes;
+    }
 }

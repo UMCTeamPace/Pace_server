@@ -1,8 +1,20 @@
 package com.example.pace.domain.schedule.enums;
 
+import lombok.Getter;
 
+@Getter
 public enum SearchWay {
-    FASTEST,       // 최적경로 ->추후 duration 내림차순하여 최소시간 설정
-    MIN_TRANSFER,  // 최소환승
-    MIN_WALK       // 최소도보
+    // 분기처리를 위해 데이터 매핑
+    EFFICIENT(null),
+    MIN_TIME(null),
+    
+    MIN_TRANSFER("fewer_transfers"),
+    MIN_WALK("less_walking");
+
+    private final String googleValue;
+
+    SearchWay(String googleValue) {
+        this.googleValue = googleValue;
+
+    }
 }

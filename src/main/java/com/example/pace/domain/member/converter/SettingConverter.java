@@ -5,15 +5,18 @@ import com.example.pace.domain.member.entity.ReminderTime;
 import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SettingConverter {
 
-    private SettingConverter() {}
+    private SettingConverter() {
+    }
 
     public static ReminderTime toEntity(
             Setting setting,
             AlarmType alarmType,
-            int minutes
+            Integer minutes
     ) {
         return ReminderTime.builder()
                 .setting(setting)
@@ -24,17 +27,34 @@ public class SettingConverter {
 
     public static SettingResponseDTO toResponse(Setting setting) {
 
-        List<Integer> scheduleTimes = setting.getScheduleReminderTimes();
-        List<Integer> departureTimes = setting.getDepartureReminderTimes();
+        Map<AlarmType, List<Integer>> timesByType = setting.getReminderTimes().stream()
+                .collect(Collectors.groupingBy(
+                        ReminderTime::getAlarmType,
+                        Collectors.mapping(ReminderTime::getMinutes, Collectors.toList())
+                ));
+
+        // REQUIRED_TYPES 보정(없으면 빈 리스트)
+        List<SettingResponseDTO.AlarmConfig> alarms = List.of(
+                new SettingResponseDTO.AlarmConfig(
+                        AlarmType.SCHEDULE,
+                        timesByType.getOrDefault(AlarmType.SCHEDULE, List.of())
+                ),
+                new SettingResponseDTO.AlarmConfig(
+                        AlarmType.DEPARTURE,
+                        timesByType.getOrDefault(AlarmType.DEPARTURE, List.of())
+                )
+        );
 
         return SettingResponseDTO.builder()
+                .settingId(setting.getSettingId())
+                .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isNotiEnabled(setting.isNotiEnabled())
                 .isLocEnabled(setting.isLocEnabled())
-                .earlyArrivalTime(setting.getEarlyArrivalTime())
                 .isReminderActive(setting.isReminderActive())
-                .calendarType(setting.getCalendarType())
-                .scheduleReminderTimes(setting.getScheduleReminderTimes())
-                .departureReminderTimes(setting.getDepartureReminderTimes())
+                .calendarId(setting.getCalendarId())
+                .alarms(alarms)
+                .createdAt(setting.getCreatedAt())
+                .updatedAt(setting.getUpdatedAt())
                 .build();
     }
 }

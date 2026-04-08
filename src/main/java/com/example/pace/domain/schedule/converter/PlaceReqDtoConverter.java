@@ -14,4 +14,13 @@ public class PlaceReqDtoConverter {
                 .targetLng(placeDto.getTargetLng())
                 .build();
     }
+    // 기존 장소 -> 새 장소 엔티티 객체
+    public static Place toPlaceFromExisting(Place existing) {
+        if (existing == null) return null;
+        return Place.builder()
+                .targetName(existing.getTargetName())
+                .targetLat(existing.getTargetLat())
+                .targetLng(existing.getTargetLng())
+                .build();
+    }
 }

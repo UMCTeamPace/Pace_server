@@ -1,8 +1,6 @@
 package com.example.pace.domain.member.entity;
 
-import com.example.pace.domain.member.entity.Setting;
 import com.example.pace.domain.member.enums.AlarmType;
-import com.example.pace.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,12 +9,19 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@Table(
+        name = "reminder_time",
+        indexes = {
+                // 세팅의 반복 시간을 조회하기 위한 인덱스 칼럼 지정
+                @Index(name = "idx_reminder_time_setting", columnList = "setting_id")
+        }
+)
 public class ReminderTime {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "setting_id", nullable = false)
     private Setting setting;
@@ -27,16 +32,4 @@ public class ReminderTime {
     @Enumerated(EnumType.STRING)
     @Column(name = "alarm_type", nullable = false, length = 20)
     private AlarmType alarmType;
-
-    public static ReminderTime toEntity(
-            Setting setting,
-            AlarmType alarmType,
-            Integer minutes
-    ) {
-        return ReminderTime.builder()
-                .setting(setting)
-                .alarmType(alarmType)
-                .minutes(minutes)
-                .build();
-    }
 }

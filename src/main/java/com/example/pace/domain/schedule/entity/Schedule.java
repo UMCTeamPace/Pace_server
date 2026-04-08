@@ -9,6 +9,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -28,7 +29,13 @@ import org.hibernate.annotations.BatchSize;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "schedule")
+@Table(
+        name = "schedule",
+        indexes = {
+                // 커서 페이징 최적화 인덱스 칼럼 지정
+                @Index(name = "idx_schedule_member_date_id", columnList = "member_id, start_date, id"),
+        }
+)
 public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Id
@@ -41,25 +48,22 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
 
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
-    private Boolean isAllDay;
+    @Column(name = "start_date")
     private LocalDate startDate;
+    @Column(name = "end_date")
     private LocalDate endDate;
+    @Column(name = "start_time")
     private LocalTime startTime;
+    @Column(name = "end_time")
     private LocalTime endTime;
-    private Boolean isRepeat;
-    private String repeatGroupId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "repeat_rule_id")
-    private RepeatRule repeatRule;
+    private String calendarId;
+    private String color;
 
     @Column(columnDefinition = "TEXT")
     private String memo;
 
-    @Column(name = "is_path_included")
+    @Column(name = "is_path_included", nullable = false)
     private Boolean isPathIncluded; // 경로 포함 여부
-
 
     @OneToOne(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     private Route route;
@@ -93,6 +97,6 @@ public class Schedule extends BaseEntity { // BaseEntity: created_at, updated_at
             this.route.setSchedule(null);
             this.route = null;
         }
+        this.isPathIncluded = false;
     }
-
 }

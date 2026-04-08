@@ -1,7 +1,6 @@
 package com.example.pace.domain.member.repository;
 
 import com.example.pace.domain.member.entity.Member;
-import com.example.pace.domain.member.enums.SocialProvider;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
