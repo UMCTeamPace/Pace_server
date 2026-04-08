@@ -99,45 +99,9 @@ public class RouteCommandService {
 
     }
 
-
-    public boolean isUpAndDown(SubwayArrivalResDTO.SubwayArrivalInfoDTO arrival, String start, String end,
-                               String lineName) {
-
-        // 출발지부터 목적지까지의 경로
-        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(lineName, start, end);
-
-        // 출발지 역이 목적지 역인 경우 그냥 모든 열차를 보여줌
-        // 추후 상의를 통하여 어케할지 정하기
-        if (path.size() == 1) {
-            return true;
-        }
-
-        // 경로가 없을 경우에는 그냥 열차 정보를 주지 않음 -> 이것도 얘기를 함 해보기
-        if (path.isEmpty()) {
-            return false;
-        }
-
-        SubwayStationResDTO startStation = path.getFirst();
-        String secondStationName = path.get(1).getStationName();
-
-        // 다음역이 포함되어 있다면 하행으로 판별
-        boolean isNextDirection = startStation.getNextStations().contains(secondStationName);
-
-        String upOrDown = arrival.getUpdnLine();
-
-        // 2호선만 외선/내선 (이거아직안함)
-        if (lineName.equals("2호선")) {
-            return isNextDirection ? upOrDown.equals("외선") : upOrDown.equals("내선");
-        } else {
-            return isNextDirection ? upOrDown.equals("하행") : upOrDown.equals("상행");
-        }
-    }
-
     private void enrichTransitPath(RouteListResDTO result) {
         for (RouteApiResDto route : result.getRouteApiResDtoList()) {
-
             for (RouteDetailInfoResDTO step : route.getRouteDetailInfoResDTOList()) {
-
                 if (step.getTransitDetail() == null) {
                     continue;
                 }
@@ -169,56 +133,46 @@ public class RouteCommandService {
 
                 // SUBWAY 처리
                 if (transit.getTransitType() == TransitType.SUBWAY) {
-                    List<String> stationPath = subwayNetworkService.getStationsBetween(lineName, start, end)
-                            .stream()
-                            .map(SubwayStationResDTO::getStationName)
-                            .toList();
-                    transit.setStationPath(stationPath);
+                    try {
+                        List<SubwayStationResDTO> path = subwayNetworkService.getStationsBetween(lineName, start,
+                                end);
 
-                    SubwayArrivalReqDTO.SubwayArrivalDTO req =
-                            new SubwayArrivalReqDTO.SubwayArrivalDTO(start, end, lineName);
+                        List<String> stationPath = path.stream()
+                                .map(SubwayStationResDTO::getStationName)
+                                .toList();
 
-                    List<SubwayArrivalResDTO.SubwayArrivalInfoDTO> arrivals =
-                            subwayApiQueryService.getLiveSubwayStation(req);
+                        transit.setStationPath(stationPath);
 
-                    SubwayArrivalResDTO.SubwayArrivalInfoDTO arrival =
-                            arrivals.isEmpty() ? null : arrivals.getFirst();
-                    // 이거 0번째 리스트 가져와도 아무상관이 없는지...
+                        if (path.size() > 1) {
+                            SubwayStationResDTO startStation = path.getFirst();
+                            String secondStationName = path.get(1).getStationName();
 
-                    if (arrival == null) {
-                        // 실시간 정보 없을 때 기본 처리
+                            // 해당 출발역의 하행(nextStations) 리스트에 다음역이 있다면 하행으로 판별
+                            boolean isDownbound = startStation.getNextStations().contains(secondStationName);
+
+                            // 하행이면
+                            if (isDownbound) {
+                                String next = startStation.getNextStations().getFirst();
+                                transit.setDownNext("하행 " + next);
+                            } else { // 상행이면
+                                String prev = startStation.getPrevStations().isEmpty() ? "종점"
+                                        : startStation.getPrevStations().getFirst();
+                                transit.setUpNext("상행 " + prev);
+                            }
+                        } else {
+                            // 역이 1개이거나 경로가 없을 경우
+                            transit.setUpNext("정보 없음");
+                            transit.setDownNext("정보 없음");
+                        }
+                    } catch (Exception e) {
+                        log.warn("지하철 상세 경로 및 방향을 찾을 수 없습니다: {} ({} -> {})", lineName, start, end);
+                        transit.setStationPath(Collections.emptyList());
                         transit.setUpNext("정보 없음");
                         transit.setDownNext("정보 없음");
-                        return;
-                    }
-
-                    boolean isUp = isUpAndDown(arrival, start, end, lineName);
-                    SubwayStationResDTO startStation =
-                            subwayNetworkService.getStationsBetween(lineName, start, end).get(0);
-
-                    // T= 상행 F= 하행
-                    if (isUp) {
-                        String prev = startStation.getPrevStations().isEmpty()
-                                ? null
-                                : startStation.getPrevStations().get(0);
-
-                        transit.setDownNext("하행 " + prev);
-                    } else {
-                        String next = startStation.getNextStations().isEmpty()
-                                ? null
-                                : startStation.getNextStations().get(0);
-
-                        transit.setUpNext("상행 " + next);
-
                     }
                 }
-
             }
-
-
         }
-
-
     }
 }
 
