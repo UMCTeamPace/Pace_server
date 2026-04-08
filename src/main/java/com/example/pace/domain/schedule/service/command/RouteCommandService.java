@@ -165,7 +165,8 @@ public class RouteCommandService {
                             transit.setDownNext("정보 없음");
                         }
                     } catch (Exception e) {
-                        log.warn("지하철 상세 경로 및 방향을 찾을 수 없습니다: {} ({} -> {})", lineName, start, end);
+                        log.warn("지하철 상세 경로 및 방향을 찾을 수 없습니다: {} ({} -> {})\ne: {}", lineName, start, end,
+                                e.getMessage());
                         transit.setStationPath(Collections.emptyList());
                         transit.setUpNext("정보 없음");
                         transit.setDownNext("정보 없음");
