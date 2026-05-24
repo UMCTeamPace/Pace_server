@@ -19,9 +19,11 @@ import com.example.pace.domain.transit.entity.BusInfo;
 import com.example.pace.domain.transit.service.BusNetworkService;
 import com.example.pace.domain.transit.service.SubwayNetworkService;
 import com.example.pace.domain.transit.service.query.SubwayApiQueryService;
+
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -77,10 +79,6 @@ public class RouteCommandService {
         GoogleDirectionApiResponse googleRes =
                 googleDirectionApiClient.getDirections(googleReq);
 
-        // 1) routes 리스트 변환
-        RouteListResDTO result =
-                RouteResDTOConverter.toRouteListResDTO(googleRes);
-
         if (request.searchWay() == MIN_TIME && googleRes != null && googleRes.getRoutes() != null) {
             googleRes.getRoutes().sort(Comparator.comparing(route -> {
                 if (route.getLegs() != null && !route.getLegs().isEmpty() &&
@@ -92,11 +90,14 @@ public class RouteCommandService {
             }));
         }
 
+        // 1) routes 리스트 변환
+        RouteListResDTO result =
+                RouteResDTOConverter.toRouteListResDTO(googleRes);
+
         // 2) BUS / SUBWAY 경로에 path 추가
         enrichTransitPath(result);
 
         return result;
-
     }
 
     private void enrichTransitPath(RouteListResDTO result) {
