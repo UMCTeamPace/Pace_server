@@ -39,3 +39,7 @@ out/
 
 .DS_Store
 .env
+
+docs/harness/personal_convention/
+# Personal handoff documents: keep local and never publish to GitHub
+docs/handoff/
