@@ -85,7 +85,7 @@ services:
       KAKAO_REDIRECT_URI: ${KAKAO_REDIRECT_URI}
       GOOGLE_MAPS_API_KEY: ${GOOGLE_MAPS_API_KEY}
       SEOUL_SUBWAY_API_KEY: ${SEOUL_SUBWAY_API_KEY}
-    
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY}
     networks:
       - pace-network
 
